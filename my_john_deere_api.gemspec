@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/Intellifarm/my_john_deere_api'
   s.license       = 'MIT'
 
-  s.files       = ["{lib,test}/**/*", "Rakefile", "README.md"]
+  s.files       = Dir["{lib,test}/**/*", "Rakefile", "README.md"]
 
   s.description = <<-TURTLES
 == My John Deere API
