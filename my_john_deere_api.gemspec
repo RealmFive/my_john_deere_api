@@ -11,6 +11,12 @@ Gem::Specification.new do |s|
 
   s.files       = Dir["{lib,test}/**/*", "Rakefile", "README.md"]
 
+  s.add_development_dependency 'vcr', '~> 5.0'
+  s.add_development_dependency 'dotenv', '~> 2.7.5'
+  s.add_development_dependency 'webmock', '~> 3.7.6'
+
+  s.add_runtime_dependency 'oauth', '~> 0.5.4'
+
   s.description = <<-TURTLES
 == My John Deere API
 
