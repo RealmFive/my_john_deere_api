@@ -5,13 +5,15 @@ require 'support/helper'
 URL_ENV = 'MY_JOHN_DEERE_URL'
 TOKEN_PATTERN = /^[0-9a-z\-]+$/
 SECRET_PATTERN = /^[0-9A-Za-z\-+=\/]+$/
+API_KEY = ENV['API_KEY']
+API_SECRET = ENV['API_SECRET']
 
 def contains_parameters?(uri)
   !URI.parse(uri).query.nil?
 end
 
 def create_authorize
-  JD::Authorize.new(ENV['API_KEY'], ENV['API_SECRET'], base_url: 'https://sandboxapi.deere.com')
+  JD::Authorize.new(API_KEY, API_SECRET, base_url: 'https://sandboxapi.deere.com')
 end
 
 def fancy_url
@@ -101,6 +103,30 @@ class AuthorizeTest < MiniTest::Test
       assert_equal fancy_url, authorize.base_url
 
       ENV.delete(URL_ENV)
+    end
+  end
+
+  describe '#app_consumer' do
+    it 'creates a working oAuth consumer for non-user-specific requests' do
+      auth = create_authorize
+      app_consumer = VCR.use_cassette('app_consumer') { auth.app_consumer }
+
+      assert_kind_of OAuth::Consumer, app_consumer
+      assert_equal API_KEY, app_consumer.key
+      assert_equal API_SECRET, app_consumer.secret
+      assert_equal auth.base_url, app_consumer.site
+    end
+  end
+
+  describe '#user_consumer' do
+    it 'creates a working oAuth consumer for user-specific requests' do
+      auth = create_authorize
+      user_consumer = VCR.use_cassette('app_consumer') { auth.user_consumer }
+
+      assert_kind_of OAuth::Consumer, user_consumer
+      assert_equal API_KEY, user_consumer.key
+      assert_equal API_SECRET, user_consumer.secret
+      assert_equal "#{auth.base_url}/platform", user_consumer.site
     end
   end
 end

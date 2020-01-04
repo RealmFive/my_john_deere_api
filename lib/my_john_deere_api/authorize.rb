@@ -13,26 +13,35 @@ class MyJohnDeereApi::Authorize
   end
 
   def authorize_url
-    # return @authorize_url if defined?(@authorize_url)
-    #
+    return @authorize_url if defined?(@authorize_url)
 
-    consumer = OAuth::Consumer.new(
+    requester = app_consumer.get_request_token
+
+    @request_token = requester.token
+    @request_secret = requester.secret
+
+    @authorize_url = requester.authorize_url
+  end
+
+  def app_consumer
+    @app_consumer ||= consumer(base_url)
+  end
+
+  def user_consumer
+    @user_consumer ||= consumer("#{base_url}/platform")
+  end
+
+  def consumer(site)
+    OAuth::Consumer.new(
       api_key,
       api_secret,
-      site: base_url,
+      site: site,
       header: header,
       http_method: :get,
       request_token_url: links[:request_token],
       access_token_url: links[:access_token],
       authorize_url: links[:authorize_request_token]
     )
-
-    requester = consumer.get_request_token
-
-    @request_token = requester.token
-    @request_secret = requester.secret
-
-    @authorize_url = requester.authorize_url
   end
 
   def links
