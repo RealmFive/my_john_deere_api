@@ -1,10 +1,13 @@
-require 'minitest/autorun'
-require 'my_john_deere_api'
+require 'support/helper'
 
 class MyJohnDeereApiTest < MiniTest::Test
-  describe 'VERSION' do
-    it 'conforms to the semantic version format' do
-      assert_match /^\d+\.\d+\.\d+$/, MyJohnDeereApi::VERSION
+  describe 'loading dependencies' do
+    it 'loads VERSION' do
+      assert JD::VERSION
+    end
+
+    it 'loads Authorize' do
+      assert JD::Authorize
     end
   end
 end
