@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+VERSION_FILE = './lib/my_john_deere_api/version.rb'
+
+require_relative VERSION_FILE
+
+def new_version
+  return @new_version if defined?(@new_version)
+
+  level = ARGV.shift
+  major, minor, patch = MyJohnDeereApi::VERSION.split('.').map(&:to_i)
+
+  case level
+  when 'major'
+    major += 1
+    minor = 0
+    patch = 0
+  when 'minor'
+    minor += 1
+    patch = 0
+  else
+    patch += 1
+  end
+
+  @new_version = [major, minor, patch].join('.')
+end
+
+def update_version_file
+  File.write(VERSION_FILE, "module MyJohnDeereApi\n  VERSION='#{new_version}'\nend\n")
+
+  `git add #{VERSION_FILE}`
+  `git commit -m "bump version to #{new_version}"`
+  `git push`
+end
+
+def git_tag
+  tag = "v#{new_version}"
+
+  `git tag #{tag}`
+  `git push origin #{tag}`
+end
+
+def build_gem
+  `gem build my_john_deere_api.gemspec`
+end
+
+update_version_file
+git_tag
+build_gem
