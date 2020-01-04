@@ -1,4 +1,5 @@
 require 'oauth'
+require 'uri'
 require 'json'
 
 module MyJohnDeereApi
