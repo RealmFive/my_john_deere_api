@@ -12,6 +12,12 @@ Gem::Specification.new do |s|
   s.files       = ["{lib,test}/**/*", "Rakefile", "README.md"]
 
   s.description = <<-TURTLES
-    This gem interacts with the My John Deere API.
+== My John Deere API
+
+This gem interacts with the My John Deere API.
+
+WARNING: this is a work in progress. We believe in publish early,
+publish often. Perfection is the enemy of done. Insert third
+cliché here ;)
   TURTLES
 end
