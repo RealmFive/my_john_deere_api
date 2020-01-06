@@ -2,7 +2,6 @@ require 'uri'
 require 'cgi'
 require 'support/helper'
 
-URL_ENV = 'MY_JOHN_DEERE_URL'
 TOKEN_PATTERN = /^[0-9a-z\-]+$/
 SECRET_PATTERN = /^[0-9A-Za-z\-+=\/]+$/
 API_KEY = ENV['API_KEY']
@@ -13,7 +12,7 @@ def contains_parameters?(uri)
 end
 
 def create_authorize
-  JD::Authorize.new(API_KEY, API_SECRET, base_url: 'https://sandboxapi.deere.com')
+  JD::Authorize.new(API_KEY, API_SECRET, environment: :sandbox)
 end
 
 def fancy_url
@@ -29,18 +28,24 @@ class AuthorizeTest < MiniTest::Test
       assert_equal 'secret', authorize.api_secret
     end
 
-    it "can set the base_url" do
-      authorize = JD::Authorize.new('key', 'secret', base_url: fancy_url)
-      assert_equal fancy_url, authorize.base_url
+    it 'defaults to production environment' do
+      authorize = JD::Authorize.new('key', 'secret')
+      assert_equal :production, authorize.environment
     end
 
-    it 'prefers passed-in base_url over ENV variable' do
-      ENV[URL_ENV] = 'https://example.com/disposable'
+    it 'defaults to production oauth url' do
+      authorize = JD::Authorize.new('key', 'secret')
+      assert_equal 'https://api.soa-proxy.deere.com', authorize.base_url
+    end
 
-      authorize = JD::Authorize.new('key', 'secret', base_url: fancy_url)
-      assert_equal fancy_url, authorize.base_url
+    it "can set the environment" do
+      authorize = JD::Authorize.new('key', 'secret', environment: :sandbox)
+      assert_equal :sandbox, authorize.environment
+    end
 
-      ENV.delete(URL_ENV)
+    it "can set the base_url via the environment" do
+      authorize = JD::Authorize.new('key', 'secret', environment: :sandbox)
+      assert_equal 'https://sandboxapi.deere.com', authorize.base_url
     end
   end
 
@@ -50,7 +55,7 @@ class AuthorizeTest < MiniTest::Test
 
       url = VCR.use_cassette('get_request_token') { authorize.authorize_url }
 
-      assert_includes url, "#{authorize.links[:authorize_request_token]}?oauth_token="
+      assert_includes url, "#{authorize.send(:links)[:authorize_request_token]}?oauth_token="
 
       query = URI.parse(url).query
       params = CGI::parse(query)
@@ -68,11 +73,24 @@ class AuthorizeTest < MiniTest::Test
     end
   end
 
+  describe '#verify(code, token, secret)' do
+    it 'sets the access token/secret' do
+      authorize = create_authorize
+      code = 'VERIFY'
+
+      VCR.use_cassette('get_request_token') { authorize.authorize_url }
+      VCR.use_cassette('get_access_token') { authorize.verify(code) }
+
+      assert_match TOKEN_PATTERN, authorize.access_token
+      assert_match SECRET_PATTERN, authorize.access_secret
+    end
+  end
+
   describe '#links' do
     it "returns a list of catalog urls" do
       authorize = create_authorize
 
-      links = VCR.use_cassette("catalog"){ authorize.links }
+      links = VCR.use_cassette("catalog"){ authorize.send(:links) }
 
       assert_kind_of Hash, links
 
@@ -94,15 +112,6 @@ class AuthorizeTest < MiniTest::Test
       authorize.base_url = fancy_url
 
       assert_equal fancy_url, authorize.base_url
-    end
-
-    it 'can be set via environment variable' do
-      ENV[URL_ENV] = fancy_url
-
-      authorize = JD::Authorize.new('key', 'secret')
-      assert_equal fancy_url, authorize.base_url
-
-      ENV.delete(URL_ENV)
     end
   end
 
