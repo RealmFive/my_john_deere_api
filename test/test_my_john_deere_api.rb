@@ -17,5 +17,9 @@ class MyJohnDeereApiTest < MiniTest::Test
     it 'loads Consumer' do
       assert JD::Consumer
     end
+
+    it 'loads Request' do
+      assert JD::Request
+    end
   end
 end
