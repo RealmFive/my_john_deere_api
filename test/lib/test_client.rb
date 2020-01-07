@@ -41,7 +41,7 @@ describe 'MyJohnDeereApi::Client' do
       response = VCR.use_cassette('get_organizations') { client.get('/organizations') }
 
       assert_kind_of Hash, response
-      assert_equal 2, response['total']
+      assert_kind_of Integer, response['total']
       assert response['values'].all?{|value| value['@type'] == 'Organization'}
       assert response['values'].all?{|value| value.has_key?('links')}
     end
@@ -52,7 +52,7 @@ describe 'MyJohnDeereApi::Client' do
       response = VCR.use_cassette('get_organizations') { client.get('organizations') }
 
       assert_kind_of Hash, response
-      assert_equal 2, response['total']
+      assert_kind_of Integer, response['total']
       assert response['values'].all?{|value| value['@type'] == 'Organization'}
       assert response['values'].all?{|value| value.has_key?('links')}
     end
@@ -63,7 +63,7 @@ describe 'MyJohnDeereApi::Client' do
       response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
 
       assert_kind_of Hash, response
-      assert_equal 2, response['total']
+      assert_kind_of Integer, response['total']
       assert response['values'].all?{|value| value['@type'] == 'Organization'}
       assert response['values'].all?{|value| value.has_key?('links')}
     end

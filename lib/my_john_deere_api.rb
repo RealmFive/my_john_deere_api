@@ -6,5 +6,5 @@ module MyJohnDeereApi
   autoload :VERSION,        'my_john_deere_api/version'
   autoload :Authorize,      'my_john_deere_api/authorize'
   autoload :Client,         'my_john_deere_api/client'
-  autoload :Consumer,        'my_john_deere_api/consumer'
+  autoload :Consumer,       'my_john_deere_api/consumer'
 end
