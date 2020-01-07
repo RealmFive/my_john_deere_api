@@ -1,5 +1,12 @@
 class MyJohnDeereApi::Authorize
-  attr_reader :request_token, :request_secret, :access_token, :access_secret, :consumer
+  attr_reader :api_key, :api_secret,
+    :request_token, :request_secret,
+    :access_token, :access_secret,
+    :environment
+
+  DEFAULTS = {
+    environment: :production
+  }
 
   ##
   # Create an Authorize object.
@@ -7,8 +14,12 @@ class MyJohnDeereApi::Authorize
   # This is used to obtain authentication an access key/secret
   # on behalf of a user.
 
-  def initialize
-    @consumer = MyJohnDeereApi::Consumer.app_get
+  def initialize(api_key, api_secret, options = {})
+    options = DEFAULTS.merge(options)
+
+    @api_key = api_key
+    @api_secret = api_secret
+    @environment = options[:environment]
   end
 
   ##
@@ -23,6 +34,14 @@ class MyJohnDeereApi::Authorize
     @request_secret = requester.secret
 
     @authorize_url = requester.authorize_url
+  end
+
+  ##
+  # API consumer that makes non-user-specific GET requests
+
+  def consumer
+    return @consumer if defined?(@consumer)
+    @consumer = MyJohnDeereApi::Consumer.new(@api_key, @api_secret, environment: environment).app_get
   end
 
   ##

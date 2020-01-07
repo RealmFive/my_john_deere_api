@@ -7,8 +7,7 @@ def contains_parameters?(uri)
 end
 
 def create_authorize
-  VCR.use_cassette('catalog'){ JD::Consumer.send(:links) }
-  JD::Authorize.new
+  VCR.use_cassette('catalog'){ JD::Authorize.new(API_KEY, API_SECRET, environment: :sandbox) }
 end
 
 def fancy_url
@@ -16,20 +15,36 @@ def fancy_url
 end
 
 describe 'MyJohnDeereApi::Authorize' do
-  before do
-    JD::Consumer.config = {
-      api_key: API_KEY,
-      api_secret: API_SECRET,
-      environment: :sandbox
-    }
+  describe 'initialization' do
+    it 'sets the api key/secret' do
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET) }
+
+      assert_equal API_KEY, authorize.api_key
+      assert_equal API_SECRET, authorize.api_secret
+    end
+
+    it 'sets the environment' do
+      environment = :sandbox
+
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET, environment: environment) }
+      assert_equal environment, authorize.environment
+    end
+
+    it 'defaults the environment to production' do
+      environment = :production
+
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET) }
+      assert_equal environment, authorize.environment
+    end
   end
 
-  describe 'initialization' do
-    it "sets the consumer to an app consumer with get requests" do
+  describe '#consumer' do
+    it "returns a non-user-specific consumer configured for GET requests" do
       authorize = create_authorize
+      consumer = VCR.use_cassette('catalog') { authorize.consumer }
 
-      assert_kind_of OAuth::Consumer, authorize.consumer
-      assert_equal :get, authorize.consumer.http_method
+      assert_kind_of OAuth::Consumer, consumer
+      assert_equal :get, consumer.http_method
     end
   end
 
@@ -38,7 +53,7 @@ describe 'MyJohnDeereApi::Authorize' do
       authorize = create_authorize
 
       url = VCR.use_cassette('get_request_token') { authorize.authorize_url }
-      links = VCR.use_cassette('catalog') { JD::Consumer.send(:links) }
+      links = VCR.use_cassette('catalog') { JD::Consumer.new(API_KEY, API_SECRET, environment: :sandbox).send(:links) }
 
       assert_includes url, "#{links[:authorize_request_token]}?oauth_token="
 
