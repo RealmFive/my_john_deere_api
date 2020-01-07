@@ -34,6 +34,41 @@ describe 'MyJohnDeereApi::Client' do
     end
   end
 
+  describe '#get' do
+    it 'returns the response as a Hash' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('get_organizations') { client.get('/organizations') }
+
+      assert_kind_of Hash, response
+      assert_equal 2, response['total']
+      assert response['values'].all?{|value| value['@type'] == 'Organization'}
+      assert response['values'].all?{|value| value.has_key?('links')}
+    end
+
+    it 'prepends the leading slash if needed' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('get_organizations') { client.get('organizations') }
+
+      assert_kind_of Hash, response
+      assert_equal 2, response['total']
+      assert response['values'].all?{|value| value['@type'] == 'Organization'}
+      assert response['values'].all?{|value| value.has_key?('links')}
+    end
+
+    it 'allows symbols for simple resources' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
+
+      assert_kind_of Hash, response
+      assert_equal 2, response['total']
+      assert response['values'].all?{|value| value['@type'] == 'Organization'}
+      assert response['values'].all?{|value| value.has_key?('links')}
+    end
+  end
+
   describe '#consumer' do
     it 'receives the api key/secret and environment of the client' do
       environment = :sandbox
@@ -51,7 +86,6 @@ describe 'MyJohnDeereApi::Client' do
   describe '#accessor' do
     it 'returns an object that can make user-specific requests' do
       client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-      consumer = client.send(:consumer)
       accessor = VCR.use_cassette('catalog') { client.send :accessor }
 
       assert_kind_of OAuth::AccessToken, accessor

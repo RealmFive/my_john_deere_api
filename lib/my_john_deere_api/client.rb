@@ -30,6 +30,17 @@ class MyJohnDeereApi::Client
     @environment = options[:environment]
   end
 
+  ##
+  # generic user-specific GET request method that returns JSON
+
+  def get resource
+    resource = resource.to_s
+    resource = "/#{resource}" unless resource =~ /^\//
+    response = accessor.get(resource, headers)
+
+    JSON.parse(response.body)
+  end
+
   private
 
   ##
@@ -47,5 +58,9 @@ class MyJohnDeereApi::Client
   def accessor
     return @accessor if defined?(@accessor)
     @accessor = OAuth::AccessToken.new(consumer.user_get, access_token, access_secret)
+  end
+
+  def headers
+    @headers ||= {accept: 'application/vnd.deere.axiom.v3+json'}
   end
 end
