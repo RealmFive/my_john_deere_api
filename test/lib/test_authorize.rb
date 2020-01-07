@@ -2,11 +2,6 @@ require 'uri'
 require 'cgi'
 require 'support/helper'
 
-TOKEN_PATTERN = /^[0-9a-z\-]+$/
-SECRET_PATTERN = /^[0-9A-Za-z\-+=\/]+$/
-API_KEY = ENV['API_KEY']
-API_SECRET = ENV['API_SECRET']
-
 def contains_parameters?(uri)
   !URI.parse(uri).query.nil?
 end

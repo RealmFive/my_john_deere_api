@@ -9,5 +9,13 @@ class MyJohnDeereApiTest < MiniTest::Test
     it 'loads Authorize' do
       assert JD::Authorize
     end
+
+    it 'loads Client' do
+      assert JD::Client
+    end
+
+    it 'loads Consumer' do
+      assert JD::Consumer
+    end
   end
 end
