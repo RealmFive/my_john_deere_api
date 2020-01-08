@@ -37,7 +37,7 @@ class MyJohnDeereApi::Request::Collection
 
     @first_page = JSON.parse(@accessor.get(resource, headers).body)
 
-    @items = @first_page['values']
+    @items = @first_page['values'].map{|record| model.new(record) }
 
     if next_page = @first_page['links'].detect{|link| link['rel'] == 'nextPage'}
       @next_page = next_page['uri'].gsub(@accessor.consumer.site, '')
@@ -50,7 +50,7 @@ class MyJohnDeereApi::Request::Collection
     return unless @next_page
 
     page = JSON.parse(@accessor.get(@next_page, headers).body)
-    @items += page['values']
+    @items += page['values'].map{|record| model.new(record) }
 
     if next_page = @first_page['links'].detect{|link| link['rel'] == 'nextPage'}
       @next_page = next_page['uri'].gsub(@accessor.consumer.site, '')

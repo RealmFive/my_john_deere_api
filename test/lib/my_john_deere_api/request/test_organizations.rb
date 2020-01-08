@@ -45,7 +45,7 @@ describe 'MyJohnDeereApi::Request::Organizations' do
       ]
 
       count = VCR.use_cassette('get_organizations') { collection.count }
-      names = VCR.use_cassette('get_organizations', record: :new_episodes) { collection.map{|item| item['name']} }
+      names = VCR.use_cassette('get_organizations', record: :new_episodes) { collection.map{|item| item.name} }
 
       assert_kind_of Array, names
       assert_equal count, names.size

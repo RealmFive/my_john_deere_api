@@ -8,4 +8,5 @@ module MyJohnDeereApi
   autoload :Client,         'my_john_deere_api/client'
   autoload :Consumer,       'my_john_deere_api/consumer'
   autoload :Request,        'my_john_deere_api/request'
+  autoload :Model,          'my_john_deere_api/model'
 end

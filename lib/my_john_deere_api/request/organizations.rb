@@ -8,5 +8,12 @@ module MyJohnDeereApi::Request
     def resource
       '/organizations'
     end
+
+    ##
+    # This is the class used to model the data
+
+    def model
+      MyJohnDeereApi::Model::Organization
+    end
   end
 end

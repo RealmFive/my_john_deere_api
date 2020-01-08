@@ -21,5 +21,9 @@ class MyJohnDeereApiTest < MiniTest::Test
     it 'loads Request' do
       assert JD::Request
     end
+
+    it 'loads Model' do
+      assert JD::Model
+    end
   end
 end
