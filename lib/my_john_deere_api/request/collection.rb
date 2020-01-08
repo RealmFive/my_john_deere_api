@@ -1,14 +1,15 @@
 class MyJohnDeereApi::Request::Collection
   include Enumerable
 
-  attr_reader :accessor
+  attr_reader :accessor, :associations
 
   ##
   # accessor is an OAuth::AccessToken object which has the necessary
   # credentials to make the desired requests.
 
-  def initialize(accessor)
+  def initialize(accessor, associations = {})
     @accessor = accessor
+    @associations = associations
     @items = []
   end
 
@@ -61,7 +62,7 @@ class MyJohnDeereApi::Request::Collection
     @items += page['values'].map{|record| model.new(record) }
 
     if next_page = @first_page['links'].detect{|link| link['rel'] == 'nextPage'}
-      @next_page = next_page['uri'].gsub(@accessor.consumer.site, '')
+      @next_page = uri_path(next_page['uri'])
     else
       @next_page = nil
     end
@@ -69,5 +70,9 @@ class MyJohnDeereApi::Request::Collection
 
   def headers
     @headers ||= {accept: 'application/vnd.deere.axiom.v3+json'}
+  end
+
+  def uri_path(uri)
+    uri.gsub(@accessor.consumer.site, '')
   end
 end

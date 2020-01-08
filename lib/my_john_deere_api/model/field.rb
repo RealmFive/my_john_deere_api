@@ -1,13 +1,10 @@
-require 'uri'
-
-class MyJohnDeereApi::Model::Organization
-  attr_reader :name, :type, :id, :links
+class MyJohnDeereApi::Model::Field
+  attr_reader :name, :id, :links
 
   def initialize(record)
     @name = record['name']
-    @type = record['type']
     @id = record['id']
-    @member = record['member']
+    @archived = record['archived']
 
     @links = {}
 
@@ -16,8 +13,8 @@ class MyJohnDeereApi::Model::Organization
     end
   end
 
-  def member?
-    @member
+  def archived?
+    @archived
   end
 
   private

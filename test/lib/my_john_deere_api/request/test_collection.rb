@@ -9,6 +9,13 @@ describe 'MyJohnDeereApi::Request::Collection' do
       collection = JD::Request::Collection.new(accessor)
       assert_kind_of OAuth::AccessToken, collection.accessor
     end
+
+    it 'accepts associations' do
+      collection = JD::Request::Collection.new(accessor, organization: '123')
+
+      assert_kind_of Hash, collection.associations
+      assert_equal '123', collection.associations[:organization]
+    end
   end
 
   it 'uses the Enumerable module' do
