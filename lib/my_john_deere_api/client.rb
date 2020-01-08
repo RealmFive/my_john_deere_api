@@ -41,6 +41,14 @@ class MyJohnDeereApi::Client
     JSON.parse(response.body)
   end
 
+  ##
+  # organizations associated with this access
+
+  def organizations
+    return @organizations if defined?(@organizations)
+    @organizations = MyJohnDeereApi::Request::Organizations.new(accessor).all
+  end
+
   private
 
   ##

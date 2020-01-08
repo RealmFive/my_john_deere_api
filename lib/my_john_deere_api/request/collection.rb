@@ -24,6 +24,14 @@ class MyJohnDeereApi::Request::Collection
   end
 
   ##
+  # Return all objects in the collection at once
+
+  def all
+    return @all if defined?(@all)
+    @all = map { |i| i }
+  end
+
+  ##
   # Total count of records, even before pagination
 
   def count

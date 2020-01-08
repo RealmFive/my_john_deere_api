@@ -69,6 +69,22 @@ describe 'MyJohnDeereApi::Client' do
     end
   end
 
+  describe '#organizations' do
+    it 'returns a collection of organizations for this account' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+
+      # force full loading of organizations
+      VCR.use_cassette('get_organizations') { client.organizations }
+
+      assert_kind_of Array, client.organizations
+
+      client.organizations.each do |organization|
+        assert_kind_of JD::Model::Organization, organization
+      end
+    end
+  end
+
   describe '#consumer' do
     it 'receives the api key/secret and environment of the client' do
       environment = :sandbox

@@ -19,6 +19,19 @@ describe 'MyJohnDeereApi::Request::Organizations' do
     end
   end
 
+  describe '#all' do
+    it 'returns all records' do
+      items = VCR.use_cassette('get_organizations', record: :new_episodes) { collection.map{|item| item} }
+
+      assert_kind_of Array, collection.all
+      assert_equal collection.count, collection.all.size
+
+      collection.all.each do |item|
+        assert_kind_of JD::Model::Organization, item
+      end
+    end
+  end
+
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_organizations.yml')
@@ -35,7 +48,7 @@ describe 'MyJohnDeereApi::Request::Organizations' do
     end
   end
 
-  describe '#pagination' do
+  describe 'pagination' do
     it 'returns all records as a single enumerator' do
       expected_names = [
         'Century Farms', "JJ's Farm", 'Organization A', 'Organization B', 'Organization C',
