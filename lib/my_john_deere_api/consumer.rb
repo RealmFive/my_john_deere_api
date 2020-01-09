@@ -1,85 +1,89 @@
-class MyJohnDeereApi::Consumer
-  attr_reader :api_key, :api_secret, :environment, :base_url
+module MyJohnDeereApi
+  class Consumer
+    include Helpers::CaseConversion
 
-  # valid API urls
-  URLS = {
-    sandbox: 'https://sandboxapi.deere.com',
-    production: 'https://api.soa-proxy.deere.com',
-  }
+    attr_reader :api_key, :api_secret, :environment, :base_url
 
-  DEFAULTS = {
-    environment: :production
-  }
+    # valid API urls
+    URLS = {
+      sandbox: 'https://sandboxapi.deere.com',
+      production: 'https://api.soa-proxy.deere.com',
+    }
 
-  def initialize(api_key, api_secret, options={})
-    options = DEFAULTS.merge(options)
+    DEFAULTS = {
+      environment: :production
+    }
 
-    @api_key = api_key
-    @api_secret = api_secret
+    def initialize(api_key, api_secret, options={})
+      options = DEFAULTS.merge(options)
 
-    @environment = options[:environment]
-    @base_url = options[:base_url] || URLS[@environment]
-  end
+      @api_key = api_key
+      @api_secret = api_secret
 
-  ##
-  # oAuth Consumer which uses just the base url, for
-  # app-wide, non user-specific GET requests.
+      @environment = options[:environment]
+      @base_url = options[:base_url] || URLS[@environment]
+    end
 
-  def app_get
-    @app_get ||= consumer(base_url)
-  end
+    ##
+    # oAuth Consumer which uses just the base url, for
+    # app-wide, non user-specific GET requests.
 
-  ##
-  # oAuth Consumer which uses the proper url for user-specific GET requests.
+    def app_get
+      @app_get ||= consumer(base_url)
+    end
 
-  def user_get
-    @user_get ||= consumer("#{base_url}/platform")
-  end
+    ##
+    # oAuth Consumer which uses the proper url for user-specific GET requests.
 
-  private
+    def user_get
+      @user_get ||= consumer("#{base_url}/platform")
+    end
 
-  def consumer(site)
-    OAuth::Consumer.new(
-      api_key,
-      api_secret,
-      site: site,
-      header: header,
-      http_method: :get,
-      request_token_url: links[:request_token],
-      access_token_url: links[:access_token],
-      authorize_url: links[:authorize_request_token]
-    )
-  end
+    private
 
-  def links
-    return @links if defined?(@links)
+    def consumer(site)
+      OAuth::Consumer.new(
+        api_key,
+        api_secret,
+        site: site,
+        header: header,
+        http_method: :get,
+        request_token_url: links[:request_token],
+        access_token_url: links[:access_token],
+        authorize_url: links[:authorize_request_token]
+      )
+    end
 
-    catalog = OAuth::Consumer.new(api_key, api_secret)
-      .request(
-        :get,
-        "#{base_url}/platform/",
-        nil,
-        {},
-        header
-      ).body
+    def links
+      return @links if defined?(@links)
 
-      @links = {}
+      catalog = OAuth::Consumer.new(api_key, api_secret)
+        .request(
+          :get,
+          "#{base_url}/platform/",
+          nil,
+          {},
+          header
+        ).body
 
-      JSON.parse(catalog)['links'].each do |link|
-        uri = URI.parse(link['uri'])
-        uri.query = nil
+        @links = {}
 
-        @links[keyify(link['rel'])] = uri.to_s
-      end
+        JSON.parse(catalog)['links'].each do |link|
+          uri = URI.parse(link['uri'])
+          uri.query = nil
 
-      @links
-  end
+          @links[keyify(link['rel'])] = uri.to_s
+        end
 
-  def header
-    @header ||= {accept: 'application/vnd.deere.axiom.v3+json'}
-  end
+        @links
+    end
 
-  def keyify key_name
-    key_name.gsub(/^oauth/, '').gsub(/([a-z])([A-Z])/, '\1_\2').downcase.to_sym
+    def header
+      @header ||= {accept: 'application/vnd.deere.axiom.v3+json'}
+    end
+
+    def keyify key_name
+      underscore(key_name.gsub(/^oauth/, '')).to_sym
+    end
   end
 end

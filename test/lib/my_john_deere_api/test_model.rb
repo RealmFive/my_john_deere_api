@@ -9,5 +9,9 @@ describe 'MyJohnDeereApi::Model' do
     it 'loads Model::Field' do
       assert JD::Model::Field
     end
+
+    it 'loads Model::Flag' do
+      assert JD::Model::Flag
+    end
   end
 end

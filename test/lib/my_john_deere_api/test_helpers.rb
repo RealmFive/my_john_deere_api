@@ -5,5 +5,9 @@ describe 'MyJohnDeereApi::Helpers' do
     it 'loads Helpers::UriPath' do
       assert JD::Helpers::UriPath
     end
+
+    it 'loads Helpers::CaseConversion' do
+      assert JD::Helpers::CaseConversion
+    end
   end
 end

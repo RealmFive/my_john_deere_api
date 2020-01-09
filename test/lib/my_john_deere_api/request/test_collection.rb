@@ -13,5 +13,9 @@ describe 'MyJohnDeereApi::Request::Collection' do
     it 'loads Request::Collection::Fields' do
       assert JD::Request::Collection::Fields
     end
+
+    it 'loads Request::Collection::Flags' do
+      assert JD::Request::Collection::Flags
+    end
   end
 end
