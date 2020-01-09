@@ -1,28 +1,26 @@
 require 'uri'
 
-class MyJohnDeereApi::Model::Organization
-  attr_reader :name, :type, :id, :links
+module MyJohnDeereApi
+  class Model::Organization
+    include Helpers::UriPath
 
-  def initialize(record)
-    @name = record['name']
-    @type = record['type']
-    @id = record['id']
-    @member = record['member']
+    attr_reader :name, :type, :id, :links
 
-    @links = {}
+    def initialize(record)
+      @name = record['name']
+      @type = record['type']
+      @id = record['id']
+      @member = record['member']
 
-    record['links'].each do |association|
-      @links[association['rel']] = uri_path(association['uri'])
+      @links = {}
+
+      record['links'].each do |association|
+        @links[association['rel']] = uri_path(association['uri'])
+      end
     end
-  end
 
-  def member?
-    @member
-  end
-
-  private
-
-  def uri_path(uri)
-    URI.parse(uri).path.gsub('/platform', '')
+    def member?
+      @member
+    end
   end
 end

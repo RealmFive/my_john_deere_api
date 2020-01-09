@@ -1,25 +1,23 @@
-class MyJohnDeereApi::Model::Field
-  attr_reader :name, :id, :links
+module MyJohnDeereApi
+  class Model::Field
+    include Helpers::UriPath
 
-  def initialize(record)
-    @name = record['name']
-    @id = record['id']
-    @archived = record['archived']
+    attr_reader :name, :id, :links
 
-    @links = {}
+    def initialize(record)
+      @name = record['name']
+      @id = record['id']
+      @archived = record['archived']
 
-    record['links'].each do |association|
-      @links[association['rel']] = uri_path(association['uri'])
+      @links = {}
+
+      record['links'].each do |association|
+        @links[association['rel']] = uri_path(association['uri'])
+      end
     end
-  end
 
-  def archived?
-    @archived
-  end
-
-  private
-
-  def uri_path(uri)
-    URI.parse(uri).path.gsub('/platform', '')
+    def archived?
+      @archived
+    end
   end
 end
