@@ -6,6 +6,15 @@ module MyJohnDeereApi
 
     attr_reader :name, :type, :id, :links, :accessor
 
+    ##
+    # arguments:
+    #
+    # [record] a JSON object of type 'Organization', returned from the API.
+    #
+    # [accessor (optional)] a valid oAuth Access Token. This is only
+    #                       needed if further API requests are going
+    #                       to be made, as is the case with *fields*.
+
     def initialize(record, accessor = nil)
       @accessor = accessor
 
@@ -20,6 +29,10 @@ module MyJohnDeereApi
         @links[association['rel']] = uri_path(association['uri'])
       end
     end
+
+    ##
+    # Since the member attribute is boolean, we reflect this in the
+    # method name instead of using a standard attr_reader.
 
     def member?
       @member
