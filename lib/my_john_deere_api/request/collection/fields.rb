@@ -1,19 +1,19 @@
 require 'json'
 
 module MyJohnDeereApi::Request
-  class Organizations < Collection
+  class Collection::Fields < Collection::Base
     ##
     # The resource path for the first page in the collection
 
     def resource
-      '/organizations'
+      "/organizations/#{associations[:organization]}/fields"
     end
 
     ##
     # This is the class used to model the data
 
     def model
-      MyJohnDeereApi::Model::Organization
+      MyJohnDeereApi::Model::Field
     end
   end
 end

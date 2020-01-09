@@ -1,28 +1,17 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Request::Collection' do
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
-
-  describe '#initialize(access_token)' do
-    it 'accepts an access token' do
-      collection = JD::Request::Collection.new(accessor)
-      assert_kind_of OAuth::AccessToken, collection.accessor
+  describe 'loading dependencies' do
+    it 'loads Request::Collection::Base' do
+      assert JD::Request::Collection::Base
     end
 
-    it 'accepts associations' do
-      collection = JD::Request::Collection.new(accessor, organization: '123')
-
-      assert_kind_of Hash, collection.associations
-      assert_equal '123', collection.associations[:organization]
+    it 'loads Request::Collection::Organizations' do
+      assert JD::Request::Collection::Organizations
     end
-  end
 
-  it 'uses the Enumerable module' do
-    collection = JD::Request::Collection.new(accessor)
-
-    [:each, :first, :map, :detect, :select].each do |method_name|
-      assert collection.respond_to?(method_name)
+    it 'loads Request::Collection::Fields' do
+      assert JD::Request::Collection::Fields
     end
   end
 end

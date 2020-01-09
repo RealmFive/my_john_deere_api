@@ -46,7 +46,7 @@ class MyJohnDeereApi::Client
 
   def organizations
     return @organizations if defined?(@organizations)
-    @organizations = MyJohnDeereApi::Request::Organizations.new(accessor).all
+    @organizations = MyJohnDeereApi::Request::Collection::Organizations.new(accessor).all
   end
 
   private

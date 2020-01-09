@@ -45,7 +45,7 @@ module MyJohnDeereApi
       raise AccessTokenError unless accessor
 
       return @fields if defined?(@fields)
-      @fields = MyJohnDeereApi::Request::Fields.new(accessor, organization: id).all
+      @fields = MyJohnDeereApi::Request::Collection::Fields.new(accessor, organization: id).all
     end
   end
 end
