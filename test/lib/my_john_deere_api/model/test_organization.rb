@@ -28,7 +28,10 @@ describe 'MyJohnDeereApi::Model::Organization' do
     }
   end
 
-  describe '#initialize' do
+  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
+  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
+
+  describe '#initialize(record, accessor = nil)' do
     def link_for label
       record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
     end
@@ -41,6 +44,7 @@ describe 'MyJohnDeereApi::Model::Organization' do
       assert_equal record['type'], organization.type
       assert_equal record['member'], organization.member?
       assert_equal record['id'], organization.id
+      assert_nil organization.accessor
 
       # links to other things
       assert_kind_of Hash, organization.links
@@ -48,6 +52,35 @@ describe 'MyJohnDeereApi::Model::Organization' do
       ['fields', 'machines', 'files', 'assets', 'farms', 'boundaries', 'clients', 'controllers'].each do |association|
         assert_equal link_for(association), organization.links[association]
       end
+    end
+
+    it 'accepts an optional accessor' do
+      accessor = 'mock-accessor'
+
+      organization = JD::Model::Organization.new(record, accessor)
+      assert_equal accessor, organization.accessor
+    end
+  end
+
+  describe '#fields' do
+    it 'returns a collection of fields for this organization' do
+      accessor
+      organization = VCR.use_cassette('get_organizations') { client.organizations.first }
+      fields = VCR.use_cassette('get_fields') { organization.fields }
+
+      assert_kind_of Array, fields
+
+      fields.each do |field|
+        assert_kind_of JD::Model::Field, field
+      end
+    end
+
+    it 'raises an exception if an accessor is not available' do
+      organization = JD::Model::Organization.new(record)
+
+      exception = assert_raises(JD::AccessTokenError) { organization.fields }
+
+      assert_includes exception.message, 'Access Token must be supplied'
     end
   end
 end

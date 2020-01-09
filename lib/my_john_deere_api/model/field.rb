@@ -2,9 +2,11 @@ module MyJohnDeereApi
   class Model::Field
     include Helpers::UriPath
 
-    attr_reader :name, :id, :links
+    attr_reader :name, :id, :links, :accessor
 
-    def initialize(record)
+    def initialize(record, accessor = nil)
+      @accessor = accessor
+
       @name = record['name']
       @id = record['id']
       @archived = record['archived']

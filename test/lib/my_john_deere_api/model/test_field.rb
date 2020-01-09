@@ -21,19 +21,28 @@ describe 'MyJohnDeereApi::Model::Field' do
     end
 
     it 'sets the attributes from the given record' do
-      organization = JD::Model::Field.new(record)
+      field = JD::Model::Field.new(record)
+
+      assert_nil field.accessor
 
       # basic attributes
-      assert_equal record['name'], organization.name
-      assert_equal record['archived'], organization.archived?
-      assert_equal record['id'], organization.id
+      assert_equal record['name'], field.name
+      assert_equal record['archived'], field.archived?
+      assert_equal record['id'], field.id
 
       # links to other things
-      assert_kind_of Hash, organization.links
+      assert_kind_of Hash, field.links
 
       ['clients', 'notes'].each do |association|
-        assert_equal link_for(association), organization.links[association]
+        assert_equal link_for(association), field.links[association]
       end
+    end
+
+    it 'accepts an optional accessor' do
+      accessor = 'mock-accessor'
+
+      field = JD::Model::Field.new(record, accessor)
+      assert_equal accessor, field.accessor
     end
   end
 end

@@ -66,5 +66,13 @@ describe 'MyJohnDeereApi::Request::Organizations' do
         assert_includes names, expected_name
       end
     end
+
+    it 'passes the accessor to all organizations' do
+      organizations = VCR.use_cassette('get_organizations', record: :new_episodes) { collection.all }
+
+      organizations.each do |organization|
+        assert_equal accessor, organization.accessor
+      end
+    end
   end
 end

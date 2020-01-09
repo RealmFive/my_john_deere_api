@@ -47,8 +47,7 @@ module MyJohnDeereApi
       return @first_page if defined?(@first_page)
 
       @first_page = JSON.parse(@accessor.get(resource, headers).body)
-
-      @items = @first_page['values'].map{|record| model.new(record) }
+      add_items_from_page(@first_page)
 
       if next_page = @first_page['links'].detect{|link| link['rel'] == 'nextPage'}
         @next_page = next_page['uri'].gsub(@accessor.consumer.site, '')
@@ -61,7 +60,7 @@ module MyJohnDeereApi
       return unless @next_page
 
       page = JSON.parse(@accessor.get(@next_page, headers).body)
-      @items += page['values'].map{|record| model.new(record) }
+      add_items_from_page(page)
 
       if next_page = @first_page['links'].detect{|link| link['rel'] == 'nextPage'}
         @next_page = uri_path(next_page['uri'])
@@ -72,6 +71,10 @@ module MyJohnDeereApi
 
     def headers
       @headers ||= {accept: 'application/vnd.deere.axiom.v3+json'}
+    end
+
+    def add_items_from_page(page)
+      @items += page['values'].map{|record| model.new(record, accessor) }
     end
   end
 end
