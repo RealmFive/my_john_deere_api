@@ -15,6 +15,9 @@ describe 'MyJohnDeereApi::Model::Field' do
     }
   end
 
+  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
+  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
+
   describe '#initialize' do
     def link_for label
       record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
@@ -43,6 +46,29 @@ describe 'MyJohnDeereApi::Model::Field' do
 
       field = JD::Model::Field.new(record, accessor)
       assert_equal accessor, field.accessor
+    end
+  end
+
+  describe '#flags' do
+    it 'returns a collection of flags for this organization' do
+      accessor
+      organization = VCR.use_cassette('get_organizations') { client.organizations.first }
+      field = VCR.use_cassette('get_fields') { organization.fields.first }
+      flags = VCR.use_cassette('get_flags') { field.flags }
+
+      assert_kind_of Array, flags
+
+      flags.each do |flag|
+        assert_kind_of JD::Model::Flag, flag
+      end
+    end
+
+    it 'raises an exception if an accessor is not available' do
+      field = JD::Model::Field.new(record)
+
+      exception = assert_raises(JD::AccessTokenError) { field.flags }
+
+      assert_includes exception.message, 'Access Token must be supplied'
     end
   end
 end
