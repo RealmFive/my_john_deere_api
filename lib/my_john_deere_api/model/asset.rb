@@ -29,5 +29,15 @@ module MyJohnDeereApi
         @links[association['rel']] = uri_path(association['uri'])
       end
     end
+
+    ##
+    # locations associated with this asset
+
+    def locations
+      raise AccessTokenError unless accessor
+
+      return @locations if defined?(@locations)
+      @locations = MyJohnDeereApi::Request::Collection::AssetLocations.new(accessor, asset: id).all
+    end
   end
 end

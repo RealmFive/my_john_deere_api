@@ -54,4 +54,26 @@ describe 'MyJohnDeereApi::Model::Asset' do
       assert_equal accessor, asset.accessor
     end
   end
+
+  describe '#locations' do
+    it 'returns a collection of locations for this asset' do
+      accessor
+      organization = VCR.use_cassette('get_organizations') { client.organizations.first }
+      asset = VCR.use_cassette('get_assets') { organization.assets.first }
+      locations = VCR.use_cassette('get_asset_locations') { asset.locations }
+
+      assert_kind_of Array, locations
+
+      locations.each do |location|
+        assert_kind_of JD::Model::AssetLocation, location
+      end
+    end
+
+    it 'raises an exception if an accessor is not available' do
+      asset = JD::Model::Asset.new(record)
+
+      exception = assert_raises(JD::AccessTokenError) { asset.locations }
+      assert_includes exception.message, 'Access Token must be supplied'
+    end
+  end
 end
