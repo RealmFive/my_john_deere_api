@@ -27,38 +27,31 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
 
     it 'sets the attributes from the given record' do
-      field = JD::Model::Asset.new(record)
+      asset = JD::Model::Asset.new(record)
 
-      assert_nil field.accessor
+      assert_nil asset.accessor
 
       # basic attributes
-      assert_equal record['id'], field.id
-      assert_equal record['title'], field.title
-      assert_equal record['assetCategory'], field.asset_category
-      assert_equal record['assetType'], field.asset_type
-      assert_equal record['assetSubType'], field.asset_sub_type
-      assert_equal record['lastModifiedDate'], field.last_modified_date
+      assert_equal record['id'], asset.id
+      assert_equal record['title'], asset.title
+      assert_equal record['assetCategory'], asset.asset_category
+      assert_equal record['assetType'], asset.asset_type
+      assert_equal record['assetSubType'], asset.asset_sub_type
+      assert_equal record['lastModifiedDate'], asset.last_modified_date
 
       # links to other things
-      assert_kind_of Hash, field.links
+      assert_kind_of Hash, asset.links
 
       ['self', 'organization', 'locations'].each do |association|
-        assert_equal link_for(association), field.links[association]
+        assert_equal link_for(association), asset.links[association]
       end
     end
 
     it 'accepts an optional accessor' do
       accessor = 'mock-accessor'
 
-      field = JD::Model::Asset.new(record, accessor)
-      assert_equal accessor, field.accessor
-    end
-  end
-
-  describe 'private #organization_id' do
-    it "infers the organization_id from links" do
-      asset = JD::Model::Asset.new(record)
-      assert_equal '234567', asset.send(:organization_id)
+      asset = JD::Model::Asset.new(record, accessor)
+      assert_equal accessor, asset.accessor
     end
   end
 end

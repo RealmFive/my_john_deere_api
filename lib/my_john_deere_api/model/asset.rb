@@ -29,15 +29,5 @@ module MyJohnDeereApi
         @links[association['rel']] = uri_path(association['uri'])
       end
     end
-
-    private
-
-    ##
-    # Infer the organization_id from the 'organization' link
-
-    def organization_id
-      return @organization_id if defined?(@organization_id)
-      @organization_id = id_from_uri(links['organization'], :organizations)
-    end
   end
 end

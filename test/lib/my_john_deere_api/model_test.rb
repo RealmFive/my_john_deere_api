@@ -6,6 +6,10 @@ describe 'MyJohnDeereApi::Model' do
       assert JD::Model::Asset
     end
 
+    it 'loads Model::AssetLocation' do
+      assert JD::Model::AssetLocation
+    end
+
     it 'loads Model::Organization' do
       assert JD::Model::Organization
     end
