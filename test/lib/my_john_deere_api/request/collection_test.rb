@@ -6,6 +6,10 @@ describe 'MyJohnDeereApi::Request::Collection' do
       assert JD::Request::Collection::Base
     end
 
+    it 'loads Request::Collection::Assets' do
+      assert JD::Request::Collection::Assets
+    end
+
     it 'loads Request::Collection::Organizations' do
       assert JD::Request::Collection::Organizations
     end
