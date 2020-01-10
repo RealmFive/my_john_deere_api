@@ -3,7 +3,7 @@ require 'json'
 module MyJohnDeereApi
   class Model::Flag
     include Helpers::CaseConversion
-    include Helpers::UriPath
+    include Helpers::UriHelpers
 
     attr_reader :id, :notes, :geometry, :links, :accessor
 

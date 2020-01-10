@@ -2,6 +2,10 @@ require 'support/helper'
 
 describe 'MyJohnDeereApi::Model' do
   describe 'loading dependencies' do
+    it 'loads Model::Asset' do
+      assert JD::Model::Asset
+    end
+
     it 'loads Model::Organization' do
       assert JD::Model::Organization
     end

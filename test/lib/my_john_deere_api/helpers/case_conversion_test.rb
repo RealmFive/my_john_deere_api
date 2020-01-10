@@ -2,6 +2,10 @@ require 'support/helper'
 
 class CaseConversionHelperSample
   include JD::Helpers::CaseConversion
+
+  def test
+    'test'
+  end
 end
 
 describe 'Helpers::CaseConversion' do
@@ -29,7 +33,8 @@ describe 'Helpers::CaseConversion' do
     end
 
     it 'is a private method' do
-      assert_raises(NoMethodError) { object.underscore('test') }
+      exception = assert_raises(NoMethodError) { object.underscore('test') }
+      assert_includes exception.message, 'private method'
     end
   end
 
@@ -50,7 +55,12 @@ describe 'Helpers::CaseConversion' do
     end
 
     it 'is a private method' do
-      assert_raises(NoMethodError) { object.camelize('test') }
+      exception = assert_raises(NoMethodError) { object.camelize('test') }
+      assert_includes exception.message, 'private method'
     end
+  end
+
+  it "preserves the public nature of the including class's other methods" do
+    assert_equal 'test', object.test
   end
 end

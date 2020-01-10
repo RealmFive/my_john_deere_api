@@ -1,7 +1,7 @@
 module MyJohnDeereApi
   class Request::Collection::Base
     include Enumerable
-    include Helpers::UriPath
+    include Helpers::UriHelpers
 
     attr_reader :accessor, :associations
 

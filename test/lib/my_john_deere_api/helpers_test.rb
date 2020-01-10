@@ -2,8 +2,8 @@ require 'support/helper'
 
 describe 'MyJohnDeereApi::Helpers' do
   describe 'loading dependencies' do
-    it 'loads Helpers::UriPath' do
-      assert JD::Helpers::UriPath
+    it 'loads Helpers::UriHelpers' do
+      assert JD::Helpers::UriHelpers
     end
 
     it 'loads Helpers::CaseConversion' do

@@ -71,4 +71,11 @@ describe 'MyJohnDeereApi::Model::Field' do
       assert_includes exception.message, 'Access Token must be supplied'
     end
   end
+
+  describe 'private #organization_id' do
+    it "infers the organization_id from links" do
+      field = JD::Model::Field.new(record)
+      assert_equal '123456', field.send(:organization_id)
+    end
+  end
 end

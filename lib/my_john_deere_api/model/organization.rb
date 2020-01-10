@@ -2,7 +2,7 @@ require 'uri'
 
 module MyJohnDeereApi
   class Model::Organization
-    include Helpers::UriPath
+    include Helpers::UriHelpers
 
     attr_reader :name, :type, :id, :links, :accessor
 

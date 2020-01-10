@@ -1,14 +1,14 @@
 require 'uri'
 
 module MyJohnDeereApi::Helpers::CaseConversion
+  private
+
   ##
   # convert a text or camelcase string to underscore
 
   def underscore(string)
     string.gsub(/([a-z])([A-Z])/, '\1_\2').gsub(/\s+/, '_').gsub(/_+/, '_').downcase
   end
-
-  private :underscore
 
   ##
   # convert text or underscored string to camelcase
@@ -22,6 +22,4 @@ module MyJohnDeereApi::Helpers::CaseConversion
 
     new_list.join('')
   end
-
-  private :camelize
 end
