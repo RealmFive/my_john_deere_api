@@ -83,4 +83,25 @@ describe 'MyJohnDeereApi::Model::Organization' do
       assert_includes exception.message, 'Access Token must be supplied'
     end
   end
+
+  describe '#assets' do
+    it 'returns a collection of assets for this organization' do
+      accessor
+      organization = VCR.use_cassette('get_organizations') { client.organizations.first }
+      assets = VCR.use_cassette('get_assets') { organization.assets }
+
+      assert_kind_of Array, assets
+
+      assets.each do |assets|
+        assert_kind_of JD::Model::Asset, assets
+      end
+    end
+
+    it 'raises an exception if an accessor is not available' do
+      organization = JD::Model::Organization.new(record)
+
+      exception = assert_raises(JD::AccessTokenError) { organization.assets }
+      assert_includes exception.message, 'Access Token must be supplied'
+    end
+  end
 end

@@ -47,5 +47,15 @@ module MyJohnDeereApi
       return @fields if defined?(@fields)
       @fields = MyJohnDeereApi::Request::Collection::Fields.new(accessor, organization: id).all
     end
+
+    ##
+    # assets associated with this organization
+
+    def assets
+      raise AccessTokenError unless accessor
+
+      return @assets if defined?(@assets)
+      @assets = MyJohnDeereApi::Request::Collection::Assets.new(accessor, organization: id).all
+    end
   end
 end
