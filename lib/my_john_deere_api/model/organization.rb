@@ -39,5 +39,9 @@ module MyJohnDeereApi
       @type = record['type']
       @member = record['member']
     end
+
+    def expected_record_type
+      'Organization'
+    end
   end
 end

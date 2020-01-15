@@ -21,5 +21,9 @@ module MyJohnDeereApi
       @asset_sub_type = record['assetSubType']
       @last_modified_date = record['lastModifiedDate']
     end
+
+    def expected_record_type
+      'ContributedAsset'
+    end
   end
 end

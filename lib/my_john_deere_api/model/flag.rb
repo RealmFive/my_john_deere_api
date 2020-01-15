@@ -28,5 +28,9 @@ module MyJohnDeereApi
       @proximity_alert_enabled = record['proximityAlertEnabled']
       @archived = record['archived']
     end
+
+    def expected_record_type
+      'Flag'
+    end
   end
 end

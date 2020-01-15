@@ -35,6 +35,16 @@ describe 'MyJohnDeereApi::Model::Base' do
       record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
     end
 
+    it 'raises an error if there is a record type mismatch' do
+      record = {
+        '@type'=>'WrongType',
+        'links'=>[]
+      }
+
+      exception = assert_raises(JD::TypeMismatchError) { JD::Model::Base.new(record) }
+      assert_equal "Expected record of type 'Base', but received type 'WrongType'", exception.message
+    end
+
     it 'sets the base attributes' do
       assert_equal record['id'], object.id
       assert_equal record['@type'], object.record_type

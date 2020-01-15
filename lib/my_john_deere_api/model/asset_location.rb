@@ -11,5 +11,9 @@ module MyJohnDeereApi
       @geometry = JSON.parse(record['geometry'])
       @measurement_data = record['measurementData']
     end
+
+    def expected_record_type
+      'ContributedAssetLocation'
+    end
   end
 end

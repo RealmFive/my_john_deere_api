@@ -27,6 +27,10 @@ module MyJohnDeereApi
       @archived = record['archived']
     end
 
+    def expected_record_type
+      'Field'
+    end
+
     ##
     # Infer the organization_id from the 'self' link
 

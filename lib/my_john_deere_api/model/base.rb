@@ -15,6 +15,8 @@ module MyJohnDeereApi
     #                       to be made, as is the case with *flags*.
 
     def initialize(record, accessor = nil)
+      verify_record_type(record['@type'])
+
       @id = record['id']
       @record_type = record['@type']
       @accessor = accessor
@@ -44,6 +46,15 @@ module MyJohnDeereApi
 
     def expected_record_type
       'Base'
+    end
+
+    ##
+    # Raise an error if this is not the type of record we expect to receive
+
+    def verify_record_type(type)
+      unless type == expected_record_type
+        raise TypeMismatchError, "Expected record of type '#{expected_record_type}', but received type '#{type}'"
+      end
     end
   end
 end
