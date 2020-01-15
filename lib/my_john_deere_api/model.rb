@@ -1,4 +1,5 @@
 module MyJohnDeereApi::Model
+  autoload :Base,                'my_john_deere_api/model/base'
   autoload :Asset,               'my_john_deere_api/model/asset'
   autoload :AssetLocation,       'my_john_deere_api/model/asset_location'
   autoload :Organization,        'my_john_deere_api/model/organization'

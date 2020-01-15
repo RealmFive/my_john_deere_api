@@ -1,27 +1,15 @@
 require 'json'
 
 module MyJohnDeereApi
-  class Model::AssetLocation
-    include Helpers::UriHelpers
+  class Model::AssetLocation < Model::Base
+    attr_reader :timestamp, :geometry, :measurement_data
 
-    attr_reader :accessor, :timestamp, :geometry, :measurement_data, :links
+    private
 
-    ##
-    # arguments:
-    #
-    # [record] a JSON object of type 'Field', returned from the API.
-    #
-    # [accessor (optional)] a valid oAuth Access Token. This is only
-    #                       needed if further API requests are going
-    #                       to be made, as is the case with *flags*.
-
-    def initialize(record, accessor = nil)
-      @accessor = accessor
-
+    def map_attributes(record)
       @timestamp = record['timestamp']
       @geometry = JSON.parse(record['geometry'])
       @measurement_data = record['measurementData']
-      @links = {}
     end
   end
 end
