@@ -5,5 +5,9 @@ describe 'MyJohnDeereApi::Request' do
     it 'loads Request::Collection' do
       assert JD::Request::Collection
     end
+
+    it 'loads Request::Create' do
+      assert JD::Request::Create
+    end
   end
 end
