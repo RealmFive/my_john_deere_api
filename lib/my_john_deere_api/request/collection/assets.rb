@@ -15,5 +15,13 @@ module MyJohnDeereApi::Request
     def model
       MyJohnDeereApi::Model::Asset
     end
+
+    ##
+    # Create a new asset
+
+    def create(attributes)
+      attributes.merge!(organization_id: associations[:organization])
+      Create::Asset.new(accessor, attributes).object
+    end
   end
 end

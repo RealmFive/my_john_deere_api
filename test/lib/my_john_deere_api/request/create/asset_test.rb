@@ -9,14 +9,21 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
   let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
   let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
 
+  let(:organization_id) { ENV['ORGANIZATION_ID']}
+  let(:contribution_definition_id) { ENV['CONTRIBUTION_DEFINITION_ID']}
+  let(:title) { 'i like turtles' }
+  let(:category) { 'DEVICE' }
+  let(:type) { 'SENSOR' }
+  let(:subtype) { 'ENVIRONMENTAL' }
+
   let(:valid_attributes) do
     {
-      organization_id: ENV['ORGANIZATION_ID'],
-      contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
-      title: 'i like turtles',
-      category: 'DEVICE',
-      type: 'SENSOR',
-      subtype: 'ENVIRONMENTAL',
+      organization_id: organization_id,
+      contribution_definition_id: contribution_definition_id,
+      title: title,
+      asset_category: category,
+      asset_type: type,
+      asset_sub_type: subtype,
     }
   end
 
@@ -66,24 +73,24 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     end
 
     it 'requires a valid category' do
-      object = JD::Request::Create::Asset.new(accessor, attributes.merge(category: 'TURTLES'))
+      object = JD::Request::Create::Asset.new(accessor, attributes.merge(asset_category: 'TURTLES'))
 
       refute object.valid?
-      assert_equal 'requires valid combination of category/type/subtype', object.errors[:category]
+      assert_equal 'requires valid combination of category/type/subtype', object.errors[:asset_category]
     end
 
     it 'requires a valid type' do
-      object = JD::Request::Create::Asset.new(accessor, attributes.merge(type: 'TURTLES'))
+      object = JD::Request::Create::Asset.new(accessor, attributes.merge(asset_type: 'TURTLES'))
 
       refute object.valid?
-      assert_equal 'requires valid combination of category/type/subtype', object.errors[:category]
+      assert_equal 'requires valid combination of category/type/subtype', object.errors[:asset_category]
     end
 
     it 'requires a valid subtype' do
-      object = JD::Request::Create::Asset.new(accessor, attributes.merge(subtype: 'TURTLES'))
+      object = JD::Request::Create::Asset.new(accessor, attributes.merge(asset_sub_type: 'TURTLES'))
 
       refute object.valid?
-      assert_equal 'requires valid combination of category/type/subtype', object.errors[:category]
+      assert_equal 'requires valid combination of category/type/subtype', object.errors[:asset_category]
     end
   end
 
@@ -133,6 +140,73 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
           end
         end
       end
+    end
+  end
+
+  describe '#resource' do
+    it 'is built from the organization id' do
+      object = JD::Request::Create::Asset.new(accessor, attributes)
+      assert_equal "/organizations/#{organization_id}/assets", object.send(:resource)
+    end
+  end
+
+  describe '#request_body' do
+    it 'properly forms the request body' do
+      object = JD::Request::Create::Asset.new(accessor, attributes)
+      body = object.send(:request_body)
+
+      assert_equal title, body[:title]
+      assert_equal category, body[:assetCategory]
+      assert_equal type, body[:assetType]
+      assert_equal subtype, body[:assetSubType]
+
+      assert_kind_of Array, body[:links]
+      assert_equal 1, body[:links].size
+
+      assert_kind_of Hash, body[:links].first
+      assert_equal 'Link', body[:links].first['@type']
+      assert_equal 'contributionDefinition', body[:links].first['rel']
+      assert_equal  "#{ENV['BASE_URL']}/platform/contributionDefinitions/#{contribution_definition_id}",
+                    body[:links].first['uri']
+    end
+  end
+
+  describe '#headers' do
+    it 'sets the accept and content-type headers' do
+      object = JD::Request::Create::Asset.new(accessor, attributes)
+      headers = object.send(:headers)
+
+      expected = 'application/vnd.deere.axiom.v3+json'
+
+      assert_kind_of Hash, headers
+      assert_equal expected, headers['Accept']
+      assert_equal expected, headers['Content-Type']
+    end
+  end
+
+  describe '#request' do
+    it 'makes the request' do
+      object = JD::Request::Create::Asset.new(accessor, attributes)
+      result = VCR.use_cassette('post_assets') { object.request }
+
+      assert_kind_of Net::HTTPCreated, object.response
+    end
+  end
+
+  describe '#object' do
+    it 'returns the asset model instance' do
+      object = JD::Request::Create::Asset.new(accessor, attributes)
+      result = VCR.use_cassette('post_assets') { object.object }
+
+      assert_kind_of JD::Model::Asset, result
+
+      expected_id = object.response['location'].split('/').last
+
+      assert_equal expected_id, result.id
+      assert_equal title, result.title
+      assert_equal category, result.asset_category
+      assert_equal type, result.asset_type
+      assert_equal subtype, result.asset_sub_type
     end
   end
 end

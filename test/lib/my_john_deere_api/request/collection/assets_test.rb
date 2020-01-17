@@ -45,6 +45,31 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
     end
   end
 
+  describe '#create(attributes)' do
+    let(:title) { 'i like turtles' }
+    let(:category) { 'DEVICE' }
+    let(:type) { 'SENSOR' }
+    let(:subtype) { 'ENVIRONMENTAL' }
+
+    it 'creates a new asset with the given attributes' do
+      attributes = {
+        contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
+        title: title,
+        asset_category: category,
+        asset_type: type,
+        asset_sub_type: subtype
+      }
+
+      object = VCR.use_cassette('post_assets') { collection.create(attributes) }
+
+      assert_kind_of JD::Model::Asset, object
+      assert_equal title, object.title
+      assert_equal category, object.asset_category
+      assert_equal type, object.asset_type
+      assert_equal subtype, object.asset_sub_type
+    end
+  end
+
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_assets.yml')

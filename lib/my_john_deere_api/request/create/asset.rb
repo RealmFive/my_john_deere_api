@@ -1,6 +1,10 @@
+require 'json'
+
 module MyJohnDeereApi
   class Request::Create::Asset < Request::Create::Base
-    attr_reader :accessor, :attributes, :errors
+    attr_reader :accessor, :attributes, :errors, :response
+
+    REQUIRED_ATTRIBUTES = [:organization_id, :contribution_definition_id, :title]
 
     VALID_CATEGORIES = {
       'DEVICE' => {
@@ -13,10 +17,45 @@ module MyJohnDeereApi
       },
     }
 
+    ##
+    # Accepts a valid oAuth AccessToken, and a hash of attributes.
+    #
+    # Required attributes:
+    #  - organization_id
+    #  - contribution_definition_id
+    #  - title
+    #  - asset_category
+    #  - asset_type
+    #  - asset_sub_type
+    #
+    # category/type/subtype must be a recognized combination as defined above.
+
     def initialize(accessor, attributes)
       @accessor = accessor
       @attributes = attributes
       @errors = {}
+    end
+
+    ##
+    # Object created by request
+
+    def object
+      return @object if defined?(@object)
+
+      request unless response
+
+      object_id = response['location'].split('/').last
+      result = accessor.get("/assets/#{object_id}", headers)
+
+      @object = Model::Asset.new(JSON.parse(result.body), accessor)
+    end
+
+    ##
+    # Make the request, if the instance is valid
+
+    def request
+      validate!
+      @response = accessor.post(resource, request_body.to_json, headers)
     end
 
     ##
@@ -32,31 +71,53 @@ module MyJohnDeereApi
     # if the errors hash is still empty after all validations have been run.
 
     def valid?
-      return @valid if defined?(@valid)
+      return @is_valid if defined?(@is_valid)
 
       validate_required
 
-      unless valid_categories?(attributes[:category], attributes[:type], attributes[:subtype])
-        errors[:category] = 'requires valid combination of category/type/subtype'
+      unless valid_categories?(attributes[:asset_category], attributes[:asset_type], attributes[:asset_sub_type])
+        errors[:asset_category] = 'requires valid combination of category/type/subtype'
       end
 
-      @valid = errors.empty?
+      @is_valid = errors.empty?
     end
 
     private
 
     ##
-    # These attributes will flag the record as invalid if not included
+    # Path supplied to API
 
-    def required_attributes
-      [:organization_id, :contribution_definition_id, :title]
+    def resource
+      @path ||= "/organizations/#{attributes[:organization_id]}/assets"
+    end
+
+    ##
+    # Request body
+
+    def request_body
+      return @body if defined?(@body)
+
+
+      @body = {
+        title: attributes[:title],
+        assetCategory: attributes[:asset_category],
+        assetType: attributes[:asset_type],
+        assetSubType: attributes[:asset_sub_type],
+        links: [
+          {
+            '@type' => 'Link',
+            'rel' => 'contributionDefinition',
+            'uri' => "#{accessor.consumer.site}/contributionDefinitions/#{attributes[:contribution_definition_id]}"
+          }
+        ]
+      }
     end
 
     ##
     # Validates required attributes
 
     def validate_required
-      required_attributes.each do |attr|
+      REQUIRED_ATTRIBUTES.each do |attr|
         errors[attr] = 'is required' unless attributes.keys.include?(attr)
       end
     end
@@ -66,6 +127,16 @@ module MyJohnDeereApi
 
     def valid_categories?(category, type, subtype)
       VALID_CATEGORIES.dig(category, type).to_a.include?(subtype)
+    end
+
+    ##
+    # Headers for POST request
+
+    def headers
+      @headers ||= {
+        'Accept'        => 'application/vnd.deere.axiom.v3+json',
+        'Content-Type'  => 'application/vnd.deere.axiom.v3+json'
+      }
     end
   end
 end
