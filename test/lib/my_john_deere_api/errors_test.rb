@@ -6,6 +6,10 @@ describe 'MyJohnDeereApi Errors' do
       assert JD::AccessTokenError
     end
 
+    it 'loads InvalidRecordError' do
+      assert JD::InvalidRecordError
+    end
+
     it 'loads TypeMismatchError' do
       assert JD::TypeMismatchError
     end

@@ -69,6 +69,55 @@ describe 'MyJohnDeereApi::Client' do
     end
   end
 
+  describe '#post' do
+    let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
+
+    let(:body) do
+      {
+        "@type": "FlagCategory",
+        "categoryTitle": "Mountain Dew",
+        "sourceNode": "7ba95d7a-f798-46d0-9bf9-c39c31bcf984",
+        "links": [
+          {
+            "rel": "contributionDefinition",
+            "uri": "https://sandboxapi.deere.com/platform/contributionDefinitions/#{ENV['CONTRIBUTION_DEFINITION_ID']}"
+          }
+        ],
+        "preferred": true
+      }
+    end
+
+    it 'returns the response as a Hash' do
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+
+      response = VCR.use_cassette('post_flag_categories') { client.post("/organizations/#{ENV['ORGANIZATION_ID']}/flagCategories", body) }
+
+      assert_equal Hash.new, response
+    end
+
+    # it 'prepends the leading slash if needed' do
+    #   client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+    #   VCR.use_cassette('catalog') { client.send(:accessor) }
+    #   response = VCR.use_cassette('get_organizations') { client.get('organizations') }
+    #
+    #   assert_kind_of Hash, response
+    #   assert_kind_of Integer, response['total']
+    #   assert response['values'].all?{|value| value['@type'] == 'Organization'}
+    #   assert response['values'].all?{|value| value.has_key?('links')}
+    # end
+    #
+    # it 'allows symbols for simple resources' do
+    #   client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+    #   VCR.use_cassette('catalog') { client.send(:accessor) }
+    #   response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
+    #
+    #   assert_kind_of Hash, response
+    #   assert_kind_of Integer, response['total']
+    #   assert response['values'].all?{|value| value['@type'] == 'Organization'}
+    #   assert response['values'].all?{|value| value.has_key?('links')}
+    # end
+  end
+
   describe '#organizations' do
     it 'returns a collection of organizations for this account' do
       client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])

@@ -42,6 +42,21 @@ class MyJohnDeereApi::Client
   end
 
   ##
+  # generic user-specific POSST request method that returns JSON
+
+  def post resource, body
+    resource = resource.to_s
+    resource = "/#{resource}" unless resource =~ /^\//
+    response = accessor.post(resource, body.to_json, post_headers)
+
+    if response.body.size > 0
+      JSON.parse(response.body)
+    else
+      {}
+    end
+  end
+
+  ##
   # organizations associated with this access
 
   def organizations
@@ -70,5 +85,9 @@ class MyJohnDeereApi::Client
 
   def headers
     @headers ||= {accept: 'application/vnd.deere.axiom.v3+json'}
+  end
+
+  def post_headers
+    @post_headers ||= headers.merge({'Content-Type' => 'application/vnd.deere.axiom.v3+json'})
   end
 end
