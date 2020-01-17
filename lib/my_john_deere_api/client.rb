@@ -42,7 +42,7 @@ class MyJohnDeereApi::Client
   end
 
   ##
-  # generic user-specific POSST request method that returns JSON
+  # generic user-specific POST request method that returns JSON
 
   def post resource, body
     resource = resource.to_s
