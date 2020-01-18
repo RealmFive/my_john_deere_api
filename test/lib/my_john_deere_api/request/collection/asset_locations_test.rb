@@ -46,6 +46,51 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
     end
   end
 
+  describe '#create(attributes)' do
+    let(:asset_id) { ENV['ASSET_ID'] }
+    let(:timestamp) { DateTime.parse(timestamp_string) }
+    let(:timestamp_string) { '2020-01-18T00:31:00Z' }
+
+    let(:geometry) do
+      {
+        type: 'Point',
+        coordinates: [-103.115633, 41.670166]
+      }
+    end
+
+    let(:measurement_data) do
+      [
+        {
+          name: 'Temperature',
+          value: '68.0',
+          unit: 'F'
+        }
+      ]
+    end
+
+    it 'creates a new asset with the given attributes' do
+      attributes = {
+        timestamp: timestamp,
+        geometry: geometry,
+        measurement_data: measurement_data
+      }
+
+      object = VCR.use_cassette('post_asset_locations') { collection.create(attributes) }
+
+      assert_kind_of JD::Model::AssetLocation, object
+
+      # API returns seconds with decimals, even though they're always zero
+      integer_stamp = DateTime.parse(object.timestamp).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+      # API returns string keys and an extra '@type' key
+      object_measurement_data = object.measurement_data.first.transform_keys{|k| k.to_sym}.slice(:name, :value, :unit)
+
+      assert_equal timestamp_string, integer_stamp
+      assert_equal geometry.to_json, object.geometry.to_json
+      assert_equal measurement_data.first, object_measurement_data
+    end
+  end
+
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_asset_locations.yml')

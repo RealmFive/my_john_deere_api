@@ -15,5 +15,13 @@ module MyJohnDeereApi::Request
     def model
       MyJohnDeereApi::Model::AssetLocation
     end
+
+    ##
+    # Create a new asset location
+
+    def create(attributes)
+      attributes.merge!(asset_id: associations[:asset])
+      Create::AssetLocation.new(accessor, attributes).object
+    end
   end
 end
