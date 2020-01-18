@@ -65,11 +65,19 @@ module MyJohnDeereApi
       # our timestamp, which must be unique.
 
       path = response['location'].split('/platform').last
+
+      # API will only accept a timestamp *range*, and the start must be lower
+      # than the end. We buffer start/end times by one second, then find the
+      # exact match.
       start_date = timestamp_add(timestamp, -1)
       end_date = timestamp_add(timestamp, 1)
       path += "?startDate=#{start_date}&endDate=#{end_date}"
+
       result = accessor.get(path, headers)
 
+      # Timestamps are returned with seconds in decimals, even though these 
+      # are always zero. So we compare actual DateTime objects parsed from
+      # the timestamp strings.
       parsed_stamp = DateTime.parse(timestamp)
 
       JSON.parse(result.body)['values'].detect do |record|
