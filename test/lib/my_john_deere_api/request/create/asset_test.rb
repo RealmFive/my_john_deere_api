@@ -171,23 +171,10 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     end
   end
 
-  describe '#headers' do
-    it 'sets the accept and content-type headers' do
-      object = JD::Request::Create::Asset.new(accessor, attributes)
-      headers = object.send(:headers)
-
-      expected = 'application/vnd.deere.axiom.v3+json'
-
-      assert_kind_of Hash, headers
-      assert_equal expected, headers['Accept']
-      assert_equal expected, headers['Content-Type']
-    end
-  end
-
   describe '#request' do
     it 'makes the request' do
       object = JD::Request::Create::Asset.new(accessor, attributes)
-      result = VCR.use_cassette('post_assets') { object.request }
+      VCR.use_cassette('post_assets') { object.request }
 
       assert_kind_of Net::HTTPCreated, object.response
     end
