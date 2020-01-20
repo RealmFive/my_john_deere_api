@@ -10,13 +10,11 @@ module MyJohnDeereApi
     def request_body
       return @body if defined?(@body)
 
-      @body = [
-        {
-          timestamp: timestamp,
-          geometry: geometry,
-          measurementData: attributes[:measurement_data]
-        }
-      ]
+      @body = [{
+        timestamp: timestamp,
+        geometry: geometry,
+        measurementData: attributes[:measurement_data]
+      }]
     end
 
     ##
@@ -24,6 +22,8 @@ module MyJohnDeereApi
 
     def timestamp
       return @timestamp if defined?(@timestamp)
+
+      attributes[:timestamp] ||= Time.now.utc
 
       @timestamp = attributes[:timestamp].is_a?(String) ?
         attributes[:timestamp] :
@@ -36,9 +36,29 @@ module MyJohnDeereApi
     def geometry
       return @geometry if defined?(@geometry)
 
-      @geometry = attributes[:geometry].is_a?(String) ?
-        attributes[:geometry] :
-        attributes[:geometry].to_json
+      @geometry = if attributes[:geometry]
+        attributes[:geometry].is_a?(String) ?
+          attributes[:geometry] :
+          attributes[:geometry].to_json
+      elsif attributes[:coordinates]
+        geometry_from_coordinates
+      end
+    end
+
+    ##
+    # Convert just coordinates into valid geometry hash
+
+    def geometry_from_coordinates
+      {
+        type: 'Feature',
+        geometry: {
+          geometries: [
+            coordinates: attributes[:coordinates],
+            type: 'Point'
+          ],
+          type: 'GeometryCollection'
+        }
+      }.to_json
     end
 
     ##

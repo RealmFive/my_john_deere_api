@@ -54,6 +54,40 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
       object = JD::Request::Create::AssetLocation.new(accessor, {})
       assert_equal({}, object.errors)
     end
+
+    it 'accepts simple coordinates and generates the geometry' do
+      attributes = {
+        asset_id: asset_id,
+        timestamp: timestamp,
+        coordinates: geometry[:coordinates],
+        measurement_data: measurement_data
+      }
+
+      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
+
+      expected_geometry = {
+        type: 'Feature',
+        geometry: {
+          geometries: [
+            coordinates: geometry[:coordinates],
+            type: 'Point'
+          ],
+          type: 'GeometryCollection'
+        }
+      }.to_json
+
+      assert_equal expected_geometry, object.send(:geometry)
+    end
+
+    it 'defaults timestamp to current time' do
+      attributes = valid_attributes.slice(:asset_id, :geometry, :measurement_data)
+      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
+
+      expected_stamp = Time.now.utc.to_i
+      actual_stamp = DateTime.parse(object.send(:timestamp)).to_time.to_i
+
+      assert_in_delta expected_stamp, actual_stamp, 1
+    end
   end
 
   describe '#valid?' do
