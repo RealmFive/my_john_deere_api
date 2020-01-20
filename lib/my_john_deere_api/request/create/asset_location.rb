@@ -5,38 +5,43 @@ module MyJohnDeereApi
     private
 
     ##
+    # Set defaults and generate some attributes from others.
+    # Overridden from parent class.
+
+    def process_attributes
+      process_timestamp
+      process_geometry
+    end
+
+    ##
     # Request body
 
     def request_body
       return @body if defined?(@body)
 
       @body = [{
-        timestamp: timestamp,
-        geometry: geometry,
+        timestamp: attributes[:timestamp],
+        geometry: attributes[:geometry],
         measurementData: attributes[:measurement_data]
       }]
     end
 
     ##
-    # Parsed timestamp
+    # Custom-process timestamp
 
-    def timestamp
-      return @timestamp if defined?(@timestamp)
-
+    def process_timestamp
       attributes[:timestamp] ||= Time.now.utc
 
-      @timestamp = attributes[:timestamp].is_a?(String) ?
+      attributes[:timestamp] = attributes[:timestamp].is_a?(String) ?
         attributes[:timestamp] :
         attributes[:timestamp].strftime('%Y-%m-%dT%H:%M:%SZ')
     end
 
     ##
-    # Parse geometry
+    # Custom-process geometry
 
-    def geometry
-      return @geometry if defined?(@geometry)
-
-      @geometry = if attributes[:geometry]
+    def process_geometry
+      attributes[:geometry] = if attributes[:geometry]
         attributes[:geometry].is_a?(String) ?
           attributes[:geometry] :
           attributes[:geometry].to_json
@@ -89,8 +94,8 @@ module MyJohnDeereApi
       # API will only accept a timestamp *range*, and the start must be lower
       # than the end. We buffer start/end times by one second, then find the
       # exact match.
-      start_date = timestamp_add(timestamp, -1)
-      end_date = timestamp_add(timestamp, 1)
+      start_date = timestamp_add(attributes[:timestamp], -1)
+      end_date = timestamp_add(attributes[:timestamp], 1)
       path += "?startDate=#{start_date}&endDate=#{end_date}"
 
       result = accessor.get(path, headers)
@@ -98,7 +103,7 @@ module MyJohnDeereApi
       # Timestamps are returned with seconds in decimals, even though these 
       # are always zero. So we compare actual DateTime objects parsed from
       # the timestamp strings.
-      parsed_stamp = DateTime.parse(timestamp)
+      parsed_stamp = DateTime.parse(attributes[:timestamp])
 
       JSON.parse(result.body)['values'].detect do |record|
         parsed_stamp == DateTime.parse(record['timestamp'])

@@ -76,7 +76,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
         }
       }.to_json
 
-      assert_equal expected_geometry, object.send(:geometry)
+      assert_equal expected_geometry, object.attributes[:geometry]
     end
 
     it 'defaults timestamp to current time' do
@@ -84,7 +84,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
       object = JD::Request::Create::AssetLocation.new(accessor, attributes)
 
       expected_stamp = Time.now.utc.to_i
-      actual_stamp = DateTime.parse(object.send(:timestamp)).to_time.to_i
+      actual_stamp = DateTime.parse(object.attributes[:timestamp]).to_time.to_i
 
       assert_in_delta expected_stamp, actual_stamp, 1
     end
@@ -103,13 +103,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
       refute object.valid?
       assert_equal 'is required', object.errors[:asset_id]
-    end
-
-    it 'requires timestamp' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes_without(:timestamp))
-
-      refute object.valid?
-      assert_equal 'is required', object.errors[:timestamp]
     end
 
     it 'requires geometry' do

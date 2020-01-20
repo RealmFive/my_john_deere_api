@@ -21,6 +21,8 @@ module MyJohnDeereApi
       @accessor = accessor
       @attributes = attributes
 
+      process_attributes
+
       @errors = {}
     end
 
@@ -29,6 +31,7 @@ module MyJohnDeereApi
 
     def request
       validate!
+
       @response = accessor.post(resource, request_body.to_json, headers)
     end
 
@@ -74,6 +77,14 @@ module MyJohnDeereApi
     private
 
     ##
+    # Convert inputs into working attributes. This allows us to auto-create
+    # some attributes from others, or set defaults, on a class-by-class basis.
+    # See Request::Create::AssetLocation for an example.
+
+    def process_attributes
+    end
+
+    ##
     # Attributes that must be specified, override in child class
 
     def required_attributes
@@ -85,7 +96,7 @@ module MyJohnDeereApi
 
     def validate_required
       required_attributes.each do |attr|
-        errors[attr] = 'is required' unless attributes.keys.include?(attr)
+        errors[attr] = 'is required' unless attributes[attr]
       end
     end
 

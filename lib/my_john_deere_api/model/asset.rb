@@ -9,7 +9,7 @@ module MyJohnDeereApi
       raise AccessTokenError unless accessor
 
       return @locations if defined?(@locations)
-      @locations = MyJohnDeereApi::Request::Collection::AssetLocations.new(accessor, asset: id).all
+      @locations = MyJohnDeereApi::Request::Collection::AssetLocations.new(accessor, asset: id)
     end
 
     private

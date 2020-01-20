@@ -60,9 +60,13 @@ describe 'MyJohnDeereApi::Model::Asset' do
       accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
       asset = VCR.use_cassette('get_assets') { organization.assets.first }
-      locations = VCR.use_cassette('get_asset_locations') { asset.locations }
 
-      assert_kind_of Array, locations
+      locations = VCR.use_cassette('get_asset_locations') do
+        asset.locations.all
+        asset.locations
+      end
+
+      assert_kind_of Array, locations.all
 
       locations.each do |location|
         assert_kind_of JD::Model::AssetLocation, location
