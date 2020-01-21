@@ -41,7 +41,7 @@ describe 'MyJohnDeereApi::Request::Collection::Flags' do
 
   describe '#all' do
     it 'returns all records' do
-      all = VCR.use_cassette('get_flags', record: :new_episodes) { collection.all }
+      all = VCR.use_cassette('get_flags') { collection.all }
 
       assert_kind_of Array, all
       assert_equal collection.count, all.size
@@ -77,7 +77,7 @@ describe 'MyJohnDeereApi::Request::Collection::Flags' do
 
     it 'returns all records as a single enumerator' do
       count = VCR.use_cassette('get_flags') { collection.count }
-      geometries = VCR.use_cassette('get_flags', record: :new_episodes) { collection.map{|item| item.geometry} }
+      geometries = VCR.use_cassette('get_flags') { collection.map{|item| item.geometry} }
 
       assert_kind_of Array, geometries
       assert_equal count, geometries.size

@@ -84,30 +84,17 @@ module MyJohnDeereApi
     # Retrieve newly created record
 
     def fetch_record
-      # There is no way to fetch a single location by id, because locations
-      # don't have IDs. You have to fetch them in bulk via the asset, but
-      # there could be thousands. We limit to just the record created with
-      # our timestamp, which must be unique.
+      # There is no endpoint to fetch a single location by id. We have to fetch
+      # them in bulk via the asset, but there could be thousands. We limit the 
+      # request to just the first record from the location list endpoint, since
+      # locations are returned newest to oldest.
 
       path = response['location'].split('/platform').last
-
-      # API will only accept a timestamp *range*, and the start must be lower
-      # than the end. We buffer start/end times by one second, then find the
-      # exact match.
-      start_date = timestamp_add(attributes[:timestamp], -1)
-      end_date = timestamp_add(attributes[:timestamp], 1)
-      path += "?startDate=#{start_date}&endDate=#{end_date}"
+      path += "?count=1"
 
       result = accessor.get(path, headers)
 
-      # Timestamps are returned with seconds in decimals, even though these 
-      # are always zero. So we compare actual DateTime objects parsed from
-      # the timestamp strings.
-      parsed_stamp = DateTime.parse(attributes[:timestamp])
-
-      JSON.parse(result.body)['values'].detect do |record|
-        parsed_stamp == DateTime.parse(record['timestamp'])
-      end
+      JSON.parse(result.body)['values'].first
     end
 
     ##

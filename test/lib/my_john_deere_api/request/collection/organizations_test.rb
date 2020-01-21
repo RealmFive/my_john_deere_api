@@ -21,7 +21,7 @@ describe 'MyJohnDeereApi::Request::Collection::Organizations' do
 
   describe '#all' do
     it 'returns all records' do
-      all = VCR.use_cassette('get_organizations', record: :new_episodes) { collection.all }
+      all = VCR.use_cassette('get_organizations') { collection.all }
 
       assert_kind_of Array, all
       assert_equal collection.count, all.size
@@ -57,7 +57,7 @@ describe 'MyJohnDeereApi::Request::Collection::Organizations' do
 
     it 'returns all records as a single enumerator' do
       count = VCR.use_cassette('get_organizations') { collection.count }
-      names = VCR.use_cassette('get_organizations', record: :new_episodes) { collection.map{|item| item.name} }
+      names = VCR.use_cassette('get_organizations') { collection.map{|item| item.name} }
 
       assert_kind_of Array, names
       assert_equal count, names.size
@@ -68,7 +68,7 @@ describe 'MyJohnDeereApi::Request::Collection::Organizations' do
     end
 
     it 'passes the accessor to all organizations' do
-      organizations = VCR.use_cassette('get_organizations', record: :new_episodes) { collection.all }
+      organizations = VCR.use_cassette('get_organizations') { collection.all }
 
       organizations.each do |organization|
         assert_equal accessor, organization.accessor

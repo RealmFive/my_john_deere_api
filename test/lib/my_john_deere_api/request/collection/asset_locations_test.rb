@@ -34,7 +34,7 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
 
   describe '#all' do
     it 'returns all records' do
-      all = VCR.use_cassette('get_asset_locations', record: :new_episodes) { collection.all }
+      all = VCR.use_cassette('get_asset_locations') { collection.all }
 
       assert_kind_of Array, all
       assert_equal collection.count, all.size
@@ -49,7 +49,7 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
   describe '#create(attributes)' do
     let(:asset_id) { ENV['ASSET_ID'] }
     let(:timestamp) { DateTime.parse(timestamp_string) }
-    let(:timestamp_string) { '2020-01-18T00:31:00Z' }
+    let(:timestamp_string) { '2020-01-21T10:49:00Z' }
     let(:coordinates) { [-103.115633, 41.670166] }
 
     let(:geometry) do
@@ -123,7 +123,7 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
 
     it 'returns all records as a single enumerator' do
       count = VCR.use_cassette('get_asset_locations') { collection.count }
-      timestamps = VCR.use_cassette('get_asset_locations', record: :new_episodes) { collection.map(&:timestamp) }
+      timestamps = VCR.use_cassette('get_asset_locations') { collection.map(&:timestamp) }
 
       assert_kind_of Array, timestamps
       assert_equal count, timestamps.size

@@ -34,7 +34,7 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
 
   describe '#all' do
     it 'returns all records' do
-      all = VCR.use_cassette('get_assets', record: :new_episodes) { collection.all }
+      all = VCR.use_cassette('get_assets') { collection.all }
 
       assert_kind_of Array, all
       assert_equal collection.count, all.size
@@ -95,7 +95,7 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
 
     it 'returns all records as a single enumerator' do
       count = VCR.use_cassette('get_assets') { collection.count }
-      titles = VCR.use_cassette('get_assets', record: :new_episodes) { collection.map(&:title) }
+      titles = VCR.use_cassette('get_assets') { collection.map(&:title) }
 
       assert_kind_of Array, titles
       assert_equal count, titles.size
