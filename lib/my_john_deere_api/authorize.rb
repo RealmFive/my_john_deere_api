@@ -2,7 +2,7 @@ class MyJohnDeereApi::Authorize
   attr_reader :api_key, :api_secret,
     :request_token, :request_secret,
     :access_token, :access_secret,
-    :environment
+    :environment, :options
 
   DEFAULTS = {
     environment: :production
@@ -15,7 +15,7 @@ class MyJohnDeereApi::Authorize
   # on behalf of a user.
 
   def initialize(api_key, api_secret, options = {})
-    options = DEFAULTS.merge(options)
+    @options = DEFAULTS.merge(options)
 
     @api_key = api_key
     @api_secret = api_secret
@@ -29,11 +29,13 @@ class MyJohnDeereApi::Authorize
   def authorize_url
     return @authorize_url if defined?(@authorize_url)
 
-    requester = consumer.get_request_token
+    request_options = options.slice(:oauth_callback)
+
+    requester = consumer.get_request_token(request_options)
     @request_token = requester.token
     @request_secret = requester.secret
 
-    @authorize_url = requester.authorize_url
+    @authorize_url = requester.authorize_url(request_options)
   end
 
   ##
