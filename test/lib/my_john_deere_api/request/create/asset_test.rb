@@ -27,23 +27,14 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     }
   end
 
+  let(:object) { JD::Request::Create::Asset.new(accessor, attributes) }
+
   let(:attributes) { valid_attributes }
 
-  it 'inherits from Request::Create::Base' do
-    object = JD::Request::Create::Asset.new(accessor, attributes)
-
-    assert_kind_of JD::Request::Create::Base, object
-
-    # check for public methods
-    [:request, :object, :valid?, :validate!].each do |method_name|
-      assert object.respond_to?(method_name)
-    end
-  end
+  inherits_from MyJohnDeereApi::Request::Create::Base
 
   describe '#initialize(access_token, attributes)' do
     it 'accepts an accessor and attributes' do
-      object = JD::Request::Create::Asset.new(accessor, attributes)
-
       assert_equal accessor, object.accessor
       assert_equal attributes, object.attributes
     end
@@ -56,8 +47,6 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
   describe '#valid?' do
     it 'returns true when all required attributes are present' do
-      object = JD::Request::Create::Asset.new(accessor, attributes)
-
       assert object.valid?
       assert_empty object.errors
     end
@@ -184,7 +173,6 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
   describe '#request' do
     it 'makes the request' do
-      object = JD::Request::Create::Asset.new(accessor, attributes)
       VCR.use_cassette('post_assets') { object.request }
 
       assert_kind_of Net::HTTPCreated, object.response

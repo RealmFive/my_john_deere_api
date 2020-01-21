@@ -49,10 +49,12 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
   let(:attributes) { valid_attributes }
 
+  let(:object) { JD::Request::Create::AssetLocation.new(accessor, attributes) }
+
+  inherits_from MyJohnDeereApi::Request::Create::Base
+
   describe '#initialize(access_token, attributes)' do
     it 'accepts an accessor and attributes' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
-
       assert_equal accessor, object.accessor
       assert_equal attributes, object.attributes
     end
@@ -70,8 +72,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
         measurement_data: measurement_data
       }
 
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
-
       assert_equal geometry.to_json, object.attributes[:geometry]
     end
 
@@ -88,8 +88,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
   describe '#valid?' do
     it 'returns true when all required attributes are present' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
-
       assert object.valid?
       assert_empty object.errors
     end
@@ -161,7 +159,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
   describe '#request_body' do
     it 'properly forms the request body' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
       body = object.send(:request_body)
 
       assert_kind_of Array, body
@@ -173,7 +170,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
   describe '#request' do
     it 'makes the request' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
       VCR.use_cassette('post_asset_locations') { object.request }
 
       assert_kind_of Net::HTTPCreated, object.response
@@ -182,7 +178,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
   describe '#object' do
     it 'returns the asset location model instance' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
       result = VCR.use_cassette('post_asset_locations') { object.object }
 
       assert_kind_of JD::Model::AssetLocation, result

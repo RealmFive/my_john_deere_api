@@ -21,3 +21,21 @@ VCR.configure do |config|
   config.cassette_library_dir = 'test/support/vcr'
   config.hook_into :webmock
 end
+
+class Minitest::Spec
+  class << self
+    def inherits_from klass
+      it "inherits from #{klass}" do
+        public_methods = Hash.new([]).merge({
+          JD::Request::Create::Base => [:request, :object, :valid?, :validate!],
+        })
+
+        assert_kind_of klass, object
+
+        public_methods[klass].each do |method_name|
+          assert object.respond_to?(method_name)
+        end
+      end
+    end
+  end
+end
