@@ -18,6 +18,9 @@ describe 'MyJohnDeereApi::Request::Collection::Flags' do
   let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
   let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
   let(:collection) { JD::Request::Collection::Flags.new(accessor, organization: organization_id, field: field_id) }
+  let(:object) { collection }
+
+  inherits_from JD::Request::Collection::Base
 
   describe '#initialize(access_token)' do
     it 'accepts an access token' do

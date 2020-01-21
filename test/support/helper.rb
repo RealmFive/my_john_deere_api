@@ -28,6 +28,7 @@ class Minitest::Spec
       it "inherits from #{klass}" do
         public_methods = Hash.new([]).merge({
           JD::Request::Create::Base => [:request, :object, :valid?, :validate!],
+          JD::Request::Collection::Base => [:each, :all, :count],
         })
 
         assert_kind_of klass, object
