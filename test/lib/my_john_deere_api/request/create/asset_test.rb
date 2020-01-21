@@ -29,6 +29,17 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
   let(:attributes) { valid_attributes }
 
+  it 'inherits from Request::Create::Base' do
+    object = JD::Request::Create::Asset.new(accessor, attributes)
+
+    assert_kind_of JD::Request::Create::Base, object
+
+    # check for public methods
+    [:request, :object, :valid?, :validate!].each do |method_name|
+      assert object.respond_to?(method_name)
+    end
+  end
+
   describe '#initialize(access_token, attributes)' do
     it 'accepts an accessor and attributes' do
       object = JD::Request::Create::Asset.new(accessor, attributes)

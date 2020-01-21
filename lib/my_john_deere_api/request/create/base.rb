@@ -60,13 +60,6 @@ module MyJohnDeereApi
     end
 
     ##
-    # Run validations unique to a given model. This should be overridden
-    # by children where needed.
-
-    def validate_attributes
-    end
-
-    ##
     # Raises an error if the record is invalid. Passes the errors hash
     # to the error, in order to build a useful message string.
 
@@ -75,6 +68,13 @@ module MyJohnDeereApi
     end
 
     private
+
+    ##
+    # Run validations unique to a given model. This should be overridden
+    # by children where needed.
+
+    def validate_attributes
+    end
 
     ##
     # Convert inputs into working attributes. This allows us to auto-create
