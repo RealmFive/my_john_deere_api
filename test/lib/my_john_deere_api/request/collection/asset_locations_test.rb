@@ -50,11 +50,18 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
     let(:asset_id) { ENV['ASSET_ID'] }
     let(:timestamp) { DateTime.parse(timestamp_string) }
     let(:timestamp_string) { '2020-01-18T00:31:00Z' }
+    let(:coordinates) { [-103.115633, 41.670166] }
 
     let(:geometry) do
       {
-        type: 'Point',
-        coordinates: [-103.115633, 41.670166]
+        type: 'Feature',
+        geometry: {
+          geometries: [
+            coordinates: coordinates,
+            type: 'Point'
+          ],
+          type: 'GeometryCollection'
+        }
       }
     end
 

@@ -13,11 +13,18 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
   let(:asset_id) { ENV['ASSET_ID'] }
   let(:timestamp) { DateTime.parse(timestamp_string) }
   let(:timestamp_string) { '2020-01-18T00:31:00Z' }
+  let(:coordinates) { [-103.115633, 41.670166] }
 
   let(:geometry) do
     {
-      type: 'Point',
-      coordinates: [-103.115633, 41.670166]
+      type: 'Feature',
+      geometry: {
+        geometries: [
+          coordinates: coordinates,
+          type: 'Point'
+        ],
+        type: 'GeometryCollection'
+      }
     }
   end
 
@@ -59,24 +66,13 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
       attributes = {
         asset_id: asset_id,
         timestamp: timestamp,
-        coordinates: geometry[:coordinates],
+        coordinates: coordinates,
         measurement_data: measurement_data
       }
 
       object = JD::Request::Create::AssetLocation.new(accessor, attributes)
 
-      expected_geometry = {
-        type: 'Feature',
-        geometry: {
-          geometries: [
-            coordinates: geometry[:coordinates],
-            type: 'Point'
-          ],
-          type: 'GeometryCollection'
-        }
-      }.to_json
-
-      assert_equal expected_geometry, object.attributes[:geometry]
+      assert_equal geometry.to_json, object.attributes[:geometry]
     end
 
     it 'defaults timestamp to current time' do
