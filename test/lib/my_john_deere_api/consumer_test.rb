@@ -33,6 +33,14 @@ describe 'JD::Consumer' do
       assert_equal JD::Consumer::URLS[default_environment], consumer.base_url
     end
 
+    it 'converts environment string to symbol' do
+      environment = 'sandbox'
+      consumer = JD::Consumer.new(API_KEY, API_SECRET, environment: environment)
+
+      assert_equal environment.to_sym, consumer.environment
+      assert_equal JD::Consumer::URLS[environment.to_sym], consumer.base_url
+    end
+
     it 'accepts an arbitrary base_url' do
       base_url = 'https://example.com'
       consumer = JD::Consumer.new(API_KEY, API_SECRET, base_url: base_url)

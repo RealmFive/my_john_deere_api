@@ -20,7 +20,7 @@ module MyJohnDeereApi
       @api_key = api_key
       @api_secret = api_secret
 
-      @environment = options[:environment]
+      @environment = options[:environment].to_sym
       @base_url = options[:base_url] || URLS[@environment]
     end
 

@@ -30,6 +30,13 @@ describe 'MyJohnDeereApi::Authorize' do
       assert_equal environment, authorize.environment
     end
 
+    it 'converts environment to symbol' do
+      environment = 'sandbox'
+
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET, environment: environment) }
+      assert_equal environment.to_sym, authorize.environment
+    end
+
     it 'defaults the environment to production' do
       environment = :production
 
@@ -55,7 +62,7 @@ describe 'MyJohnDeereApi::Authorize' do
       url = VCR.use_cassette('get_request_token') { authorize.authorize_url }
       links = VCR.use_cassette('catalog') { JD::Consumer.new(API_KEY, API_SECRET, environment: :sandbox).send(:links) }
 
-      assert_includes url, "#{links[:authorize_request_token]}?oauth_token="
+      assert_includes url, "#{links[:authorize_request_token]}"
 
       query = URI.parse(url).query
       params = CGI::parse(query)

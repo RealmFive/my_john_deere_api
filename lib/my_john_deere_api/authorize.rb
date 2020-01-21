@@ -19,7 +19,7 @@ class MyJohnDeereApi::Authorize
 
     @api_key = api_key
     @api_secret = api_secret
-    @environment = options[:environment]
+    @environment = @options[:environment].to_sym
   end
 
   ##
