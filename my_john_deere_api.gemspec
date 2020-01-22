@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'webmock', '~> 3.7.6'
 
   s.add_runtime_dependency 'oauth', '~> 0.5.4'
-  s.add_runtime_dependency 'json', '>= 2.1.0'
+  s.add_runtime_dependency 'json', '~> 2.1', '>= 2.1.0'
 
   s.description = <<-TURTLES
 == My John Deere API
