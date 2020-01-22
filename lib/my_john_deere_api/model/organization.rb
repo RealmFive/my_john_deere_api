@@ -29,7 +29,7 @@ module MyJohnDeereApi
       raise AccessTokenError unless accessor
 
       return @assets if defined?(@assets)
-      @assets = MyJohnDeereApi::Request::Collection::Assets.new(accessor, organization: id).all
+      @assets = MyJohnDeereApi::Request::Collection::Assets.new(accessor, organization: id)
     end
 
     private

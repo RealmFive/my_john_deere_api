@@ -88,9 +88,9 @@ describe 'MyJohnDeereApi::Model::Organization' do
     it 'returns a collection of assets for this organization' do
       accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
-      assets = VCR.use_cassette('get_assets') { organization.assets }
+      assets = VCR.use_cassette('get_assets') { organization.assets.all; organization.assets }
 
-      assert_kind_of Array, assets
+      assert_kind_of JD::Request::Collection::Assets, assets
 
       assets.each do |assets|
         assert_kind_of JD::Model::Asset, assets
