@@ -62,7 +62,7 @@ class MyJohnDeereApi::Client
   def delete resource
     resource = resource.to_s
     resource = "/#{resource}" unless resource =~ /^\//
-    response = accessor.delete(resource, post_headers)
+    response = accessor.delete(resource, headers)
 
     if response.body && response.body.size > 0
       JSON.parse(response.body)
