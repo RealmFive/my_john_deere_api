@@ -95,27 +95,45 @@ describe 'MyJohnDeereApi::Client' do
       assert_equal Hash.new, response
     end
 
-    # it 'prepends the leading slash if needed' do
-    #   client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-    #   VCR.use_cassette('catalog') { client.send(:accessor) }
-    #   response = VCR.use_cassette('get_organizations') { client.get('organizations') }
-    #
-    #   assert_kind_of Hash, response
-    #   assert_kind_of Integer, response['total']
-    #   assert response['values'].all?{|value| value['@type'] == 'Organization'}
-    #   assert response['values'].all?{|value| value.has_key?('links')}
-    # end
-    #
-    # it 'allows symbols for simple resources' do
-    #   client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-    #   VCR.use_cassette('catalog') { client.send(:accessor) }
-    #   response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
-    #
-    #   assert_kind_of Hash, response
-    #   assert_kind_of Integer, response['total']
-    #   assert response['values'].all?{|value| value['@type'] == 'Organization'}
-    #   assert response['values'].all?{|value| value.has_key?('links')}
-    # end
+    it 'prepends the leading slash if needed' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('get_organizations') { client.get('organizations') }
+
+      assert_kind_of Hash, response
+      assert_kind_of Integer, response['total']
+      assert response['values'].all?{|value| value['@type'] == 'Organization'}
+      assert response['values'].all?{|value| value.has_key?('links')}
+    end
+
+    it 'allows symbols for simple resources' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
+
+      assert_kind_of Hash, response
+      assert_kind_of Integer, response['total']
+      assert response['values'].all?{|value| value['@type'] == 'Organization'}
+      assert response['values'].all?{|value| value.has_key?('links')}
+    end
+  end
+
+  describe '#delete' do
+    it 'sends the request' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('delete_asset') { client.delete("/assets/123") }
+
+      assert_kind_of Hash, response
+    end
+
+    it 'prepends the leading slash if needed' do
+      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('get_organizations') { client.get('organizations') }
+
+      assert_kind_of Hash, response
+    end
   end
 
   describe '#organizations' do
