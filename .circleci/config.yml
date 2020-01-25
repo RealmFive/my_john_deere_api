@@ -1,0 +1,29 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.6.3
+    steps:
+      - checkout
+      
+      - restore_cache:
+          keys:
+            - my-john-deere-api-{{ checksum "Gemfile.lock" }}
+            - my-john-deere-api-
+
+      - run:
+          name: Bundle Install
+          command: bundle check --path vendor/bundle || bundle install
+
+      - save_cache:
+          key: my-john-deere-api-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: Run tests
+          command: rake test
+
+      - store_test_results:
+          path: /tmp/test-results
+
