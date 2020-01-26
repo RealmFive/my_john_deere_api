@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name        = 'my_john_deere_api'
   s.version     = MyJohnDeereApi::VERSION
   s.summary     = "Interact with John Deere's Developer API"
-  s.authors     = ["Jaime. Bellmyer"]
+  s.authors     = ["Jaime Bellmyer", 'Justin Collier']
   s.email       = 'online@bellmyer.com'
   s.homepage    = 'https://github.com/Intellifarm/my_john_deere_api'
   s.license       = 'MIT'
