@@ -73,6 +73,15 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
     end
   end
 
+  describe '#find(asset_id)' do
+    let(:asset_id) { '123' }
+
+    it 'retrieves the asset' do
+      asset = VCR.use_cassette('get_asset') { collection.find(asset_id) }
+      assert_kind_of JD::Model::Asset, asset
+    end
+  end
+
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_assets.yml')
