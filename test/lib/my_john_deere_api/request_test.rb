@@ -9,5 +9,9 @@ describe 'MyJohnDeereApi::Request' do
     it 'loads Request::Create' do
       assert JD::Request::Create
     end
+
+    it 'loads Request::Individuaal' do
+      assert JD::Request::Individual
+    end
   end
 end
