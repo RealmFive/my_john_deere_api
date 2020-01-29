@@ -23,11 +23,25 @@ describe 'MyJohnDeereApi::Authorize' do
       assert_equal API_SECRET, authorize.api_secret
     end
 
-    it 'sets the environment' do
+    it 'sets the sandbox environment' do
       environment = :sandbox
 
       authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET, environment: environment) }
       assert_equal environment, authorize.environment
+    end
+
+    it 'sets the live environment' do
+      environment = :live
+
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET, environment: environment) }
+      assert_equal environment, authorize.environment
+    end
+
+    it 'accepts production as a synonym for live environment' do
+      environment = :production
+
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET, environment: environment) }
+      assert_equal :live, authorize.environment
     end
 
     it 'converts environment to symbol' do
@@ -37,7 +51,7 @@ describe 'MyJohnDeereApi::Authorize' do
       assert_equal environment.to_sym, authorize.environment
     end
 
-    it 'defaults the environment to live' do
+    it 'defaults to live environment' do
       environment = :live
 
       authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET) }

@@ -27,7 +27,7 @@ class MyJohnDeereApi::Client
       @access_token, @access_secret = options[:access]
     end
 
-    @environment = options[:environment]
+    self.environment = options[:environment]
   end
 
   ##
@@ -80,6 +80,13 @@ class MyJohnDeereApi::Client
   end
 
   private
+
+  ##
+  # allows :production param to be a synonym for :live
+
+  def environment=(value)
+    @environment = value == :production ? :live : value
+  end
 
   ##
   # Returns an oAuth consumer which can be used to build requests

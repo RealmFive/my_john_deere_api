@@ -25,6 +25,14 @@ describe 'JD::Consumer' do
       assert_equal JD::Consumer::URLS[environment], consumer.base_url
     end
 
+    it 'accepts production as a synonym for live environment' do
+      environment = :production
+      consumer = JD::Consumer.new(API_KEY, API_SECRET, environment: environment)
+
+      assert_equal :live, consumer.environment
+      assert_equal JD::Consumer::URLS[:live], consumer.base_url
+    end
+
     it 'defaults to live environment' do
       default_environment = :live
       consumer = JD::Consumer.new(API_KEY, API_SECRET)

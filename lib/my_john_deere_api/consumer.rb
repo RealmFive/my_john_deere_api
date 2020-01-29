@@ -20,7 +20,7 @@ module MyJohnDeereApi
       @api_key = api_key
       @api_secret = api_secret
 
-      @environment = options[:environment].to_sym
+      self.environment = options[:environment]
       @base_url = options[:base_url] || URLS[@environment]
     end
 
@@ -40,6 +40,14 @@ module MyJohnDeereApi
     end
 
     private
+
+    ##
+    # intelligently sets the environment
+
+    def environment=(value)
+      value = value.to_sym
+      @environment = value == :production ? :live : value
+    end
 
     def consumer(site)
       OAuth::Consumer.new(

@@ -19,7 +19,7 @@ class MyJohnDeereApi::Authorize
 
     @api_key = api_key
     @api_secret = api_secret
-    @environment = @options[:environment].to_sym
+    self.environment = @options[:environment]
   end
 
   ##
@@ -61,5 +61,15 @@ class MyJohnDeereApi::Authorize
     @access_token = access_object.token
     @access_secret = access_object.secret
     nil
+  end
+
+  private
+
+  ##
+  # intelligently sets the environment
+
+  def environment=(value)
+    value = value.to_sym
+    @environment = value == :production ? :live : value
   end
 end
