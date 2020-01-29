@@ -13,5 +13,9 @@ describe 'MyJohnDeereApi Errors' do
     it 'loads TypeMismatchError' do
       assert JD::TypeMismatchError
     end
+
+    it 'loads UnsupportedEnvironmentError' do
+      assert JD::UnsupportedEnvironmentError
+    end
   end
 end
