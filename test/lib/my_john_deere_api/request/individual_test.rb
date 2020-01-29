@@ -9,5 +9,9 @@ describe 'MyJohnDeereApi::Request::Individual' do
     it 'loads Request::Individual::Asset' do
       assert JD::Request::Individual::Asset
     end
+
+    it 'loads Request::Individual::ContributionProduct' do
+      assert JD::Request::Individual::ContributionProduct
+    end
   end
 end
