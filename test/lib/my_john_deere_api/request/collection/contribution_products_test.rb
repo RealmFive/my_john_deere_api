@@ -85,4 +85,13 @@ describe 'MyJohnDeereApi::Request::Collection::ContributionProducts' do
       end
     end
   end
+
+  describe '#find(contribution_product_id)' do
+    let(:product_id) { '00000000-0000-0000-0000-000000000000' }
+
+    it 'retrieves the asset' do
+      product = VCR.use_cassette('get_contribution_product') { collection.find(product_id) }
+      assert_kind_of JD::Model::ContributionProduct, product
+    end
+  end
 end
