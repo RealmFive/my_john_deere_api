@@ -83,4 +83,76 @@ that contains the verification code so the user doesn't have to provide it.
     authorize.verify(params[:oauth_verifier])
 
 
+### Interacting with the user's John Deere account
+
+After authorization is complete, the `Client` object will provide most of the interface for this library. A client can
+be used with or without user credentials, because some API calls are specific to your application's relationship
+with John Deere, not your user's. But most interactions will involve user data. Here's how to instantiate a client:
+
+    client = JD::Client.new(
+      # the application's API key
+      API_KEY,
+      
+      # the application's API secret
+      API_SECRET,
+      
+      # the chosen environment (:sandbox or :live)
+      environment: :sandbox,
+      
+      # the user's access credentials
+      access: [ACCESS_TOKEN, ACCESS_SECRET]
+    )
+
+
+#### Arbitrary GET requests
+
+While the goal of the client is to eliminate the need to make/interpret calls to the John Deere API, it's important
+to be able to make calls that are not yet fully supported by the client. Or sometimes, you need to troubleshoot.
+You can pass any path to the get method, and receive the JSON-parsed response.
+
+    client.get('/organizations')
+    
+    # Abbreviated sample response:
+    {
+      "links": [...],
+      "total": 1,
+      "values": [
+        {
+          "@type": "Organization",
+          "name": "ABC Farms",
+          "type": "customer",
+          "member": true,
+          "id": "123123",
+          "links": [...]
+        },
+      ]
+    }
+
+This won't provide any client goodies like pagination, validation or weeding out the stuff you don't need (like the nifty client methods).
+
+
+#### Arbitrary POST requests
+
+You can also make arbitrary POST requests. This method takes a required resource path, and a hash for the request body that
+the client will convert to JSON.
+
+    client.post(
+     '/organizations/123123/assets',
+     {
+       "title"=>"i like turtles", 
+       "assetCategory"=>"DEVICE", 
+       "assetType"=>"SENSOR", 
+       "assetSubType"=>"ENVIRONMENTAL", 
+       "links"=>[
+         {
+           "@type"=>"Link", 
+           "rel"=>"contributionDefinition", 
+           "uri"=>"https://sandboxapi.deere.com/platform/contributionDefinitions/CONTRIBUTION_DEFINITION_ID"
+         }
+        ]
+      }
+    )
+
+The response for most requests is just an HTTP status code, with no body. If a body is provided, it will be JSON-parsed and returned.
+
 More details coming soon.
