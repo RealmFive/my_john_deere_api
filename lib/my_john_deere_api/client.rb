@@ -82,6 +82,13 @@ module MyJohnDeereApi
       @organizations = MyJohnDeereApi::Request::Collection::Organizations.new(accessor).all
     end
 
+    ##
+    # contribution products associated with this app (not user-specific)
+
+    def contribution_products
+      []
+    end
+
     private
 
     ##
