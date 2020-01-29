@@ -1,5 +1,4 @@
 .ruby-version
-Gemfile.lock
 *.gem
 test/support/vcr
 .env
