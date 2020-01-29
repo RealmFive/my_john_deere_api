@@ -1,75 +1,69 @@
-class MyJohnDeereApi::Authorize
-  attr_reader :api_key, :api_secret,
-    :request_token, :request_secret,
-    :access_token, :access_secret,
-    :environment, :options
+module MyJohnDeereApi
+  class Authorize
+    include Helpers::EnvironmentHelper
 
-  DEFAULTS = {
-    environment: :live
-  }
+    attr_reader :api_key, :api_secret,
+      :request_token, :request_secret,
+      :access_token, :access_secret,
+      :environment, :options
 
-  ##
-  # Create an Authorize object.
-  #
-  # This is used to obtain authentication an access key/secret
-  # on behalf of a user.
+    DEFAULTS = {
+      environment: :live
+    }
 
-  def initialize(api_key, api_secret, options = {})
-    @options = DEFAULTS.merge(options)
+    ##
+    # Create an Authorize object.
+    #
+    # This is used to obtain authentication an access key/secret
+    # on behalf of a user.
 
-    @api_key = api_key
-    @api_secret = api_secret
-    self.environment = @options[:environment]
-  end
+    def initialize(api_key, api_secret, options = {})
+      @options = DEFAULTS.merge(options)
 
-  ##
-  # Option a url which may be used to obtain a verification
-  # code from the oauth server.
+      @api_key = api_key
+      @api_secret = api_secret
+      self.environment = @options[:environment]
+    end
 
-  def authorize_url
-    return @authorize_url if defined?(@authorize_url)
+    ##
+    # Option a url which may be used to obtain a verification
+    # code from the oauth server.
 
-    request_options = options.slice(:oauth_callback)
+    def authorize_url
+      return @authorize_url if defined?(@authorize_url)
 
-    requester = consumer.get_request_token(request_options)
-    @request_token = requester.token
-    @request_secret = requester.secret
+      request_options = options.slice(:oauth_callback)
 
-    @authorize_url = requester.authorize_url(request_options)
-  end
+      requester = consumer.get_request_token(request_options)
+      @request_token = requester.token
+      @request_secret = requester.secret
 
-  ##
-  # API consumer that makes non-user-specific GET requests
+      @authorize_url = requester.authorize_url(request_options)
+    end
 
-  def consumer
-    return @consumer if defined?(@consumer)
-    @consumer = MyJohnDeereApi::Consumer.new(@api_key, @api_secret, environment: environment).app_get
-  end
+    ##
+    # API consumer that makes non-user-specific GET requests
 
-  ##
-  # Turn a verification code into access tokens. If this is
-  # run from a separate process than the one that created
-  # the initial RequestToken, the request token/secret
-  # can be passed in.
+    def consumer
+      return @consumer if defined?(@consumer)
+      @consumer = MyJohnDeereApi::Consumer.new(@api_key, @api_secret, environment: environment).app_get
+    end
 
-  def verify(code, token=nil, secret=nil)
-    token ||= request_token
-    secret ||= request_secret
+    ##
+    # Turn a verification code into access tokens. If this is
+    # run from a separate process than the one that created
+    # the initial RequestToken, the request token/secret
+    # can be passed in.
 
-    requester = OAuth::RequestToken.new(consumer, token, secret)
-    access_object = requester.get_access_token(oauth_verifier: code)
-    @access_token = access_object.token
-    @access_secret = access_object.secret
-    nil
-  end
+    def verify(code, token=nil, secret=nil)
+      token ||= request_token
+      secret ||= request_secret
 
-  private
-
-  ##
-  # intelligently sets the environment
-
-  def environment=(value)
-    value = value.to_sym
-    @environment = value == :production ? :live : value
+      requester = OAuth::RequestToken.new(consumer, token, secret)
+      access_object = requester.get_access_token(oauth_verifier: code)
+      @access_token = access_object.token
+      @access_secret = access_object.secret
+      nil
+    end
   end
 end

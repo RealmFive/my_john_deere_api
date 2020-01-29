@@ -19,31 +19,10 @@ describe 'MyJohnDeereApi::Client' do
       assert_equal access_secret, client.access_secret
     end
 
-    it 'accepts sandbox environment' do
+    it 'accepts the environment' do
       environment = :sandbox
 
       client = JD::Client.new(API_KEY, API_SECRET, environment: environment)
-      assert_equal environment, client.environment
-    end
-
-    it 'accepts live environment' do
-      environment = :live
-
-      client = JD::Client.new(API_KEY, API_SECRET, environment: environment)
-      assert_equal environment, client.environment
-    end
-
-    it 'accepts production as a synonym for live' do
-      environment = :production
-
-      client = JD::Client.new(API_KEY, API_SECRET, environment: environment)
-      assert_equal :live, client.environment
-    end
-
-    it 'defaults to live environment' do
-      environment = :live
-
-      client = JD::Client.new(API_KEY, API_SECRET)
       assert_equal environment, client.environment
     end
   end

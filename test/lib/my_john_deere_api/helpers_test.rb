@@ -9,5 +9,9 @@ describe 'MyJohnDeereApi::Helpers' do
     it 'loads Helpers::CaseConversion' do
       assert JD::Helpers::CaseConversion
     end
+
+    it 'loads Helpers::EnvironmentHelper' do
+      assert JD::Helpers::EnvironmentHelper
+    end
   end
 end

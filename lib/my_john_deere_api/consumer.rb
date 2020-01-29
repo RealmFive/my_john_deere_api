@@ -1,6 +1,7 @@
 module MyJohnDeereApi
   class Consumer
     include Helpers::CaseConversion
+    include Helpers::EnvironmentHelper
 
     attr_reader :api_key, :api_secret, :environment, :base_url
 
@@ -40,14 +41,6 @@ module MyJohnDeereApi
     end
 
     private
-
-    ##
-    # intelligently sets the environment
-
-    def environment=(value)
-      value = value.to_sym
-      @environment = value == :production ? :live : value
-    end
 
     def consumer(site)
       OAuth::Consumer.new(

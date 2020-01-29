@@ -9,44 +9,12 @@ describe 'JD::Consumer' do
       assert_equal API_SECRET, consumer.api_secret
     end
 
-    it 'accepts sandbox environment' do
+    it 'accepts the environment' do
       environment = :sandbox
       consumer = JD::Consumer.new(API_KEY, API_SECRET, environment: environment)
 
       assert_equal environment, consumer.environment
       assert_equal JD::Consumer::URLS[environment], consumer.base_url
-    end
-
-    it 'accepts live environment' do
-      environment = :live
-      consumer = JD::Consumer.new(API_KEY, API_SECRET, environment: environment)
-
-      assert_equal environment, consumer.environment
-      assert_equal JD::Consumer::URLS[environment], consumer.base_url
-    end
-
-    it 'accepts production as a synonym for live environment' do
-      environment = :production
-      consumer = JD::Consumer.new(API_KEY, API_SECRET, environment: environment)
-
-      assert_equal :live, consumer.environment
-      assert_equal JD::Consumer::URLS[:live], consumer.base_url
-    end
-
-    it 'defaults to live environment' do
-      default_environment = :live
-      consumer = JD::Consumer.new(API_KEY, API_SECRET)
-
-      assert_equal default_environment, consumer.environment
-      assert_equal JD::Consumer::URLS[default_environment], consumer.base_url
-    end
-
-    it 'converts environment string to symbol' do
-      environment = 'sandbox'
-      consumer = JD::Consumer.new(API_KEY, API_SECRET, environment: environment)
-
-      assert_equal environment.to_sym, consumer.environment
-      assert_equal JD::Consumer::URLS[environment.to_sym], consumer.base_url
     end
 
     it 'accepts an arbitrary base_url' do
