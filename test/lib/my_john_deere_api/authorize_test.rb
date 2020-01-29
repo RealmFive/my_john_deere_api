@@ -37,8 +37,8 @@ describe 'MyJohnDeereApi::Authorize' do
       assert_equal environment.to_sym, authorize.environment
     end
 
-    it 'defaults the environment to production' do
-      environment = :production
+    it 'defaults the environment to live' do
+      environment = :live
 
       authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET) }
       assert_equal environment, authorize.environment

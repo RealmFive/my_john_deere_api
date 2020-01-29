@@ -5,7 +5,7 @@ class MyJohnDeereApi::Authorize
     :environment, :options
 
   DEFAULTS = {
-    environment: :production
+    environment: :live
   }
 
   ##

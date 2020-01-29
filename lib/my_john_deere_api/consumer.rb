@@ -7,11 +7,11 @@ module MyJohnDeereApi
     # valid API urls
     URLS = {
       sandbox: 'https://sandboxapi.deere.com',
-      production: 'https://api.soa-proxy.deere.com',
+      live: 'https://api.soa-proxy.deere.com',
     }
 
     DEFAULTS = {
-      environment: :production
+      environment: :live
     }
 
     def initialize(api_key, api_secret, options={})

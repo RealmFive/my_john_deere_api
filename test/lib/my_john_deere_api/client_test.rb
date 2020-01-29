@@ -26,8 +26,8 @@ describe 'MyJohnDeereApi::Client' do
       assert_equal environment, client.environment
     end
 
-    it 'defaults the environment to production' do
-      environment = :production
+    it 'defaults the environment to live' do
+      environment = :live
 
       client = JD::Client.new(API_KEY, API_SECRET)
       assert_equal environment, client.environment

@@ -2,7 +2,7 @@ class MyJohnDeereApi::Client
   attr_reader :api_key, :api_secret, :access_token, :access_secret, :environment
 
   DEFAULTS = {
-    environment: :production
+    environment: :live
   }
 
   ##
@@ -12,7 +12,7 @@ class MyJohnDeereApi::Client
   #
   # options:
   #
-  # [:environment] :sandbox or :production
+  # [:environment] :sandbox or :live
   #
   # [:access] an array with two elements, the access_token
   #           and the access_secret of the given user
