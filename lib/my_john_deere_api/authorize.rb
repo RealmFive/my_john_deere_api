@@ -26,7 +26,7 @@ module MyJohnDeereApi
     end
 
     ##
-    # Option a url which may be used to obtain a verification
+    # Url which may be used to obtain a verification
     # code from the oauth server.
 
     def authorize_url
