@@ -13,24 +13,21 @@ describe 'MyJohnDeereApi::Model::ContributionProduct' do
       "previewImages" => ["https://example.com/preview.png"],
       "supportedRegions" => ["US"],
       "supportedOperationCenters" => ["something"],
-      "id" => "00000000-0000-0000-0000-000000000000",
+      "id" => "#{contribution_product_id}",
       "links" => [
         {
           "@type" => "Link",
           "rel" => "self",
-          "uri" => "https://sandboxapi.deere.com/platform/contributionProducts/42f7c477-396f-49c1-94f9-6922ed4ee61e"
+          "uri" => "https://sandboxapi.deere.com/platform/contributionProducts/#{contribution_product_id}"
         },
         {
           "@type" => "Link",
           "rel" => "contributionDefinition",
-          "uri" => "https://sandboxapi.deere.com/platform/contributionProducts/42f7c477-396f-49c1-94f9-6922ed4ee61e/contributionDefinitions"
+          "uri" => "https://sandboxapi.deere.com/platform/contributionProducts/#{contribution_product_id}/contributionDefinitions"
         }
       ]
     }
   end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
 
   describe '#initialize' do
     def link_for label
@@ -62,10 +59,10 @@ describe 'MyJohnDeereApi::Model::ContributionProduct' do
     end
 
     it 'accepts an optional accessor' do
-      accessor = 'mock-accessor'
+      mock_accessor = 'mock-accessor'
 
-      asset = JD::Model::ContributionProduct.new(record, accessor)
-      assert_equal accessor, asset.accessor
+      asset = JD::Model::ContributionProduct.new(record, mock_accessor)
+      assert_equal mock_accessor, asset.accessor
     end
   end
 end

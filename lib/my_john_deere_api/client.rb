@@ -55,7 +55,7 @@ module MyJohnDeereApi
       if response.body.size > 0
         JSON.parse(response.body)
       else
-        {}
+        response
       end
     end
 
@@ -70,7 +70,7 @@ module MyJohnDeereApi
       if response.body && response.body.size > 0
         JSON.parse(response.body)
       else
-        {}
+        response
       end
     end
 
@@ -79,7 +79,7 @@ module MyJohnDeereApi
 
     def organizations
       return @organizations if defined?(@organizations)
-      @organizations = MyJohnDeereApi::Request::Collection::Organizations.new(accessor).all
+      @organizations = MyJohnDeereApi::Request::Collection::Organizations.new(accessor)
     end
 
     ##

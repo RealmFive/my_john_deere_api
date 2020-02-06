@@ -3,14 +3,6 @@ require 'yaml'
 require 'json'
 
 describe 'MyJohnDeereApi::Request::Collection::Fields' do
-  let(:organization_id) do
-    contents = File.read('test/support/vcr/get_organizations.yml')
-    body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
-    JSON.parse(body)['values'].first['id']
-  end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
   let(:collection) { JD::Request::Collection::Fields.new(accessor, organization: organization_id) }
   let(:object) { collection }
 
@@ -22,10 +14,10 @@ describe 'MyJohnDeereApi::Request::Collection::Fields' do
     end
 
     it 'accepts associations' do
-      collection = JD::Request::Collection::Fields.new(accessor, organization: '123')
+      collection = JD::Request::Collection::Fields.new(accessor, organization: organization_id)
 
       assert_kind_of Hash, collection.associations
-      assert_equal '123', collection.associations[:organization]
+      assert_equal organization_id, collection.associations[:organization]
     end
   end
 
@@ -51,7 +43,7 @@ describe 'MyJohnDeereApi::Request::Collection::Fields' do
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_fields.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)
     end
 
@@ -67,7 +59,7 @@ describe 'MyJohnDeereApi::Request::Collection::Fields' do
   describe 'results' do
     let(:field_names) do
       contents = File.read('test/support/vcr/get_fields.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)['values'].map{|v| v['name']}
     end
 

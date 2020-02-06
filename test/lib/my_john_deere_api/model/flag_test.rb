@@ -11,7 +11,7 @@ describe 'MyJohnDeereApi::Model::Flag' do
       "notes"=>"Our flag is a very, very, very nice flag!",
       "id"=>"123456",
       "links"=>[
-        {"@type"=>"Link", "rel"=>"field", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/fields/123456"},
+        {"@type"=>"Link", "rel"=>"field", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/fields/#{field_id}"},
         {"@type"=>"Link", "rel"=>"createdBy", "uri"=>"https://sandboxapi.deere.com/platform/users/bobsmith"},
         {"@type"=>"Link", "rel"=>"lastModifiedBy", "uri"=>"https://sandboxapi.deere.com/platform/users/jonsmith"},
       ]

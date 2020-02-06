@@ -10,7 +10,6 @@ end
 
 describe 'MyJohnDeereApi::Model::Base' do
   let(:object) { JD::Model::Base.new(record, accessor) }
-  let(:accessor) { 'accessor' }
 
   let(:record) do
     {
@@ -18,9 +17,9 @@ describe 'MyJohnDeereApi::Model::Base' do
       'id'=>'123',
       'somefield'=>'somevalue',
       "links"=>[
-        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/assets/123456"},
-        {"@type"=>"Link", "rel"=>"organization", "uri"=>"https://sandboxapi.deere.com/platform/organizations/234567"},
-        {"@type"=>"Link", "rel"=>"locations", "uri"=>"https://sandboxapi.deere.com/platform/assets/123456/locations"},
+        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/assets/#{asset_id}"},
+        {"@type"=>"Link", "rel"=>"organization", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}"},
+        {"@type"=>"Link", "rel"=>"locations", "uri"=>"https://sandboxapi.deere.com/platform/assets/#{asset_id}/locations"},
       ]
     }
   end

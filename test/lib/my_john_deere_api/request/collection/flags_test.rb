@@ -3,20 +3,6 @@ require 'yaml'
 require 'json'
 
 describe 'MyJohnDeereApi::Request::Collection::Flags' do
-  let(:organization_id) do
-    contents = File.read('test/support/vcr/get_organizations.yml')
-    body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
-    JSON.parse(body)['values'].first['id']
-  end
-
-  let(:field_id) do
-    contents = File.read('test/support/vcr/get_fields.yml')
-    body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
-    JSON.parse(body)['values'].first['id']
-  end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
   let(:collection) { JD::Request::Collection::Flags.new(accessor, organization: organization_id, field: field_id) }
   let(:object) { collection }
 
@@ -28,11 +14,11 @@ describe 'MyJohnDeereApi::Request::Collection::Flags' do
     end
 
     it 'accepts associations' do
-      collection = JD::Request::Collection::Flags.new(accessor, organization: '123', field: '456')
+      collection = JD::Request::Collection::Flags.new(accessor, organization: organization_id, field: field_id)
 
       assert_kind_of Hash, collection.associations
-      assert_equal '123', collection.associations[:organization]
-      assert_equal '456', collection.associations[:field]
+      assert_equal organization_id, collection.associations[:organization]
+      assert_equal field_id, collection.associations[:field]
     end
   end
 
@@ -58,7 +44,7 @@ describe 'MyJohnDeereApi::Request::Collection::Flags' do
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_flags.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)
     end
 
@@ -74,7 +60,7 @@ describe 'MyJohnDeereApi::Request::Collection::Flags' do
   describe 'results' do
     let(:flag_geometries) do
       contents = File.read('test/support/vcr/get_flags.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)['values'].map{|v| JSON.parse(v['geometry'])}
     end
 

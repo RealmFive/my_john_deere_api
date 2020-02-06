@@ -3,17 +3,17 @@ require 'support/helper'
 describe 'MyJohnDeereApi::Client' do
   describe '#initialize(api_key, api_secret)' do
     it 'sets the api key/secret' do
-      client = JD::Client.new(API_KEY, API_SECRET)
+      client = JD::Client.new(api_key, api_secret)
 
-      assert_equal API_KEY, client.api_key
-      assert_equal API_SECRET, client.api_secret
+      assert_equal api_key, client.api_key
+      assert_equal api_secret, client.api_secret
     end
 
     it 'accepts access token/secret' do
       access_token = 'token'
       access_secret = 'secret'
 
-      client = JD::Client.new(API_KEY, API_SECRET, access: [access_token, access_secret])
+      client = JD::Client.new(api_key, api_secret, access: [access_token, access_secret])
 
       assert_equal access_token, client.access_token
       assert_equal access_secret, client.access_secret
@@ -22,14 +22,13 @@ describe 'MyJohnDeereApi::Client' do
     it 'accepts the environment' do
       environment = :sandbox
 
-      client = JD::Client.new(API_KEY, API_SECRET, environment: environment)
+      client = JD::Client.new(api_key, api_secret, environment: environment)
       assert_equal environment, client.environment
     end
   end
 
   describe '#get' do
     it 'returns the response as a Hash' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
       VCR.use_cassette('catalog') { client.send(:accessor) }
       response = VCR.use_cassette('get_organizations') { client.get('/organizations') }
 
@@ -40,7 +39,6 @@ describe 'MyJohnDeereApi::Client' do
     end
 
     it 'prepends the leading slash if needed' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
       VCR.use_cassette('catalog') { client.send(:accessor) }
       response = VCR.use_cassette('get_organizations') { client.get('organizations') }
 
@@ -51,7 +49,6 @@ describe 'MyJohnDeereApi::Client' do
     end
 
     it 'allows symbols for simple resources' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
       VCR.use_cassette('catalog') { client.send(:accessor) }
       response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
 
@@ -63,83 +60,50 @@ describe 'MyJohnDeereApi::Client' do
   end
 
   describe '#post' do
-    let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-
-    let(:body) do
-      {
-        "@type": "FlagCategory",
-        "categoryTitle": "Mountain Dew",
-        "sourceNode": "7ba95d7a-f798-46d0-9bf9-c39c31bcf984",
-        "links": [
-          {
-            "rel": "contributionDefinition",
-            "uri": "https://sandboxapi.deere.com/platform/contributionDefinitions/#{ENV['CONTRIBUTION_DEFINITION_ID']}"
-          }
-        ],
-        "preferred": true
-      }
-    end
-
     it 'returns the response as a Hash' do
-      VCR.use_cassette('catalog') { client.send(:accessor) }
+      response = VCR.use_cassette('post_assets') do
+        client.post("/organizations/#{organization_id}/assets", CONFIG.asset_attributes)
+      end
 
-      response = VCR.use_cassette('post_flag_categories') { client.post("/organizations/#{ENV['ORGANIZATION_ID']}/flagCategories", body) }
-
-      assert_equal Hash.new, response
+      assert_equal '201', response.code
+      assert_equal 'Created', response.message
+      assert_includes response['Location'], "/assets/#{asset_id}"
     end
 
     it 'prepends the leading slash if needed' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-      VCR.use_cassette('catalog') { client.send(:accessor) }
-      response = VCR.use_cassette('get_organizations') { client.get('organizations') }
+      response = VCR.use_cassette('post_assets') do
+        client.post("organizations/#{organization_id}/assets", CONFIG.asset_attributes)
+      end
 
-      assert_kind_of Hash, response
-      assert_kind_of Integer, response['total']
-      assert response['values'].all?{|value| value['@type'] == 'Organization'}
-      assert response['values'].all?{|value| value.has_key?('links')}
-    end
-
-    it 'allows symbols for simple resources' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-      VCR.use_cassette('catalog') { client.send(:accessor) }
-      response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
-
-      assert_kind_of Hash, response
-      assert_kind_of Integer, response['total']
-      assert response['values'].all?{|value| value['@type'] == 'Organization'}
-      assert response['values'].all?{|value| value.has_key?('links')}
+      assert_equal '201', response.code
+      assert_equal 'Created', response.message
+      assert_includes response['Location'], "/assets/#{asset_id}"
     end
   end
 
   describe '#delete' do
     it 'sends the request' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-      VCR.use_cassette('catalog') { client.send(:accessor) }
-      response = VCR.use_cassette('delete_asset') { client.delete("/assets/123") }
+      response = VCR.use_cassette('delete_asset') { client.delete("/assets/#{asset_id}") }
 
-      assert_kind_of Hash, response
+      assert_equal '204', response.code
+      assert_equal 'No Content', response.message
     end
 
     it 'prepends the leading slash if needed' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-      VCR.use_cassette('catalog') { client.send(:accessor) }
-      response = VCR.use_cassette('get_organizations') { client.get('organizations') }
+      response = VCR.use_cassette('delete_asset') { client.delete("assets/#{asset_id}") }
 
-      assert_kind_of Hash, response
+      assert_equal '204', response.code
+      assert_equal 'No Content', response.message
     end
   end
 
   describe '#organizations' do
     it 'returns a collection of organizations for this account' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-      VCR.use_cassette('catalog') { client.send(:accessor) }
+      organizations = VCR.use_cassette('get_organizations') { client.organizations.all; client.organizations }
 
-      # force full loading of organizations
-      VCR.use_cassette('get_organizations') { client.organizations }
+      assert_kind_of JD::Request::Collection::Organizations, organizations
 
-      assert_kind_of Array, client.organizations
-
-      client.organizations.each do |organization|
+      organizations.each do |organization|
         assert_kind_of JD::Model::Organization, organization
       end
     end
@@ -149,25 +113,22 @@ describe 'MyJohnDeereApi::Client' do
     it 'receives the api key/secret and environment of the client' do
       environment = :sandbox
 
-      client = JD::Client.new(API_KEY, API_SECRET, environment: environment)
+      client = JD::Client.new(api_key, api_secret, environment: environment)
       consumer = client.send :consumer
 
       assert_kind_of JD::Consumer, consumer
-      assert_equal API_KEY, consumer.api_key
-      assert_equal API_SECRET, consumer.api_secret
+      assert_equal api_key, consumer.api_key
+      assert_equal api_secret, consumer.api_secret
       assert_equal environment, consumer.environment
     end
   end
 
   describe '#accessor' do
     it 'returns an object that can make user-specific requests' do
-      client = JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
-      accessor = VCR.use_cassette('catalog') { client.send :accessor }
-
       assert_kind_of OAuth::AccessToken, accessor
       assert_kind_of OAuth::Consumer, accessor.consumer
-      assert_equal ACCESS_TOKEN, accessor.token
-      assert_equal ACCESS_SECRET, accessor.secret
+      assert_equal access_token, accessor.token
+      assert_equal access_secret, accessor.secret
     end
   end
 end

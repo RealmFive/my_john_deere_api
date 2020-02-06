@@ -3,14 +3,6 @@ require 'yaml'
 require 'json'
 
 describe 'MyJohnDeereApi::Request::Collection::Assets' do
-  let(:organization_id) do
-    contents = File.read('test/support/vcr/get_organizations.yml')
-    body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
-    JSON.parse(body)['values'].first['id']
-  end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
   let(:collection) { JD::Request::Collection::Assets.new(accessor, organization: organization_id) }
   let(:object) { collection }
 
@@ -22,10 +14,10 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
     end
 
     it 'accepts associations' do
-      collection = JD::Request::Collection::Assets.new(accessor, organization: '123')
+      collection = JD::Request::Collection::Assets.new(accessor, organization: organization_id)
 
       assert_kind_of Hash, collection.associations
-      assert_equal '123', collection.associations[:organization]
+      assert_equal organization_id, collection.associations[:organization]
     end
   end
 
@@ -49,33 +41,19 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
   end
 
   describe '#create(attributes)' do
-    let(:title) { 'i like turtles' }
-    let(:category) { 'DEVICE' }
-    let(:type) { 'SENSOR' }
-    let(:subtype) { 'ENVIRONMENTAL' }
-
     it 'creates a new asset with the given attributes' do
-      attributes = {
-        contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
-        title: title,
-        asset_category: category,
-        asset_type: type,
-        asset_sub_type: subtype
-      }
-
+      attributes = CONFIG.asset_attributes
       object = VCR.use_cassette('post_assets') { collection.create(attributes) }
 
       assert_kind_of JD::Model::Asset, object
-      assert_equal title, object.title
-      assert_equal category, object.asset_category
-      assert_equal type, object.asset_type
-      assert_equal subtype, object.asset_sub_type
+      assert_equal attributes[:title], object.title
+      assert_equal attributes[:asset_category], object.asset_category
+      assert_equal attributes[:asset_type], object.asset_type
+      assert_equal attributes[:asset_sub_type], object.asset_sub_type
     end
   end
 
   describe '#find(asset_id)' do
-    let(:asset_id) { '123' }
-
     it 'retrieves the asset' do
       asset = VCR.use_cassette('get_asset') { collection.find(asset_id) }
       assert_kind_of JD::Model::Asset, asset
@@ -85,7 +63,7 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_assets.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)
     end
 
@@ -101,7 +79,7 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
   describe 'results' do
     let(:asset_titles) do
       contents = File.read('test/support/vcr/get_assets.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)['values'].map{|v| v['title']}
     end
 

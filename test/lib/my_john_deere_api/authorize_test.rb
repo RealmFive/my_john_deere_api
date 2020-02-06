@@ -7,7 +7,7 @@ def contains_parameters?(uri)
 end
 
 def create_authorize
-  VCR.use_cassette('catalog'){ JD::Authorize.new(API_KEY, API_SECRET, environment: :sandbox) }
+  VCR.use_cassette('catalog'){ JD::Authorize.new(api_key, api_secret, environment: :sandbox) }
 end
 
 def fancy_url
@@ -17,16 +17,16 @@ end
 describe 'MyJohnDeereApi::Authorize' do
   describe 'initialization' do
     it 'sets the api key/secret' do
-      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET) }
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(api_key, api_secret) }
 
-      assert_equal API_KEY, authorize.api_key
-      assert_equal API_SECRET, authorize.api_secret
+      assert_equal api_key, authorize.api_key
+      assert_equal api_secret, authorize.api_secret
     end
 
     it 'accepts the environment' do
       environment = :sandbox
 
-      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(API_KEY, API_SECRET, environment: environment) }
+      authorize = VCR.use_cassette('catalog') { JD::Authorize.new(api_key, api_secret, environment: environment) }
       assert_equal environment, authorize.environment
     end
   end
@@ -46,7 +46,7 @@ describe 'MyJohnDeereApi::Authorize' do
       authorize = create_authorize
 
       url = VCR.use_cassette('get_request_token') { authorize.authorize_url }
-      links = VCR.use_cassette('catalog') { JD::Consumer.new(API_KEY, API_SECRET, environment: :sandbox).send(:links) }
+      links = VCR.use_cassette('catalog') { JD::Consumer.new(api_key, api_secret, environment: :sandbox).send(:links) }
 
       assert_includes url, "#{links[:authorize_request_token]}"
 

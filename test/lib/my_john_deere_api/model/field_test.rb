@@ -8,15 +8,12 @@ describe 'MyJohnDeereApi::Model::Field' do
       "archived"=>false,
       "id"=>"123456",
       "links"=>[
-        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/fields/123456"},
-        {"@type"=>"Link", "rel"=>"clients", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/fields/123456/clients"},
-        {"@type"=>"Link", "rel"=>"notes", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/fields/123456/notes"},
+        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/fields/#{field_id}"},
+        {"@type"=>"Link", "rel"=>"clients", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/fields/#{field_id}/clients"},
+        {"@type"=>"Link", "rel"=>"notes", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/fields/#{field_id}/notes"},
       ]
     }
   end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
 
   describe '#initialize' do
     def link_for label
@@ -42,10 +39,10 @@ describe 'MyJohnDeereApi::Model::Field' do
     end
 
     it 'accepts an optional accessor' do
-      accessor = 'mock-accessor'
+      mock_accessor = 'mock-accessor'
 
-      field = JD::Model::Field.new(record, accessor)
-      assert_equal accessor, field.accessor
+      field = JD::Model::Field.new(record, mock_accessor)
+      assert_equal mock_accessor, field.accessor
     end
   end
 
@@ -54,7 +51,7 @@ describe 'MyJohnDeereApi::Model::Field' do
       accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
       field = VCR.use_cassette('get_fields') { organization.fields.first }
-      flags = VCR.use_cassette('get_flags') { field.flags }
+      flags = VCR.use_cassette('get_flags') { field.flags.all }
 
       assert_kind_of Array, flags
 
@@ -75,7 +72,7 @@ describe 'MyJohnDeereApi::Model::Field' do
   describe 'private #organization_id' do
     it "infers the organization_id from links" do
       field = JD::Model::Field.new(record)
-      assert_equal '123456', field.send(:organization_id)
+      assert_equal organization_id, field.send(:organization_id)
     end
   end
 end

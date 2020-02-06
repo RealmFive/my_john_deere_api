@@ -23,10 +23,6 @@ SECRET_PATTERN = /^[0-9A-Za-z\-+=\/]+$/
 
 CONFIG = VcrSetup.new
 
-puts "CONTRIBUTION_PRODUCT_ID: #{ENV['CONTRIBUTION_PRODUCT_ID']}"
-puts "CONTRIBUTION_DEFINITION_ID: #{ENV['CONTRIBUTION_DEFINITION_ID']}"
-puts "ORGANIZATION_ID: #{ENV['ORGANIZATION_ID']}"
-
 class Minitest::Spec
   class << self
     def inherits_from klass
@@ -49,6 +45,10 @@ class Minitest::Spec
 
   def client
     @_client ||= CONFIG.client
+  end
+
+  def accessor
+    @_accessor ||= VCR.use_cassette('catalog') { client.send(:accessor) }
   end
 
   def api_key

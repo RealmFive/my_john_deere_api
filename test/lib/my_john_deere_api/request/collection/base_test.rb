@@ -1,9 +1,6 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Request::Collection::Base' do
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
-
   describe '#initialize(access_token)' do
     it 'accepts an access token' do
       collection = JD::Request::Collection::Base.new(accessor)
@@ -11,10 +8,10 @@ describe 'MyJohnDeereApi::Request::Collection::Base' do
     end
 
     it 'accepts associations' do
-      collection = JD::Request::Collection::Base.new(accessor, organization: '123')
+      collection = JD::Request::Collection::Base.new(accessor, organization: organization_id)
 
       assert_kind_of Hash, collection.associations
-      assert_equal '123', collection.associations[:organization]
+      assert_equal organization_id, collection.associations[:organization]
     end
   end
 

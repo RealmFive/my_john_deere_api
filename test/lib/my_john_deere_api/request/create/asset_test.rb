@@ -6,25 +6,11 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     attributes.reject{|k,v| keys.include?(k)}
   end
 
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
-
-  let(:organization_id) { ENV['ORGANIZATION_ID']}
-  let(:contribution_definition_id) { ENV['CONTRIBUTION_DEFINITION_ID']}
-  let(:title) { 'i like turtles' }
-  let(:category) { 'DEVICE' }
-  let(:type) { 'SENSOR' }
-  let(:subtype) { 'ENVIRONMENTAL' }
-
   let(:valid_attributes) do
-    {
+    CONFIG.asset_attributes.merge(
       organization_id: organization_id,
       contribution_definition_id: contribution_definition_id,
-      title: title,
-      asset_category: category,
-      asset_type: type,
-      asset_sub_type: subtype,
-    }
+    )
   end
 
   let(:object) { JD::Request::Create::Asset.new(accessor, attributes) }
@@ -155,10 +141,10 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
       object = JD::Request::Create::Asset.new(accessor, attributes)
       body = object.send(:request_body)
 
-      assert_equal title, body[:title]
-      assert_equal category, body[:assetCategory]
-      assert_equal type, body[:assetType]
-      assert_equal subtype, body[:assetSubType]
+      assert_equal attributes[:title], body[:title]
+      assert_equal attributes[:asset_category], body[:assetCategory]
+      assert_equal attributes[:asset_type], body[:assetType]
+      assert_equal attributes[:asset_sub_type], body[:assetSubType]
 
       assert_kind_of Array, body[:links]
       assert_equal 1, body[:links].size
@@ -189,10 +175,10 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
       expected_id = object.response['location'].split('/').last
 
       assert_equal expected_id, result.id
-      assert_equal title, result.title
-      assert_equal category, result.asset_category
-      assert_equal type, result.asset_type
-      assert_equal subtype, result.asset_sub_type
+      assert_equal attributes[:title], result.title
+      assert_equal attributes[:asset_category], result.asset_category
+      assert_equal attributes[:asset_type], result.asset_type
+      assert_equal attributes[:asset_sub_type], result.asset_sub_type
     end
   end
 end

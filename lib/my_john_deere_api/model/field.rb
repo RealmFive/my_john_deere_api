@@ -17,7 +17,7 @@ module MyJohnDeereApi
       raise AccessTokenError unless accessor
 
       return @flags if defined?(@flags)
-      @flags = Request::Collection::Flags.new(accessor, organization: organization_id, field: id).all
+      @flags = Request::Collection::Flags.new(accessor, organization: organization_id, field: id)
     end
 
     private

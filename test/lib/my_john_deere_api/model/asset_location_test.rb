@@ -4,28 +4,13 @@ require 'json'
 describe 'MyJohnDeereApi::Model::AssetLocation' do
   let(:record) do
     {
-      "@type"=>"ContributedAssetLocation",
-      "timestamp"=>"2017-09-20T21:30:59.000Z",
-      "geometry"=>"{\"type\": \"Feature\",\"geometry\": {\"geometries\": [{\"coordinates\": [ -103.115633, 41.670166],\"type\": \"Point\"}],\"type\": \"GeometryCollection\"}}",
-      "measurementData"=>[
-        {
-          "@type"=>"BasicMeasurement",
-          "name"=>"[1 Foot](https://app.realmfive.com/map?device=0x0080CDEF)",
-          "value"=>"82",
-          "unit"=>"cB"
-        }, {
-          "@type"=>"BasicMeasurement",
-          "name"=>"[2 Feet](https://app.realmfive.com/map?device=0x0080CDEF)",
-          "value"=>"31",
-          "unit"=>"cB"
-        }
-      ],
-      "links"=>[]
+      '@type' => 'ContributedAssetLocation',
+      'timestamp' => CONFIG.timestamp,
+      'geometry' => CONFIG.geometry.to_json,
+      'measurementData' => CONFIG.measurement_data,
+      'links' => []
     }
   end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
 
   describe '#initialize' do
     def link_for label
@@ -48,10 +33,10 @@ describe 'MyJohnDeereApi::Model::AssetLocation' do
     end
 
     it 'accepts an optional accessor' do
-      accessor = 'mock-accessor'
+      mock_accessor = 'mock-accessor'
 
-      location = JD::Model::AssetLocation.new(record, accessor)
-      assert_equal accessor, location.accessor
+      location = JD::Model::AssetLocation.new(record, mock_accessor)
+      assert_equal mock_accessor, location.accessor
     end
   end
 end

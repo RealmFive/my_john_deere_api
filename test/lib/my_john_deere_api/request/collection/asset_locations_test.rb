@@ -3,14 +3,6 @@ require 'yaml'
 require 'json'
 
 describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
-  let(:asset_id) do
-    contents = File.read('test/support/vcr/get_assets.yml')
-    body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
-    JSON.parse(body)['values'].first['id']
-  end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
   let(:collection) { JD::Request::Collection::AssetLocations.new(accessor, asset: asset_id) }
   let(:object) { collection }
 
@@ -22,10 +14,10 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
     end
 
     it 'accepts associations' do
-      collection = JD::Request::Collection::AssetLocations.new(accessor, asset: '123')
+      collection = JD::Request::Collection::AssetLocations.new(accessor, asset: asset_id)
 
       assert_kind_of Hash, collection.associations
-      assert_equal '123', collection.associations[:asset]
+      assert_equal asset_id, collection.associations[:asset]
     end
   end
 
@@ -50,40 +42,8 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
   end
 
   describe '#create(attributes)' do
-    let(:asset_id) { ENV['ASSET_ID'] }
-    let(:timestamp) { DateTime.parse(timestamp_string) }
-    let(:timestamp_string) { '2020-01-21T10:49:00Z' }
-    let(:coordinates) { [-103.115633, 41.670166] }
-
-    let(:geometry) do
-      {
-        type: 'Feature',
-        geometry: {
-          geometries: [
-            coordinates: coordinates,
-            type: 'Point'
-          ],
-          type: 'GeometryCollection'
-        }
-      }
-    end
-
-    let(:measurement_data) do
-      [
-        {
-          name: 'Temperature',
-          value: '68.0',
-          unit: 'F'
-        }
-      ]
-    end
-
     it 'creates a new asset with the given attributes' do
-      attributes = {
-        timestamp: timestamp,
-        geometry: geometry,
-        measurement_data: measurement_data
-      }
+      attributes = CONFIG.asset_location_attributes
 
       object = VCR.use_cassette('post_asset_locations') { collection.create(attributes) }
 
@@ -91,20 +51,21 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
 
       # API returns seconds with decimals, even though they're always zero
       integer_stamp = DateTime.parse(object.timestamp).strftime('%Y-%m-%dT%H:%M:%SZ')
+      expected_stamp = DateTime.parse(attributes[:timestamp]).strftime('%Y-%m-%dT%H:%M:%SZ')
 
       # API returns string keys and an extra '@type' key
       object_measurement_data = object.measurement_data.first.transform_keys{|k| k.to_sym}.slice(:name, :value, :unit)
 
-      assert_equal timestamp_string, integer_stamp
-      assert_equal geometry.to_json, object.geometry.to_json
-      assert_equal measurement_data.first, object_measurement_data
+      assert_equal expected_stamp, integer_stamp
+      assert_equal attributes[:geometry].to_json, object.geometry.to_json
+      assert_equal attributes[:measurement_data].first, object_measurement_data
     end
   end
 
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_asset_locations.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)
     end
 
@@ -120,7 +81,7 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
   describe 'results' do
     let(:location_timestamps) do
       contents = File.read('test/support/vcr/get_asset_locations.yml')
-      body = YAML.load(contents)['http_interactions'].first['response']['body']['string']
+      body = YAML.load(contents)['http_interactions'].last['response']['body']['string']
       JSON.parse(body)['values'].map{|v| v['timestamp']}
     end
 

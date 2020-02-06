@@ -9,27 +9,24 @@ describe 'MyJohnDeereApi::Model::Organization' do
       "member"=>true,
       "id"=>"123456",
       "links"=>[
-        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456"},
-        {"@type"=>"Link", "rel"=>"machines", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/machines"},
-        {"@type"=>"Link", "rel"=>"wdtCapableMachines", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/machines?capability=wdt"},
-        {"@type"=>"Link", "rel"=>"files", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/files"},
-        {"@type"=>"Link", "rel"=>"transferableFiles", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/files?transferable=true"},
-        {"@type"=>"Link", "rel"=>"uploadFile", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/files"},
-        {"@type"=>"Link", "rel"=>"sendFileToMachine", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/fileTransfers"},
-        {"@type"=>"Link", "rel"=>"addMachine", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/machines"},
-        {"@type"=>"Link", "rel"=>"addField", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/fields"},
-        {"@type"=>"Link", "rel"=>"assets", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/assets"},
-        {"@type"=>"Link", "rel"=>"fields", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/fields"},
-        {"@type"=>"Link", "rel"=>"farms", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/farms"},
-        {"@type"=>"Link", "rel"=>"boundaries", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/boundaries"},
-        {"@type"=>"Link", "rel"=>"clients", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/clients"},
-        {"@type"=>"Link", "rel"=>"controllers", "uri"=>"https://sandboxapi.deere.com/platform/organizations/123456/orgController"}
+        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}"},
+        {"@type"=>"Link", "rel"=>"machines", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/machines"},
+        {"@type"=>"Link", "rel"=>"wdtCapableMachines", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/machines?capability=wdt"},
+        {"@type"=>"Link", "rel"=>"files", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/files"},
+        {"@type"=>"Link", "rel"=>"transferableFiles", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/files?transferable=true"},
+        {"@type"=>"Link", "rel"=>"uploadFile", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/files"},
+        {"@type"=>"Link", "rel"=>"sendFileToMachine", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/fileTransfers"},
+        {"@type"=>"Link", "rel"=>"addMachine", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/machines"},
+        {"@type"=>"Link", "rel"=>"addField", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/fields"},
+        {"@type"=>"Link", "rel"=>"assets", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/assets"},
+        {"@type"=>"Link", "rel"=>"fields", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/fields"},
+        {"@type"=>"Link", "rel"=>"farms", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/farms"},
+        {"@type"=>"Link", "rel"=>"boundaries", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/boundaries"},
+        {"@type"=>"Link", "rel"=>"clients", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/clients"},
+        {"@type"=>"Link", "rel"=>"controllers", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}/orgController"}
       ]
     }
   end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
 
   describe '#initialize(record, accessor = nil)' do
     def link_for label
@@ -55,10 +52,10 @@ describe 'MyJohnDeereApi::Model::Organization' do
     end
 
     it 'accepts an optional accessor' do
-      accessor = 'mock-accessor'
+      mock_accessor = 'mock-accessor'
 
-      organization = JD::Model::Organization.new(record, accessor)
-      assert_equal accessor, organization.accessor
+      organization = JD::Model::Organization.new(record, mock_accessor)
+      assert_equal mock_accessor, organization.accessor
     end
   end
 
@@ -66,7 +63,7 @@ describe 'MyJohnDeereApi::Model::Organization' do
     it 'returns a collection of fields for this organization' do
       accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
-      fields = VCR.use_cassette('get_fields') { organization.fields }
+      fields = VCR.use_cassette('get_fields') { organization.fields.all }
 
       assert_kind_of Array, fields
 

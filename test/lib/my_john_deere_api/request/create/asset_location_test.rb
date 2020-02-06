@@ -7,44 +7,10 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
     attributes.reject{|k,v| keys.include?(k)}
   end
 
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
-
-  let(:asset_id) { ENV['ASSET_ID'] }
-  let(:timestamp) { DateTime.parse(timestamp_string) }
-  let(:timestamp_string) { '2020-01-21T10:49:00Z' }
-  let(:coordinates) { [-103.115633, 41.670166] }
-
-  let(:geometry) do
-    {
-      type: 'Feature',
-      geometry: {
-        geometries: [
-          coordinates: coordinates,
-          type: 'Point'
-        ],
-        type: 'GeometryCollection'
-      }
-    }
-  end
-
-  let(:measurement_data) do
-    [
-      {
-        name: 'Temperature',
-        value: '68.0',
-        unit: 'F'
-      }
-    ]
-  end
-
   let(:valid_attributes) do
-    {
-      asset_id: asset_id,
-      timestamp: timestamp,
-      geometry: geometry,
-      measurement_data: measurement_data
-    }
+    CONFIG.asset_location_attributes.merge(
+      asset_id: asset_id
+    )
   end
 
   let(:attributes) { valid_attributes }
@@ -67,12 +33,13 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
     it 'accepts simple coordinates and generates the geometry' do
       attributes = {
         asset_id: asset_id,
-        timestamp: timestamp,
-        coordinates: coordinates,
-        measurement_data: measurement_data
+        timestamp: valid_attributes[:timestamp],
+        coordinates: CONFIG.coordinates,
+        measurement_data: valid_attributes[:measurement_data]
       }
 
-      assert_equal geometry.to_json, object.attributes[:geometry]
+      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
+      assert_equal valid_attributes[:geometry].to_json, object.attributes[:geometry]
     end
 
     it 'defaults timestamp to current time' do
@@ -122,7 +89,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
       end
 
       it 'must include a name' do
-        without_attr = [measurement_data.first.reject{|k,v| k == :name}]
+        without_attr = [attributes[:measurement_data].first.reject{|k,v| k == :name}]
         object = JD::Request::Create::AssetLocation.new(accessor, attributes.merge(measurement_data: without_attr))
 
         refute object.valid?
@@ -130,7 +97,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
       end
 
       it 'must include a value' do
-        without_attr = [measurement_data.first.reject{|k,v| k == :value}]
+        without_attr = [attributes[:measurement_data].first.reject{|k,v| k == :value}]
         object = JD::Request::Create::AssetLocation.new(accessor, attributes.merge(measurement_data: without_attr))
 
         refute object.valid?
@@ -138,7 +105,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
       end
 
       it 'must include a unit' do
-        without_attr = [measurement_data.first.reject{|k,v| k == :unit}]
+        without_attr = [attributes[:measurement_data].first.reject{|k,v| k == :unit}]
         object = JD::Request::Create::AssetLocation.new(accessor, attributes.merge(measurement_data: without_attr))
 
         refute object.valid?
@@ -161,10 +128,12 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
     it 'properly forms the request body' do
       body = object.send(:request_body)
 
+      expected_stamp = DateTime.parse(attributes[:timestamp]).strftime('%Y-%m-%dT%H:%M:%S.000Z')
+
       assert_kind_of Array, body
-      assert_equal timestamp_string, body.first[:timestamp]
-      assert_equal geometry.to_json, body.first[:geometry]
-      assert_equal measurement_data, body.first[:measurementData]
+      assert_equal expected_stamp, body.first[:timestamp]
+      assert_equal attributes[:geometry], body.first[:geometry]
+      assert_equal attributes[:measurement_data], body.first[:measurementData]
     end
   end
 
@@ -184,13 +153,14 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
       # API returns seconds with decimals, even though they're always zero
       integer_stamp = DateTime.parse(result.timestamp).strftime('%Y-%m-%dT%H:%M:%SZ')
+      expected_stamp = DateTime.parse(attributes[:timestamp]).strftime('%Y-%m-%dT%H:%M:%SZ')
 
       # API returns string keys and an extra '@type' key
       result_measurement_data = result.measurement_data.first.transform_keys{|k| k.to_sym}.slice(:name, :value, :unit)
 
-      assert_equal timestamp_string, integer_stamp
-      assert_equal geometry.to_json, result.geometry.to_json
-      assert_equal measurement_data.first, result_measurement_data
+      assert_equal expected_stamp, integer_stamp
+      assert_equal attributes[:geometry], result.geometry.to_json
+      assert_equal attributes[:measurement_data].first, result_measurement_data
     end
   end
 end

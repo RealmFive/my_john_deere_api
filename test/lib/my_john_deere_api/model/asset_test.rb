@@ -11,15 +11,12 @@ describe 'MyJohnDeereApi::Model::Asset' do
       "id"=>"123456",
       "lastModifiedDate"=>"2018-01-31T20:36:16.727Z",
       "links"=>[
-        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/assets/123456"},
-        {"@type"=>"Link", "rel"=>"organization", "uri"=>"https://sandboxapi.deere.com/platform/organizations/234567"},
-        {"@type"=>"Link", "rel"=>"locations", "uri"=>"https://sandboxapi.deere.com/platform/assets/123456/locations"},
+        {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/assets/#{asset_id}"},
+        {"@type"=>"Link", "rel"=>"organization", "uri"=>"https://sandboxapi.deere.com/platform/organizations/#{organization_id}"},
+        {"@type"=>"Link", "rel"=>"locations", "uri"=>"https://sandboxapi.deere.com/platform/assets/#{asset_id}/locations"},
       ]
     }
   end
-
-  let(:client) { JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET]) }
-  let(:accessor) { VCR.use_cassette('catalog') { client.send(:accessor) } }
 
   describe '#initialize' do
     def link_for label
@@ -48,10 +45,10 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
 
     it 'accepts an optional accessor' do
-      accessor = 'mock-accessor'
+      mock_accessor = 'mock-accessor'
 
-      asset = JD::Model::Asset.new(record, accessor)
-      assert_equal accessor, asset.accessor
+      asset = JD::Model::Asset.new(record, mock_accessor)
+      assert_equal mock_accessor, asset.accessor
     end
   end
 
