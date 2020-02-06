@@ -11,6 +11,7 @@ gem 'json'
 
 group :development, :test do
 	gem 'minitest'
+  gem 'minitest-reporters'
 	gem 'vcr'
 	gem 'rake'
 	gem 'dotenv'

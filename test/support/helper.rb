@@ -1,9 +1,13 @@
 require 'rubygems'
-require 'vcr'
 require 'webmock'
 require 'dotenv/load'
 require 'minitest/autorun'
+require 'minitest/reporters'
 require 'my_john_deere_api'
+
+require 'support/vcr_setup'
+
+Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(:color => true)]
 
 # shortcut for long module name
 JD = MyJohnDeereApi
@@ -17,10 +21,11 @@ ACCESS_SECRET = ENV['ACCESS_SECRET']
 TOKEN_PATTERN = /^[0-9a-z\-]+$/
 SECRET_PATTERN = /^[0-9A-Za-z\-+=\/]+$/
 
-VCR.configure do |config|
-  config.cassette_library_dir = 'test/support/vcr'
-  config.hook_into :webmock
-end
+CONFIG = VcrSetup.new
+
+puts "CONTRIBUTION_PRODUCT_ID: #{ENV['CONTRIBUTION_PRODUCT_ID']}"
+puts "CONTRIBUTION_DEFINITION_ID: #{ENV['CONTRIBUTION_DEFINITION_ID']}"
+puts "ORGANIZATION_ID: #{ENV['ORGANIZATION_ID']}"
 
 class Minitest::Spec
   class << self
@@ -38,5 +43,51 @@ class Minitest::Spec
         end
       end
     end
+  end
+
+  # Helpers from CONFIG
+
+  def client
+    @_client ||= CONFIG.client
+  end
+
+  def api_key
+    CONFIG.api_key
+  end
+
+  def api_secret
+    CONFIG.api_secret
+  end
+
+  def access_token
+    CONFIG.access_token
+  end
+
+  def access_secret
+    CONFIG.access_secret
+  end
+
+  def contribution_product_id
+    CONFIG.contribution_product_id
+  end
+
+  def contribution_definition_id
+    CONFIG.contribution_definition_id
+  end
+
+  def organization_id
+    CONFIG.organization_id
+  end
+
+  def asset_id
+    CONFIG.asset_id
+  end
+
+  def field_id
+    CONFIG.field_id
+  end
+
+  def verify_code
+    CONFIG.verify_code
   end
 end
