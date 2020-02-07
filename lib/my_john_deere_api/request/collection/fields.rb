@@ -15,5 +15,12 @@ module MyJohnDeereApi::Request
     def model
       MyJohnDeereApi::Model::Field
     end
+
+    ##
+    # Retrieve a field from JD
+
+    def find(field_id)
+      Individual::Field.new(accessor, field_id, organization: associations[:organization]).object
+    end
   end
 end

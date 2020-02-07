@@ -40,6 +40,13 @@ describe 'MyJohnDeereApi::Request::Collection::Fields' do
     end
   end
 
+  describe '#find(field_id)' do
+    it 'retrieves the asset' do
+      field = VCR.use_cassette('get_field') { collection.find(field_id) }
+      assert_kind_of JD::Model::Field, field
+    end
+  end
+
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_fields.yml')

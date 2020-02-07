@@ -2,14 +2,15 @@ require 'json'
 
 module MyJohnDeereApi::Request
   class Individual::Base
-    attr_reader :accessor, :id, :response
+    attr_reader :accessor, :id, :associations, :response
 
     ##
     # Initialize with an accessor, and asset id
 
-    def initialize(accessor, id)
+    def initialize(accessor, id, associations = {})
       @accessor = accessor
       @id = id
+      @associations = associations
     end
 
     ##

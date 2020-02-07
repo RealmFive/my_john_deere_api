@@ -14,6 +14,10 @@ describe 'MyJohnDeereApi::Request::Individual' do
       assert JD::Request::Individual::ContributionProduct
     end
 
+    it 'loads Request::Individual::Field' do
+      assert JD::Request::Individual::Field
+    end
+
     it 'loads Request::Individual::Organization' do
       assert JD::Request::Individual::Organization
     end

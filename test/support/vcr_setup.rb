@@ -20,7 +20,7 @@ class VcrSetup
     :catalog, :get_request_token, :get_access_token,
     :get_contribution_products, :get_contribution_product,
     :get_organizations, :get_organization,
-    :get_fields, :get_flags,
+    :get_fields, :get_field, :get_flags,
     :post_assets, :get_assets, :get_asset,
     :post_asset_locations, :get_asset_locations,
     :delete_asset
@@ -211,6 +211,10 @@ class VcrSetup
 
   def get_fields
     @temporary_field = find_organization(ENV['ORGANIZATION_ID']).fields.all.first
+  end
+
+  def get_field
+    find_organization(ENV['ORGANIZATION_ID']).fields.find(@temporary_field.id)
   end
 
   def get_flags
