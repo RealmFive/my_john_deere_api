@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: Run tests
-          command: rake test
+          command: rake test --trace
 
       - store_test_results:
           path: /tmp/test-results
