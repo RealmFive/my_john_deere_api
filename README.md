@@ -104,13 +104,16 @@ with John Deere, not your user's. But most interactions will involve user data. 
     )
 
 
-#### Direct API Requests
-
-##### GET
+### Direct API Requests
 
 While the goal of the client is to eliminate the need to make/interpret calls to the John Deere API, it's important
 to be able to make calls that are not yet fully supported by the client. Or sometimes, you need to troubleshoot.
-You can pass any path to the get method, and receive the JSON-parsed response.
+
+
+#### GET
+
+
+DELETE requests require only a resource path.
 
     client.get('/organizations')
     
@@ -130,13 +133,12 @@ You can pass any path to the get method, and receive the JSON-parsed response.
       ]
     }
 
-This won't provide any client goodies like pagination, validation or weeding out the stuff you don't need (like the nifty client methods).
+This won't provide any client goodies like pagination or validation.
 
 
-##### POST
+#### POST
 
-You can also make arbitrary POST requests. This method takes a required resource path, and a hash for the request body that
-the client will convert to JSON.
+POST requests require a resource path, and a hash for the request body. The client camelize the keys, and convert to JSON.
 
     client.post(
      '/organizations/123123/assets',
@@ -159,12 +161,37 @@ The response for most requests is just an HTTP status code, with no body. In thi
 If a body is provided, it will be JSON-parsed and returned instead of the full response.
 
 
-##### DELETE
+#### PUT
 
-Making DELETE requests requires only a resource path.
+PUT requests require a resource path, and a hash for the request body. The client camelize the keys, and convert to JSON.
+
+    client.put(
+     '/assets/123123',
+     {
+       "title"=>"i REALLY like turtles", 
+       "assetCategory"=>"DEVICE", 
+       "assetType"=>"SENSOR", 
+       "assetSubType"=>"ENVIRONMENTAL", 
+       "links"=>[
+         {
+           "@type"=>"Link", 
+           "rel"=>"contributionDefinition", 
+           "uri"=>"https://sandboxapi.deere.com/platform/contributionDefinitions/CONTRIBUTION_DEFINITION_ID"
+         }
+        ]
+      }
+    )
+
+John Deere's standard response is a 204 HTTP status code, with the message "No Content". This method returns the full Net::HTTP response.
+
+
+#### DELETE
+
+DELETE requests require only a resource path.
 
     client.delete('/assets/123123')
 
 John Deere's standard response is a 204 HTTP status code, with the message "No Content". This method returns the full Net::HTTP response.
+
 
 More details coming soon.
