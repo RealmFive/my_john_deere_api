@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/Intellifarm/my_john_deere_api.svg?style=svg)](https://circleci.com/gh/Intellifarm/my_john_deere_api)
 
-This client allows you to connect the MyJohnDeere API without having to code your own oauth process, API requests, and pagination. 
+This client allows you to connect the MyJohnDeere API without having to code your own oauth process, API requests, and pagination.
 
 * Supports both sandbox and live mode
 * Simplifies the oAuth negotiation process
@@ -31,7 +31,7 @@ MyJohnDeereApi::Authorize
 ### Authorizing with John Deere via Auth 1.0
 
 This is the simplest path to authorization, though your user has to jump through an extra hoop of giving you the verification code:
-  
+
 ```ruby
 # Create an authorize object, using your app's API key and secret. You can
 # pass an environment (`:live` or `:sandbox`), which default to `:live`.
@@ -43,7 +43,7 @@ url = authorize.authorize_url
 
 # Verify the code given to the user during the authorization process, and
 # turn this into access credentials for your user.
-authorize.verify(code)    
+authorize.verify(code)
 ```
 
 In reality, you will likely need to re-instantiate the authorize object when the user returns, and that works without issue:
@@ -71,8 +71,8 @@ that contains the verification code so the user doesn't have to provide it.
 ```ruby
 # Create an authorize object, using your app's API key and secret.
 authorize = JD::Authorize.new(
-  API_KEY, 
-  API_SECRET, 
+  API_KEY,
+  API_SECRET,
   environment: :sandbox,
   oauth_callback: 'https://example.com'
 )
@@ -102,13 +102,13 @@ with John Deere, not your user's. But most interactions will involve user data. 
 client = JD::Client.new(
   # the application's API key
   API_KEY,
-  
+
   # the application's API secret
   API_SECRET,
-  
+
   # the chosen environment (:sandbox or :live)
   environment: :sandbox,
-  
+
   # the user's access credentials
   access: [ACCESS_TOKEN, ACCESS_SECRET]
 )
@@ -127,10 +127,13 @@ GET requests require only a resource path.
 
 ```ruby
 client.get('/organizations')
+```
 
-# Abbreviated sample response:
+Abbreviated sample response:
+
+```json
 {
-  "links": [...],
+  "links": ["..."],
   "total": 1,
   "values": [
     {
@@ -139,8 +142,8 @@ client.get('/organizations')
       "type": "customer",
       "member": true,
       "id": "123123",
-      "links": [...]
-    },
+      "links": ["..."]
+    }
   ]
 }
 ```
@@ -156,14 +159,14 @@ POST requests require a resource path, and a hash for the request body. The clie
 client.post(
  '/organizations/123123/assets',
  {
-   "title"=>"i like turtles", 
-   "assetCategory"=>"DEVICE", 
-   "assetType"=>"SENSOR", 
-   "assetSubType"=>"ENVIRONMENTAL", 
+   "title"=>"i like turtles",
+   "assetCategory"=>"DEVICE",
+   "assetType"=>"SENSOR",
+   "assetSubType"=>"ENVIRONMENTAL",
    "links"=>[
      {
-       "@type"=>"Link", 
-       "rel"=>"contributionDefinition", 
+       "@type"=>"Link",
+       "rel"=>"contributionDefinition",
        "uri"=>"https://sandboxapi.deere.com/platform/contributionDefinitions/CONTRIBUTION_DEFINITION_ID"
      }
     ]
@@ -182,14 +185,14 @@ PUT requests require a resource path, and a hash for the request body. The clien
 client.put(
  '/assets/123123',
  {
-   "title"=>"i REALLY like turtles", 
-   "assetCategory"=>"DEVICE", 
-   "assetType"=>"SENSOR", 
-   "assetSubType"=>"ENVIRONMENTAL", 
+   "title"=>"i REALLY like turtles",
+   "assetCategory"=>"DEVICE",
+   "assetType"=>"SENSOR",
+   "assetSubType"=>"ENVIRONMENTAL",
    "links"=>[
      {
-       "@type"=>"Link", 
-       "rel"=>"contributionDefinition", 
+       "@type"=>"Link",
+       "rel"=>"contributionDefinition",
        "uri"=>"https://sandboxapi.deere.com/platform/contributionDefinitions/CONTRIBUTION_DEFINITION_ID"
      }
     ]
