@@ -141,14 +141,7 @@ class VcrSetup
       title: 'Asset Title',
       asset_category: 'DEVICE',
       asset_type: 'SENSOR',
-      asset_sub_type: 'ENVIRONMENTAL',
-      links: [
-        {
-          '@type' => 'Link',
-          'rel' => 'contributionDefinition',
-          'uri' => "#{url}/contributionDefinitions/#{ENV['CONTRIBUTION_DEFINITION_ID']}"
-        }
-      ]
+      asset_sub_type: 'ENVIRONMENTAL'
     }.freeze
   end
 

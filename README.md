@@ -2,7 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/Intellifarm/my_john_deere_api.svg?style=svg)](https://circleci.com/gh/Intellifarm/my_john_deere_api)
 
-This client allows you to connect the MyJohnDeere API without having to code your own oauth process, API requests, and pagination.
+This client allows you to connect the [MyJohnDeere API](https://developer.deere.com/#!documentation)
+without having to code your own oauth process, API requests, and pagination.
 
 * Works with Rails, but does not require it
 * Supports both sandbox and live mode
@@ -122,7 +123,7 @@ Once you're connected, the client works like a simplified version of ActiveRecor
 converted into objects to be easier to work with. Collections of things, like organizations, handle pagination
 for you. Just iterate using `each`, `map`, etc, and new pages are fetched as needed.
 
-#### Organizations
+#### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
 
 Organization collections act like a list. In addition to all the methods included via Ruby's
 [Enumerable Module](https://ruby-doc.org/core-2.7.0/Enumerable.html), organization collections support:
@@ -133,17 +134,21 @@ Organization collections act like a list. In addition to all the methods include
 * find
 
 The `count` method only requires loading the first page of results, so it's a relatively cheap call. On the other hand,
-`all` forces the entire collection to be loaded from John Deere's API, so use with caution.
+`all` forces the entire collection to be loaded from John Deere's API, so use with caution. Organizations cannot be
+created via the API, so there is no `create` method on this collection.
 
 ```ruby
 client.organizations
+# => collection of organizations under this client
 
 client.organizations.count
 # => 15
 
 client.organizations.first
+# => a single organization object
 
 organization = client.organizations.find(1234)
+# => a specific organization object, fetched by ID
 
 organization.name
 # => 'Smith Farms'
@@ -188,6 +193,63 @@ This is much nicer than working with the raw API response:
    "member": true
 }
 ```
+
+But the real power comes from daisy-chaining associations together.
+
+
+### [Assets](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fassets.htm)
+
+Handles an organization's assets. Supported methods:
+
+* all
+* count
+* first
+* find
+* create
+
+```ruby
+organization = client.organizations.first
+# => the first organization returned by the client
+
+organization.assets
+# => collection of assets
+
+asset = organization.assets.find(123)
+# => asset object, fetched by ID
+
+asset.title
+# => 'AgThing Water Device'
+
+asset.category
+# => 'DEVICE'
+
+asset.type
+# => 'SENSOR'
+
+asset.sub_type
+# => 'OTHER'
+
+asset.links
+# => a hash of API urls related to this asset
+```
+
+Creating an asset requires a contribution\_definition\_id, in addition to the attributes listed in the
+[John Deere API docs](https://developer.deere.com/#!documentation). This method creates the asset in
+the John Deere platform, and returns the newly created record.
+
+```ruby
+asset = organization.assets.create(
+  contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
+  title: 'Asset Title',
+  asset_category: 'DEVICE',
+  asset_type: 'SENSOR',
+  asset_sub_type: 'ENVIRONMENTAL'
+)
+
+asset.title
+# => 'Asset Title'
+```
+
 
 ### Direct API Requests
 
