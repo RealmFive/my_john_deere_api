@@ -123,6 +123,37 @@ Once you're connected, the client works like a simplified version of ActiveRecor
 converted into objects to be easier to work with. Collections of things, like organizations, handle pagination
 for you. Just iterate using `each`, `map`, etc, and new pages are fetched as needed.
 
+This client is a work in progress. You can currently do the following things without resorting to API calls:
+
+```
+client
+└── organizations
+    ├── count
+    ├── all
+    ├── first
+    └── find(organization_id)
+        ├── assets(attributes)
+        |   ├── count
+        |   ├── all
+        |   ├── first
+        |   ├── find(asset_id)
+        |   |   └── locations
+        |   |       ├── count
+        |   |       ├── all
+        |   |       ├── first
+        |   |       └── create(attributes)
+        |   └── create(attributes)
+        └── fields
+            ├── count
+            ├── all
+            ├── first
+            └── find(field_id)
+                └── flags
+                    ├── count
+                    ├── all
+                    └── first
+```
+
 #### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
 
 Organization collections act like a list. In addition to all the methods included via Ruby's
@@ -156,7 +187,7 @@ organization.name
 organization.type
 # => 'customer'
 
-organization.member
+organization.member?
 # => true
 
 organization.links
