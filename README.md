@@ -154,6 +154,7 @@ client
                     └── first
 ```
 
+
 #### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
 
 Organization collections act like a list. In addition to all the methods included via Ruby's
@@ -228,7 +229,7 @@ This is much nicer than working with the raw API response:
 But the real power comes from daisy-chaining associations together.
 
 
-### [Assets](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fassets.htm)
+#### [Assets](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fassets.htm)
 
 Handles an organization's assets. Supported methods:
 
