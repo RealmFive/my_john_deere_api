@@ -133,12 +133,12 @@ GET requests require only a resource path.
       ]
     }
 
-This won't provide any client goodies like pagination or validation.
+This won't provide any client goodies like pagination or validation, but it does parse the returned JSON.
 
 
 #### POST
 
-POST requests require a resource path, and a hash for the request body. The client camelize the keys, and convert to JSON.
+POST requests require a resource path, and a hash for the request body. The client will camelize the keys, and convert to JSON.
 
     client.post(
      '/organizations/123123/assets',
@@ -157,13 +157,12 @@ POST requests require a resource path, and a hash for the request body. The clie
       }
     )
 
-The response for most requests is just an HTTP status code, with no body. In this case, the entire Net::HTTP response is retruned.
-If a body is provided, it will be JSON-parsed and returned instead of the full response.
+John Deere's standard response is a 201 HTTP status code, with the message "Created". This method returns the full Net::HTTP response.
 
 
 #### PUT
 
-PUT requests require a resource path, and a hash for the request body. The client camelize the keys, and convert to JSON.
+PUT requests require a resource path, and a hash for the request body. The client will camelize the keys, and convert to JSON.
 
     client.put(
      '/assets/123123',
