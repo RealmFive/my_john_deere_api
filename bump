@@ -42,6 +42,7 @@ end
 
 def build_gem
   `gem build my_john_deere_api.gemspec`
+  `mv *.gem unpublished/`
 end
 
 update_version_file
