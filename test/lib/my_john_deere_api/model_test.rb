@@ -18,6 +18,10 @@ describe 'MyJohnDeereApi::Model' do
       assert JD::Model::ContributionProduct
     end
 
+    it 'loads Model::ContributionDefinition' do
+      assert JD::Model::ContributionDefinition
+    end
+
     it 'loads Model::Organization' do
       assert JD::Model::Organization
     end
