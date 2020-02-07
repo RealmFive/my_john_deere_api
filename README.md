@@ -165,15 +165,70 @@ client
 ```
 
 
-#### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
+#### [Contribution Products](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fproducts.htm)
 
-Organization collections act like a list. In addition to all the methods included via Ruby's
-[Enumerable Module](https://ruby-doc.org/core-2.7.0/Enumerable.html), organization collections support:
+Contribution Product collections act like a list. In addition to all the methods included via Ruby's
+[Enumerable Module](https://ruby-doc.org/core-2.7.0/Enumerable.html), contribution product 
+collections support the following methods:
 
 * all
 * count
 * first
-* find
+* find(contribution\_product\_id)
+
+An individual contribution product supports the following methods and associations:
+
+* id
+* market_place_name
+* market_place_description
+* default\_locale
+* current\_status
+* activation\_callback
+* preview\_images
+* supported\_regions
+* supported\_operation\_centers
+* links
+* contribution\_definitions (collection of this contribution product's contribution definitions)
+
+```ruby
+client.contribution_products
+# => collection of contribution products under this client
+
+client.contribution_products.count
+# => 1
+
+client.contribution_products.first
+# => an individual contribution product
+
+contribution_product = client.contribution_products.find(1234)
+# => an individual contribution product, fetched by ID
+
+contribution_product.market_place_name
+# => 'Market Place Name'
+
+contribution_product.contribution_definitions
+# => collection of contribution definitions belonging to this contribution product
+```
+
+
+#### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
+
+Handles an account's organizations. Organization collections support the following methods:
+
+* all
+* count
+* first
+* find(organization\_id)
+
+An individual organization supports the following methods and associations:
+
+* id
+* name
+* type
+* member?
+* links
+* assets (collection of this organization's assets)
+* fields (collection of this organization's fields)
 
 The `count` method only requires loading the first page of results, so it's a relatively cheap call. On the other hand,
 `all` forces the entire collection to be loaded from John Deere's API, so use with caution. Organizations cannot be
@@ -187,10 +242,10 @@ client.organizations.count
 # => 15
 
 client.organizations.first
-# => a single organization object
+# => an individual organization object
 
 organization = client.organizations.find(1234)
-# => a specific organization object, fetched by ID
+# => an individual organization object, fetched by ID
 
 organization.name
 # => 'Smith Farms'
@@ -208,56 +263,43 @@ organization.links
 #       'wdtCapableMachines' => 'ttps://sandboxapi.deere.com/platform/organizations/1234/machines?capability=wdt'   
 #     }
 
+organization.assets
+# => collection of assets belonging to this organization
+
+organization.fields
+# => collection of fields belonging to this organization
 ```
-
-This is much nicer than working with the raw API response:
-
-```json
-{
-   "links": [
-      {
-         "rel": "self",
-         "uri": "https://sandboxapi.deere.com/platform/organizations/1234"
-      },
-      {
-         "rel": "machines",
-         "uri": "https://sandboxapi.deere.com/platform/organizations/1234/machines"
-      },
-      {
-         "rel": "wdtCapableMachines",
-         "uri": "https://sandboxapi.deere.com/platform/organizations/1234/machines?capability=wdt"
-      }
-   ],
-   "id": "1234",
-   "name": "Smith Farms",
-   "type": "customer",
-   "partnerships": [],
-   "member": true
-}
-```
-
-But the real power comes from daisy-chaining associations together.
 
 
 #### [Assets](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fassets.htm)
 
-Handles an organization's assets. Supported methods:
+Handles an organization's assets. Asset collections support the following methods:
 
 * all
 * count
 * first
-* find
-* create
+* find(asset\_id)
+* create(attributes)
+
+An individual asset supports the following methods and associations:
+
+* id
+* title
+* category
+* type
+* sub\_type
+* links
+* location (collection of this asset's locations)
 
 ```ruby
 organization = client.organizations.first
 # => the first organization returned by the client
 
 organization.assets
-# => collection of assets
+# => collection of assets belonging to this organization
 
 asset = organization.assets.find(123)
-# => asset object, fetched by ID
+# => an individual asset object, fetched by ID
 
 asset.title
 # => 'AgThing Water Device'
