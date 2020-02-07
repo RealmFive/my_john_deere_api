@@ -4,6 +4,7 @@
 
 This client allows you to connect the MyJohnDeere API without having to code your own oauth process, API requests, and pagination.
 
+* Works with Rails, but does not require it
 * Supports both sandbox and live mode
 * Simplifies the oAuth negotiation process
 * Uses ruby enumerables to handle pagination behind the scenes. Calls like `each`, `map`, etc will fetch new pages of data as needed.
@@ -112,6 +113,80 @@ client = JD::Client.new(
   # the user's access credentials
   access: [ACCESS_TOKEN, ACCESS_SECRET]
 )
+```
+
+
+### Using the Client to Do Stuff
+
+Once you're connected, the client works like a simplified version of ActiveRecord. JSON hashes from the API are
+converted into objects to be easier to work with. Collections of things, like organizations, handle pagination
+for you. Just iterate using `each`, `map`, etc, and new pages are fetched as needed.
+
+#### Organizations
+
+Organization collections act like a list. In addition to all the methods included via Ruby's
+[Enumerable Module](https://ruby-doc.org/core-2.7.0/Enumerable.html), organization collections support:
+
+* all
+* count
+* first
+* find
+
+The `count` method only requires loading the first page of results, so it's a relatively cheap call. On the other hand,
+`all` forces the entire collection to be loaded from John Deere's API, so use with caution.
+
+```ruby
+client.organizations
+
+client.organizations.count
+# => 15
+
+client.organizations.first
+
+organization = client.organizations.find(1234)
+
+organization.name
+# => 'Smith Farms'
+
+organization.type
+# => 'customer'
+
+organization.member
+# => true
+
+organization.links
+# =>  {
+#       'self' => 'https://sandboxapi.deere.com/platform/organizations/1234',
+#       'machines' => 'https://sandboxapi.deere.com/platform/organizations/1234/machines',
+#       'wdtCapableMachines' => 'ttps://sandboxapi.deere.com/platform/organizations/1234/machines?capability=wdt'   
+#     }
+
+```
+
+This is much nicer than working with the raw API response:
+
+```json
+{
+   "links": [
+      {
+         "rel": "self",
+         "uri": "https://sandboxapi.deere.com/platform/organizations/1234"
+      },
+      {
+         "rel": "machines",
+         "uri": "https://sandboxapi.deere.com/platform/organizations/1234/machines"
+      },
+      {
+         "rel": "wdtCapableMachines",
+         "uri": "https://sandboxapi.deere.com/platform/organizations/1234/machines?capability=wdt"
+      }
+   ],
+   "id": "1234",
+   "name": "Smith Farms",
+   "type": "customer",
+   "partnerships": [],
+   "member": true
+}
 ```
 
 ### Direct API Requests
