@@ -13,7 +13,7 @@ jobs:
 
       - run:
           name: Bundle Install
-          command: bundle check --path vendor/bundle || bundle install --test
+          command: bundle check --path vendor/bundle || bundle install
 
       - save_cache:
           key: my-john-deere-api-{{ checksum "Gemfile.lock" }}
