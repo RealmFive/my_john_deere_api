@@ -1,4 +1,7 @@
 require 'vcr'
+require 'yaml'
+require 'json'
+require 'date'
 
 ##########################################################################
 # We're going to make a bunch of requests upfront so we can create/delete
@@ -100,6 +103,11 @@ class VcrSetup
     end
   end
 
+  def epoch_timestamp
+    return @epoch_timestamp if defined?(@epoch_timestamp)
+    @epoch_timestamp = DateTime.parse(timestamp).to_time.to_i
+  end
+
   def coordinates
     @coordinates ||= [-96.668978, 40.865984]
   end
@@ -130,7 +138,7 @@ class VcrSetup
   def asset_attributes
     @asset_attributes ||= {
       contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
-      title: 'i like turtles',
+      title: 'Asset Title',
       asset_category: 'DEVICE',
       asset_type: 'SENSOR',
       asset_sub_type: 'ENVIRONMENTAL',
@@ -248,36 +256,112 @@ class VcrSetup
 
   def sanitize_files
     Dir[File.dirname(__FILE__) + "/vcr/**/*.yml"].each do |filename|
-      data = File.read(filename)
+      text = sanitize_text(File.read(filename))
 
-      placeholders.each do |value, placeholder|
-        data.gsub!(value, placeholder)
-      end
+      data = YAML.load(text)
+      sanitize_yaml!(data)
 
-      # organization links
-      data.gsub!(/\/organizations\/[0-9]+/, "/organizations/#{organization_id}")
-
-      # random ids
-      data.gsub!(/"id":"[0-9]+"/, '"id":"000000"')
-
-      # uuids
-      data.gsub!(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/, @uuid)
-
-      # timestamps
-      data.gsub!(/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/, timestamp)
-
-      # various attributes
-      # data.gsub!(/"name":".+?"/, '"name":"Name"')
-      data.gsub!(/"marketPlaceName":".+?"/, '"marketPlaceName":"Marketplace Name"')
-      data.gsub!(/"marketPlaceDescription":".+?"/, '"marketPlaceDescription":"Marketplace Description"')
-
-      # oauth headers
-      data.gsub!(/oauth_nonce="[0-9a-zA-Z]+"/, 'oauth_nonce="000000000000000000000000000000000000000000"')
-      data.gsub!(/oauth_signature="[0-9a-zA-Z%]+"/, 'oauth_signature="0000000000000000000000000000"')
-      data.gsub!(/oauth_token_secret=[0-9a-zA-Z%]+/, 'oauth_token_secret=000000000000000000000000000000000000000000')
-
-      File.write(filename, data)
+      File.write(filename, data.to_yaml)
     end
+  end
+
+  def sanitize_text(text)
+    data = text
+
+    placeholders.each do |value, placeholder|
+      data.gsub!(value, placeholder)
+    end
+
+    # organization links
+    data.gsub!(/\/organizations\/[0-9]+/, "/organizations/#{organization_id}")
+
+    # random ids
+    data.gsub!(/"id":"[0-9]+"/, '"id":"000000"')
+
+    # uuids
+    data.gsub!(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/, @uuid)
+
+    # timestamps
+    data.gsub!(/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/, timestamp)
+    data.gsub!(/1[4567][0-9]{8}/, epoch_timestamp.to_s)
+
+    # geo coordinates
+    data.gsub!(/\[-{0,1}[0-9]{1,3}\.[0-9]{6},-{0,1}[0-9]{1,3}\.[0-9]{6}\]/, coordinates.to_s.gsub(' ', ''))
+
+    # oauth headers
+    data.gsub!(/oauth_nonce="[0-9a-zA-Z]+"/, 'oauth_nonce="000000000000000000000000000000000000000000"')
+    data.gsub!(/oauth_signature="[0-9a-zA-Z%]+"/, 'oauth_signature="0000000000000000000000000000"')
+    data.gsub!(/oauth_token_secret=[0-9a-zA-Z%]+/, 'oauth_token_secret=000000000000000000000000000000000000000000')
+    data.gsub!(/oauth_verifier="[0-9A-Za-z]{6}"/, 'oauth_verifier="VERIFY"')
+
+    data
+  end
+
+  def sanitize_yaml!(data)
+    if data.is_a?(Array)
+      data.each { |item| sanitize_yaml!(item) }
+    elsif data.is_a?(Hash)
+      data.each do |key, value|
+        if key == 'string'
+          data[key] = sanitize_response_body(value)
+        else
+          sanitize_yaml!(value)
+        end
+      end
+    end
+  end
+
+  def sanitize_response_body(string)
+    data = nil
+
+    # if this isn't JSON, just return the original string
+    begin
+      data = JSON.parse(string)
+    rescue JSON::ParserError
+      return string
+    end
+
+    # various response body attributes
+    if data.is_a?(Hash)
+      if data['values']
+        data['values'].each do |value|
+          value = sanitize_value(value)
+        end
+      elsif data['@type']
+        data = sanitize_value(data)
+      end
+    elsif data.is_a?(Array)
+      data.each do |value|
+        # nothing yet
+      end
+    end
+
+    data.to_json
+  end
+
+  def sanitize_value(value)
+    merge_hash = case value['@type']
+    when 'Organization'
+      {'name' => 'Organization Name'}
+    when 'ContributionProduct'
+      {
+        'marketPlaceName' => 'Market Place Name',
+        'marketPlaceDescription' => 'Market Place Description'
+      }
+    when 'ContributedAsset'
+      {
+        'title' => 'Asset Title',
+        'assetCategory' => 'DEVICE',
+        'assetType' => 'SENSOR',
+        'assetSubType' => 'ENVIRONMENTAL'
+      }
+    when 'Field'
+      {'name' => 'Field Name'}
+    else
+      {}
+    end
+
+    value.merge!(merge_hash)
   end
 
   def set_contribution_product_id

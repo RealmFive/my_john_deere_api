@@ -1,0 +1,41 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sandboxapi.deere.com/platform/oauth/access_token
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - OAuth gem v0.5.4
+      Authorization:
+      - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_token="00000000-0000-0000-0000-000000000000",
+        oauth_verifier="VERIFY", oauth_version="1.0"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 07 Feb 2020 04:29:27 GMT
+      Content-Type:
+      - text/plain;charset=UTF-8
+      X-Deere-Handling-Server:
+      - ip-10-214-45-137
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: oauth_token=00000000-0000-0000-0000-000000000000&oauth_token_secret=000000000000000000000000000000000000000000
+    http_version: 
+  recorded_at: Fri, 07 Feb 2020 04:29:27 GMT
+recorded_with: VCR 5.0.0

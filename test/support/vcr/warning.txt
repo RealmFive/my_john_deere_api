@@ -1,0 +1,24 @@
+-------------------------------------------------------------------------------
+WARNING: Generating VCR cassettes requires the following in your John Deere
+API sandbox account:
+
+- You must have asset creation/deletion enabled in your account.
+- You must have at least one organization created.
+- The organization must have at least one field.
+- The field must have at least one flag.
+
+By default, this setup will use the first organization returned from the API.
+If this is not the organization you wish to use, you can create an environment
+variable ORGANIZATION_ID which contains the id of the organization you wish to
+use. This organization must contain a field, which contains a flag.
+
+This is required because organizations cannot be created via the API, and
+fields and flags can be created but not destroyed via the API. We don't create
+anything during VCR cassette recording that we can't undo. This process will
+leave your sandbox environment in the exact state it was before the cassettes
+were generated.
+
+If you don't meet the above requirements, you will be unable to successfully
+generate the VCR cassettes.
+-------------------------------------------------------------------------------
+

@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sandboxapi.deere.com/platform/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.deere.axiom.v3+json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - OAuth gem v0.5.4
+      Authorization:
+      - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_version="1.0"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 07 Feb 2020 04:29:01 GMT
+      Content-Type:
+      - application/vnd.deere.axiom.v3+json;charset=UTF-8
+      X-Deere-Handling-Server:
+      - ip-10-214-44-185
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Deere-Elapsed-Ms:
+      - '13'
+      Cache-Control:
+      - no-store
+      Content-Language:
+      - en-US
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"@type":"ApiCatalog","links":[{"@type":"Link","rel":"oauthRequestToken","uri":"https://sandboxapi.deere.com/platform/oauth/request_token"},{"@type":"Link","rel":"oauthAuthorizeRequestToken","uri":"https://my.deere.com/consentToUseOfData?oauth_token={token}"},{"@type":"Link","rel":"oauthAccessToken","uri":"https://sandboxapi.deere.com/platform/oauth/access_token"},{"@type":"Link","rel":"agencies","uri":"https://sandboxapi.deere.com/platform/agencies"}]}'
+    http_version: 
+  recorded_at: Fri, 07 Feb 2020 04:29:01 GMT
+- request:
+    method: get
+    uri: https://sandboxapi.deere.com/platform/oauth/request_token
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - OAuth gem v0.5.4
+      Authorization:
+      - OAuth oauth_callback="oob", oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_version="1.0"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 07 Feb 2020 04:29:02 GMT
+      Content-Type:
+      - text/plain;charset=UTF-8
+      X-Deere-Handling-Server:
+      - ip-10-214-45-143
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: oauth_token=00000000-0000-0000-0000-000000000000&oauth_token_secret=000000000000000000000000000000000000000000&oauth_callback_confirmed=true
+    http_version: 
+  recorded_at: Fri, 07 Feb 2020 04:29:02 GMT
+recorded_with: VCR 5.0.0

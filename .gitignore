@@ -1,6 +1,5 @@
 .ruby-version
 *.gem
-test/support/vcr
 .env
 .DS_Store
 publish
