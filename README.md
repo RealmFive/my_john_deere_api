@@ -113,7 +113,7 @@ to be able to make calls that are not yet fully supported by the client. Or some
 #### GET
 
 
-DELETE requests require only a resource path.
+GET requests require only a resource path.
 
     client.get('/organizations')
     
