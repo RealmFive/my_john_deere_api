@@ -1,6 +1,7 @@
 module MyJohnDeereApi
   class Client
     include Helpers::EnvironmentHelper
+    include Helpers::CaseConversion
 
     attr_reader :api_key, :api_secret, :access_token, :access_secret, :environment
 
@@ -45,14 +46,14 @@ module MyJohnDeereApi
     end
 
     ##
-    # generic user-specific POST request method that returns JSON
+    # generic user-specific POST request method that returns JSON or response
 
     def post resource, body
       resource = resource.to_s
       resource = "/#{resource}" unless resource =~ /^\//
-      response = accessor.post(resource, body.to_json, post_headers)
+      response = accessor.post(resource, camelize(body).to_json, post_headers)
 
-      if response.body.size > 0
+      if response.body && response.body.size > 0
         JSON.parse(response.body)
       else
         response
@@ -60,7 +61,22 @@ module MyJohnDeereApi
     end
 
     ##
-    # generic user-specific DELETE request method
+    # generic user-specific PUT request method that returns JSON or response
+
+    def put resource, body
+      resource = resource.to_s
+      resource = "/#{resource}" unless resource =~ /^\//
+      response = accessor.put(resource, camelize(body).to_json, post_headers)
+
+      if response.body && response.body.size > 0
+        JSON.parse(response.body)
+      else
+        response
+      end
+    end
+
+    ##
+    # generic user-specific DELETE request method that returns JSON or response
 
     def delete resource
       resource = resource.to_s

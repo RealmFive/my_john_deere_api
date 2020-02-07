@@ -1,6 +1,11 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Client' do
+  it 'includes the CaseConversion helper' do
+    client = JD::Client.new(api_key, api_secret)
+    assert_equal 'thisIsATest', client.send(:camelize, :this_is_a_test)
+  end
+
   describe '#initialize(api_key, api_secret)' do
     it 'sets the api key/secret' do
       client = JD::Client.new(api_key, api_secret)
@@ -60,9 +65,11 @@ describe 'MyJohnDeereApi::Client' do
   end
 
   describe '#post' do
+    let(:attributes) { CONFIG.asset_attributes }
+
     it 'returns the response as a Hash' do
       response = VCR.use_cassette('post_assets') do
-        client.post("/organizations/#{organization_id}/assets", CONFIG.asset_attributes)
+        client.post("/organizations/#{organization_id}/assets", attributes)
       end
 
       assert_equal '201', response.code
@@ -72,12 +79,36 @@ describe 'MyJohnDeereApi::Client' do
 
     it 'prepends the leading slash if needed' do
       response = VCR.use_cassette('post_assets') do
-        client.post("organizations/#{organization_id}/assets", CONFIG.asset_attributes)
+        client.post("organizations/#{organization_id}/assets", attributes)
       end
 
       assert_equal '201', response.code
       assert_equal 'Created', response.message
       assert_includes response['Location'], "/assets/#{asset_id}"
+    end
+  end
+
+  describe '#put' do
+    let(:new_title) { 'i REALLY like turtles!' }
+
+    let(:attributes) do
+      CONFIG.asset_attributes.slice(
+        :asset_category, :asset_type, :asset_sub_type, :links
+      ).merge(title: new_title)
+    end
+
+    it 'sends the request' do
+      response = VCR.use_cassette('put_asset') { client.put("/assets/#{asset_id}", attributes) }
+
+      assert_equal '204', response.code
+      assert_equal 'No Content', response.message
+    end
+
+    it 'prepends the leading slash if needed' do
+      response = VCR.use_cassette('put_asset') { client.put("assets/#{asset_id}", attributes) }
+
+      assert_equal '204', response.code
+      assert_equal 'No Content', response.message
     end
   end
 

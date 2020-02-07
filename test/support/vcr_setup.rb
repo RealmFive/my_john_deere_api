@@ -21,7 +21,7 @@ class VcrSetup
     :get_contribution_products, :get_contribution_product,
     :get_organizations, :get_organization,
     :get_fields, :get_field, :get_flags,
-    :post_assets, :get_assets, :get_asset,
+    :post_assets, :get_assets, :get_asset, :put_asset,
     :post_asset_locations, :get_asset_locations,
     :delete_asset
   ]
@@ -236,6 +236,16 @@ class VcrSetup
 
   def get_asset
     find_organization(ENV['ORGANIZATION_ID']).assets.find(@temporary_asset_id)
+  end
+
+  def put_asset
+    attrs = asset_attributes.slice(
+      :asset_category, :asset_type, :asset_sub_type, :links
+    ).merge(
+      title: 'i REALLY like turtles!'
+    )
+
+    new_client.put("/assets/#{@temporary_asset_id}", attrs)
   end
 
   def delete_asset

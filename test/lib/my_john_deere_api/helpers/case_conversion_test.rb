@@ -17,6 +17,23 @@ describe 'Helpers::CaseConversion' do
       assert_equal 'camel_case_example', string
     end
 
+    it 'converts from a symbol' do
+      string = object.send(:underscore, :camelCaseExample)
+      assert_equal 'camel_case_example', string
+    end
+
+    it 'converts the keys of a hash' do
+      hash = {
+        assetCategory: 'Asset Category',
+        assetType: 'Asset Type'
+      }
+
+      new_hash = object.send(:underscore, hash)
+
+      assert_equal new_hash['asset_category'], hash[:assetCategory]
+      assert_equal new_hash['asset_type'], hash[:assetType]
+    end
+
     it 'handles leading uppercase' do
       string = object.send(:underscore, 'CamelCaseExample')
       assert_equal 'camel_case_example', string
@@ -52,6 +69,23 @@ describe 'Helpers::CaseConversion' do
     it 'honors original capitalization' do
       string = object.send(:camelize, 'This is a test')
       assert_equal 'ThisIsATest', string
+    end
+
+    it 'converts from a symbol' do
+      string = object.send(:camelize, :this_is_a_test)
+      assert_equal 'thisIsATest', string
+    end
+
+    it 'converts the keys of a hash' do
+      hash = {
+        asset_category: 'Asset Category',
+        asset_type: 'Asset Type'
+      }
+
+      new_hash = object.send(:camelize, hash)
+
+      assert_equal new_hash['assetCategory'], hash[:asset_category]
+      assert_equal new_hash['assetType'], hash[:asset_type]
     end
 
     it 'is a private method' do
