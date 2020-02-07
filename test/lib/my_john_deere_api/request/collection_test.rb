@@ -18,6 +18,10 @@ describe 'MyJohnDeereApi::Request::Collection' do
       assert JD::Request::Collection::ContributionProducts
     end
 
+    it 'loads Request::Collection::ContributionDefinitions' do
+      assert JD::Request::Collection::ContributionDefinitions
+    end
+
     it 'loads Request::Collection::Organizations' do
       assert JD::Request::Collection::Organizations
     end

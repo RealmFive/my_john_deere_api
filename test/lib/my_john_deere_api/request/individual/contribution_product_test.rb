@@ -7,7 +7,7 @@ describe 'MyJohnDeereApi::Request::Individual::ContributionProduct' do
 
   inherits_from JD::Request::Individual::Base
 
-  describe '#initialize(access_token, asset_id)' do
+  describe '#initialize(access_token, contribution_product_id)' do
     it 'accepts an access token' do
       assert_equal accessor, object.accessor
     end
