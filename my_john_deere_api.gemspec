@@ -19,12 +19,12 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'json', '~> 2.1', '>= 2.1.0'
 
   s.description = <<-TURTLES
-== My John Deere API
-
-This gem interacts with the My John Deere API.
-
-WARNING: this is a work in progress. We believe in publish early,
-publish often. Perfection is the enemy of done. Insert third
-cliché here ;)
+This gem interacts with the My John Deere API. It handles the hard work of
+John Deere's oAuth 1.0 authentication. It provides REST request methods for
+GET, POST, PUT, and DELETE that abstract away the John Deere-specific headers
+and protocols. It provides convenience methods similar to ActiveRecord so
+you can write things like: `client.organizations.find(123).assets` or
+`organization.assets.create(attributes)` instead of making each of the required
+direct API calls manually.
   TURTLES
 end
