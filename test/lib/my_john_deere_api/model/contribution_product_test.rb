@@ -65,4 +65,20 @@ describe 'MyJohnDeereApi::Model::ContributionProduct' do
       assert_equal mock_accessor, asset.accessor
     end
   end
+
+  describe '#contribution_definitions' do
+    it 'returns a collection of contribution definitions for this contributon product' do
+      product = JD::Model::ContributionProduct.new(record, accessor)
+
+      contribution_definitions = VCR.use_cassette('get_contribution_definitions') do
+        product.contribution_definitions.all; product.contribution_definitions
+      end
+
+      assert_kind_of JD::Request::Collection::ContributionDefinitions, contribution_definitions
+
+      contribution_definitions.each do |contribution_definition|
+        assert_kind_of JD::Model::ContributionDefinition, contribution_definition
+      end
+    end
+  end
 end

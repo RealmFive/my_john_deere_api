@@ -4,6 +4,15 @@ module MyJohnDeereApi
                 :current_status, :activation_callback, :preview_images,
                 :supported_regions, :supported_operation_centers
 
+
+    ##
+    # contribution definitions associated with this contribution product
+
+    def contribution_definitions
+      return @contribution_definitions if defined?(@contribution_definitions)
+      @contribution_definitions = Request::Collection::ContributionDefinitions.new(accessor, contribution_product: id)
+    end
+
     private
 
     def map_attributes(record)
