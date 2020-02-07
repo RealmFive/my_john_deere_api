@@ -1,3 +1,3 @@
 module MyJohnDeereApi
-  VERSION='0.15.10'
+  VERSION='1.0.0'
 end
