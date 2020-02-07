@@ -19,6 +19,7 @@ class VcrSetup
   GENERATED_CASSETTES = [
     :catalog, :get_request_token, :get_access_token,
     :get_contribution_products, :get_contribution_product,
+    :get_contribution_definitions, :get_contribution_definition,
     :get_organizations, :get_organization,
     :get_fields, :get_field, :get_flags,
     :post_assets, :get_assets, :get_asset, :put_asset,
@@ -198,6 +199,14 @@ class VcrSetup
     new_client.get("/contributionProducts/#{ENV['CONTRIBUTION_PRODUCT_ID']}")
   end
 
+  def get_contribution_definitions
+    new_client.get("/contributionProducts/#{ENV['CONTRIBUTION_PRODUCT_ID']}/contributionDefinitions")
+  end
+
+  def get_contribution_definition
+    new_client.get("/contributionDefinitions/#{ENV['CONTRIBUTION_DEFINITION_ID']}")
+  end
+
   def get_organizations
     new_client.organizations.all
   end
@@ -355,6 +364,8 @@ class VcrSetup
         'marketPlaceName' => 'Market Place Name',
         'marketPlaceDescription' => 'Market Place Description'
       }
+    when 'ContributionDefinition'
+      {'name' => 'Definition Name'}
     when 'ContributedAsset'
       {
         'title' => 'Asset Title',
