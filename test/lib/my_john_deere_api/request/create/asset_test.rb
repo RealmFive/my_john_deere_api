@@ -152,7 +152,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
       assert_kind_of Hash, body[:links].first
       assert_equal 'Link', body[:links].first['@type']
       assert_equal 'contributionDefinition', body[:links].first['rel']
-      assert_equal  "#{ENV['BASE_URL']}/platform/contributionDefinitions/#{contribution_definition_id}",
+      assert_equal  "#{base_url}/contributionDefinitions/#{contribution_definition_id}",
                     body[:links].first['uri']
     end
   end

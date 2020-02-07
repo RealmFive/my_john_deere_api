@@ -74,7 +74,7 @@ describe 'MyJohnDeereApi::Client' do
 
       assert_equal '201', response.code
       assert_equal 'Created', response.message
-      assert_includes response['Location'], "/assets/#{asset_id}"
+      assert_equal "#{base_url}/assets/#{asset_id}", response['Location']
     end
 
     it 'prepends the leading slash if needed' do
@@ -84,7 +84,7 @@ describe 'MyJohnDeereApi::Client' do
 
       assert_equal '201', response.code
       assert_equal 'Created', response.message
-      assert_includes response['Location'], "/assets/#{asset_id}"
+      assert_equal "#{base_url}/assets/#{asset_id}", response['Location']
     end
   end
 

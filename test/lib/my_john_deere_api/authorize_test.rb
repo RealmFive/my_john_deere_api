@@ -48,7 +48,7 @@ describe 'MyJohnDeereApi::Authorize' do
       url = VCR.use_cassette('get_request_token') { authorize.authorize_url }
       links = VCR.use_cassette('catalog') { JD::Consumer.new(api_key, api_secret, environment: :sandbox).send(:links) }
 
-      assert_includes url, "#{links[:authorize_request_token]}"
+      assert_includes url, links[:authorize_request_token]
 
       query = URI.parse(url).query
       params = CGI::parse(query)

@@ -51,6 +51,10 @@ class Minitest::Spec
     @_accessor ||= VCR.use_cassette('catalog') { client.send(:accessor) }
   end
 
+  def base_url
+    @base_url ||= accessor.consumer.site
+  end
+
   def api_key
     CONFIG.api_key
   end
