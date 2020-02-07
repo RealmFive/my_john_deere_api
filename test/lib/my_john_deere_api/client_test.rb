@@ -140,6 +140,18 @@ describe 'MyJohnDeereApi::Client' do
     end
   end
 
+  describe '#contribution_products' do
+    it 'returns a collection of contribution products for this account' do
+      contribution_products = VCR.use_cassette('get_contribution_products') { client.contribution_products.all; client.contribution_products }
+
+      assert_kind_of JD::Request::Collection::ContributionProducts, contribution_products
+
+      contribution_products.each do |contribution_product|
+        assert_kind_of JD::Model::ContributionProduct, contribution_product
+      end
+    end
+  end
+
   describe '#consumer' do
     it 'receives the api key/secret and environment of the client' do
       environment = :sandbox

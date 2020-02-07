@@ -127,6 +127,11 @@ This client is a work in progress. You can currently do the following things wit
 
 ```
 client
+├── contribution_products
+    ├── count
+    ├── all
+    ├── first
+    └── find(contribution_product_id)
 └── organizations
     ├── count
     ├── all

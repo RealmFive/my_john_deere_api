@@ -102,7 +102,8 @@ module MyJohnDeereApi
     # contribution products associated with this app (not user-specific)
 
     def contribution_products
-      []
+      return @contribution_products if defined?(@contribution_products)
+      @contribution_products = MyJohnDeereApi::Request::Collection::ContributionProducts.new(accessor)
     end
 
     private

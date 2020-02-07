@@ -194,6 +194,10 @@ class VcrSetup
     new_client.get('/contributionProducts?clientControlled=true')
   end
 
+  def get_contribution_product
+    new_client.get("/contributionProducts/#{ENV['CONTRIBUTION_PRODUCT_ID']}")
+  end
+
   def get_organizations
     new_client.organizations.all
   end
@@ -212,10 +216,6 @@ class VcrSetup
 
   def get_flags
     @temporary_field.flags.all
-  end
-
-  def get_contribution_product
-    new_client.get("/contributionProducts/#{ENV['CONTRIBUTION_PRODUCT_ID']}")
   end
 
   def post_assets
