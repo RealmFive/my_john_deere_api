@@ -211,6 +211,39 @@ contribution_product.contribution_definitions
 ```
 
 
+#### [Contribution Definitions](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fproducts.htm)
+
+Handles a contribution product's contribution definitions. Contribution definition collections support the following methods:
+
+* all
+* count
+* first
+* find(contribution\_definition\_id)
+
+An individual contribution definition supports the following methods and associations:
+
+* id
+* name
+* links
+
+```ruby
+contribution_product.contribution_definitions
+# => collection of contribution definitions under this contribution product
+
+client.contribution_definitions.count
+# => 1
+
+client.contribution_definitions.first
+# => an individual contribution definition
+
+contribution_definition = contribution_product.contribution_definitions.find(1234)
+# => an individual contribution definition, fetched by ID
+
+contribution_definition.name
+# => 'Contribution Definition Name'
+```
+
+
 #### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
 
 Handles an account's organizations. Organization collections support the following methods:
