@@ -1,12 +1,12 @@
 require 'json'
 
 module MyJohnDeereApi::Request
-  class Collection::Organizations < Collection::Base
+  class Individual::Organization < Individual::Base
     ##
     # The resource path for the first page in the collection
 
     def resource
-      '/organizations'
+      "/organizations/#{id}"
     end
 
     ##
@@ -14,13 +14,6 @@ module MyJohnDeereApi::Request
 
     def model
       MyJohnDeereApi::Model::Organization
-    end
-
-    ##
-    # Retrieve an organization from JD
-
-    def find(organization_id)
-      Individual::Organization.new(accessor, organization_id).object
     end
   end
 end

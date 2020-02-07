@@ -206,7 +206,7 @@ class VcrSetup
   end
 
   def get_organization
-    new_client.get("/organizations/#{ENV['ORGANIZATION_ID']}")
+    new_client.organizations.find(ENV['ORGANIZATION_ID'])
   end
 
   def get_fields

@@ -33,6 +33,13 @@ describe 'MyJohnDeereApi::Request::Collection::Organizations' do
     end
   end
 
+  describe '#find(organization_id)' do
+    it 'retrieves the asset' do
+      organization = VCR.use_cassette('get_organization') { collection.find(organization_id) }
+      assert_kind_of JD::Model::Organization, organization
+    end
+  end
+
   describe '#count' do
     let(:server_response) do
       contents = File.read('test/support/vcr/get_organizations.yml')
