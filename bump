@@ -17,7 +17,7 @@ def new_version
   @level
   major, minor, patch = MyJohnDeereApi::VERSION.split('.').map(&:to_i)
 
-  case level
+  case @level
   when 'major'
     major += 1
     minor = 0
