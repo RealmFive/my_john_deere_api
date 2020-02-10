@@ -4,10 +4,17 @@ VERSION_FILE = './lib/my_john_deere_api/version.rb'
 
 require_relative VERSION_FILE
 
+@level = ARGV.shift
+
+unless [nil, 'minor', 'major', 'patch'].include?(@label)
+  puts "valid arguments: major, minor or patch (default)"
+  exit
+end
+
 def new_version
   return @new_version if defined?(@new_version)
 
-  level = ARGV.shift
+  @level
   major, minor, patch = MyJohnDeereApi::VERSION.split('.').map(&:to_i)
 
   case level
