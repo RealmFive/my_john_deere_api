@@ -8,6 +8,8 @@ without having to code your own oauth process, API requests, and pagination.
 * Works with Rails, but does not require it
 * Supports both sandbox and live mode
 * Simplifies the oAuth negotiation process
+* Provides an ActiveRecord-style interface to many endpoints
+* Provides `get`, `create`, `put`, and `delete` methods to make easy, authenticated, direct API calls
 * Uses ruby enumerables to handle pagination behind the scenes. Calls like `each`, `map`, etc will fetch new pages of data as needed.
 
 ## Documentation
@@ -475,6 +477,7 @@ The easiest way to contribute is:
 * Create a feature branch
 * Grep for "raise NotYetImplementedError" in the lib directory
 * Replace one of these exceptions with working code, following the conventions used in the rest of the app
+* TEST EVERYTHING!
 * Run tests.
   * You may need to regenerate all VCR cassettes from scratch.
   * All VCR cassettes should be pre-recorded in `vcr_setup`
