@@ -467,5 +467,16 @@ client.delete('/assets/123123')
 
 John Deere's standard response is a 204 HTTP status code, with the message "No Content". This method returns the full Net::HTTP response.
 
+### Contributing to This Gem
 
-More details coming soon.
+The easiest way to contribute is:
+
+* Clone the repo
+* Create a feature branch
+* Grep for "raise NotYetImplementedError" in the lib directory
+* Replace one of these exceptions with working code, following the conventions used in the rest of the app
+* Run tests.
+  * You may need to regenerate all VCR cassettes from scratch.
+  * All VCR cassettes should be pre-recorded in `vcr_setup`
+  * Anything that is created in the JD sandbox as a result of running the tests should be removed, also in `vcr_setup`.
+* When tests are passing, submit a Pull Request.
