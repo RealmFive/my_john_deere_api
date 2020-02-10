@@ -46,13 +46,7 @@ class VcrSetup
     @field_id = @uuid
     @flag_id = @uuid
     @verify_code = 'VERIFY'
-
-    @placeholders = {
-      API_KEY => @api_key,
-      API_SECRET => @api_secret,
-      ACCESS_TOKEN => @access_token,
-      ACCESS_SECRET => @access_secret
-    }
+    @placeholders = {}
 
     unless all_cassettes_generated? || meets_vcr_requirements?
       raise "Cannot continue until VCR cassettes can be generated."
@@ -68,6 +62,13 @@ class VcrSetup
 
     # create and retrieve things
     unless all_cassettes_generated?
+      @placeholders.merge!(
+        ENV['API_KEY'] => @api_key,
+        ENV['API_SECRET'] => @api_secret,
+        ENV['ACCESS_TOKEN'] => @access_token,
+        ENV['ACCESS_SECRET'] => @access_secret
+      )
+
       puts "\ngenerating:"
 
       GENERATED_CASSETTES.each do |method_name|
@@ -163,7 +164,12 @@ class VcrSetup
 
   # provide a fresh client with no memoized requests
   def new_client
-    JD::Client.new(API_KEY, API_SECRET, environment: :sandbox, access: [ACCESS_TOKEN, ACCESS_SECRET])
+    JD::Client.new(
+      ENV['API_KEY'],
+      ENV['API_SECRET'],
+      environment: :sandbox,
+      access: [ENV['ACCESS_TOKEN'], ENV['ACCESS_SECRET']]
+    )
   end
 
   def url
@@ -176,7 +182,12 @@ class VcrSetup
   end
 
   def get_request_token
-    @temporary_authorize = JD::Authorize.new(API_KEY, API_SECRET, environment: :sandbox)
+    @temporary_authorize = JD::Authorize.new(
+      ENV['API_KEY'],
+      ENV['API_SECRET'],
+      environment: :sandbox
+    )
+
     @temporary_authorize_url = @temporary_authorize.authorize_url
   end
 
@@ -429,6 +440,13 @@ class VcrSetup
   end
 
   def meets_vcr_requirements?
+    missing_env_vars = ['API_KEY', 'API_SECRET', 'ACCESS_TOKEN', 'ACCESS_SECRET'].reject{|var| ENV[var]}
+
+    unless missing_env_vars.empty?
+      puts "The following required environment variables are missing: #{missing_env_vars.join(', ')}"
+      return false
+    end
+
     puts File.read("#{@vcr_dir}/warning.txt")
     $stdout.print("Do you meet the requirements? [y/N]: "); $stdout.flush
 

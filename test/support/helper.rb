@@ -12,12 +12,6 @@ Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(:color => tru
 # shortcut for long module name
 JD = MyJohnDeereApi
 
-API_KEY = ENV['API_KEY']
-API_SECRET = ENV['API_SECRET']
-
-ACCESS_TOKEN = ENV['ACCESS_TOKEN']
-ACCESS_SECRET = ENV['ACCESS_SECRET']
-
 TOKEN_PATTERN = /^[0-9a-z\-]+$/
 SECRET_PATTERN = /^[0-9A-Za-z\-+=\/]+$/
 
