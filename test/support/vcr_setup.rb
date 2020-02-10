@@ -52,9 +52,9 @@ class VcrSetup
       raise "Cannot continue until VCR cassettes can be generated."
     end
 
-    set_contribution_product_id
-    set_contribution_definition_id
-    set_organization_id
+    # set_contribution_product_id
+    # set_contribution_definition_id
+    # set_organization_id
 
     configure_vcr
 
@@ -200,6 +200,11 @@ class VcrSetup
     placeholders[code] = verify_code
 
     @temporary_authorize.verify(code)
+
+    unless ENV['ACCESS_TOKEN'] && ENV['ACCESS_SECRET']
+      set_env 'ACCESS_TOKEN', @temporary_authorize.access_token
+      set_env 'ACCESS_SECRET', @temporary_authorize.access_secret
+    end
   end
 
   def get_contribution_products
@@ -427,6 +432,8 @@ class VcrSetup
   end
 
   def set_env(name, value)
+    puts "SAVING ENVIRONMENT VARIABLE: #{name}: #{value.inspect}"
+
     ENV[name] = value
     File.open('.env', 'a') { |f| f.puts "#{name}=#{value}"}
   end

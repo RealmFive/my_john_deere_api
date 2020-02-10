@@ -2,10 +2,14 @@
 WARNING: Generating VCR cassettes requires the following in your John Deere
 API sandbox account:
 
-- You must have asset creation/deletion enabled in your account.
-- You must have at least one organization created.
-- The organization must have at least one field.
-- The field must have at least one flag.
+ - Environment variables:
+   - API_KEY
+   - API_SECRET
+ - A valid John Deere user account with which you can authenticate.
+ - Asset creation/deletion enabled in your JD account.
+ - At least one organization created in your JD account.
+ - The organization must have at least one field.
+ - The field must have at least one flag.
 
 By default, this setup will use the first organization returned from the API.
 If this is not the organization you wish to use, you can create an environment
