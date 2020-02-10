@@ -7,7 +7,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
   end
 
   let(:valid_attributes) do
-    CONFIG.asset_attributes.merge(
+    CONFIG.sanitized_asset_attributes.merge(
       organization_id: organization_id,
       contribution_definition_id: contribution_definition_id,
     )

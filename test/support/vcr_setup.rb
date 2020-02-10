@@ -16,6 +16,8 @@ class VcrSetup
               :contribution_product_id, :contribution_definition_id,
               :placeholders, :organization_id, :asset_id, :field_id, :flag_id
 
+  AUTH_CASSETTES = [:catalog, :get_request_token, :get_access_token]
+
   GENERATED_CASSETTES = [
     :catalog, :get_request_token, :get_access_token,
     :get_contribution_products, :get_contribution_product,
@@ -52,16 +54,16 @@ class VcrSetup
       raise "Cannot continue until VCR cassettes can be generated."
     end
 
-    # set_contribution_product_id
-    # set_contribution_definition_id
-    # set_organization_id
-
     configure_vcr
-
-    url
 
     # create and retrieve things
     unless all_cassettes_generated?
+      puts "\ngenerating:"
+
+      unless ENV['ACCESS_TOKEN'] && ENV['ACCESS_SECRET']
+        generate_cassettes(AUTH_CASSETTES)
+      end
+
       @placeholders.merge!(
         ENV['API_KEY'] => @api_key,
         ENV['API_SECRET'] => @api_secret,
@@ -69,18 +71,15 @@ class VcrSetup
         ENV['ACCESS_SECRET'] => @access_secret
       )
 
-      puts "\ngenerating:"
-
-      GENERATED_CASSETTES.each do |method_name|
-        filename = "#{method_name}.yml"
-
-        if File.exist?("#{@vcr_dir}/#{filename}")
-          puts " - using #{filename}"
-        else
-          puts " - generating #{filename}"
-          VCR.use_cassette(method_name) { send(method_name) }
-        end
+      VCR.use_cassette('temp') do
+        set_contribution_product_id
+        set_contribution_definition_id
+        set_organization_id
       end
+
+      File.unlink("#{@vcr_dir}/temp.yml")
+
+      generate_cassettes(GENERATED_CASSETTES)
     end
 
     sanitize_files
@@ -147,6 +146,16 @@ class VcrSetup
     }.freeze
   end
 
+  def sanitized_asset_attributes
+    @sanitized_asset_attributes ||= {
+      contribution_definition_id: contribution_definition_id,
+      title: 'Asset Title',
+      asset_category: 'DEVICE',
+      asset_type: 'SENSOR',
+      asset_sub_type: 'ENVIRONMENTAL'
+    }.freeze
+  end
+
   def asset_location_attributes
     @asset_location_attributes ||= {
       timestamp: timestamp,
@@ -155,7 +164,25 @@ class VcrSetup
     }.freeze
   end
 
+  def url
+    return @url if defined?(@url)
+    @url = JD::Consumer::URLS[:sandbox]
+  end
+
   private
+
+  def generate_cassettes(list)
+    list.each do |method_name|
+      filename = "#{method_name}.yml"
+
+      if File.exist?("#{@vcr_dir}/#{filename}")
+        puts " - using #{filename}"
+      else
+        puts " - generating #{filename}"
+        VCR.use_cassette(method_name) { send(method_name) }
+      end
+    end
+  end
 
   def all_cassettes_generated?
     return @all_cassettes_generated if defined?(@all_cassettes_generated)
@@ -170,11 +197,6 @@ class VcrSetup
       environment: :sandbox,
       access: [ENV['ACCESS_TOKEN'], ENV['ACCESS_SECRET']]
     )
-  end
-
-  def url
-    return @url if defined?(@url)
-    @url = VCR.use_cassette('url'){ new_client.send(:accessor).consumer.site }
   end
 
   def catalog
@@ -260,7 +282,14 @@ class VcrSetup
     attrs = asset_attributes.slice(
       :asset_category, :asset_type, :asset_sub_type, :links
     ).merge(
-      title: 'i REALLY like turtles!'
+      title: 'i REALLY like turtles!',
+      links: [
+        {
+          '@type' => 'Link',
+          'rel' => 'contributionDefinition',
+          'uri' => "#{url}/contributionDefinitions/#{asset_attributes[:contribution_definition_id]}"
+        }
+      ]
     )
 
     new_client.put("/assets/#{@temporary_asset_id}", attrs)
@@ -402,7 +431,7 @@ class VcrSetup
     unless ENV['CONTRIBUTION_PRODUCT_ID']
       set_env(
         'CONTRIBUTION_PRODUCT_ID',
-        client.get('/contributionProducts?clientControlled=true')['values'].first['id']
+        new_client.get('/contributionProducts?clientControlled=true')['values'].first['id']
       )
     end
 
@@ -413,7 +442,7 @@ class VcrSetup
     unless ENV['CONTRIBUTION_DEFINITION_ID']
       set_env(
         'CONTRIBUTION_DEFINITION_ID',
-        client.get("/contributionProducts/#{ENV['CONTRIBUTION_PRODUCT_ID']}/contributionDefinitions")['values'].first['id']
+        new_client.get("/contributionProducts/#{ENV['CONTRIBUTION_PRODUCT_ID']}/contributionDefinitions")['values'].first['id']
       )
     end
 
@@ -424,7 +453,7 @@ class VcrSetup
     unless ENV['ORGANIZATION_ID']
       set_env(
         'ORGANIZATION_ID',
-        client.get("/organizations")['values'].first['id']
+        new_client.get("/organizations")['values'].first['id']
       )
     end
 
@@ -447,7 +476,7 @@ class VcrSetup
   end
 
   def meets_vcr_requirements?
-    missing_env_vars = ['API_KEY', 'API_SECRET', 'ACCESS_TOKEN', 'ACCESS_SECRET'].reject{|var| ENV[var]}
+    missing_env_vars = ['API_KEY', 'API_SECRET'].reject{|var| ENV[var]}
 
     unless missing_env_vars.empty?
       puts "The following required environment variables are missing: #{missing_env_vars.join(', ')}"

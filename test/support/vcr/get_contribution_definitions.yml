@@ -16,22 +16,22 @@ http_interactions:
       Authorization:
       - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
         oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
-        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_version="1.0"
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_version="1.0"
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Fri, 07 Feb 2020 21:29:19 GMT
+      - Mon, 10 Feb 2020 17:29:16 GMT
       Content-Type:
       - application/vnd.deere.axiom.v3+json;charset=UTF-8
       X-Deere-Handling-Server:
-      - ip-10-214-45-140
+      - ip-10-214-44-36
       X-Frame-Options:
       - SAMEORIGIN
       X-Deere-Elapsed-Ms:
-      - '14'
+      - '10'
       Cache-Control:
       - no-store
       Content-Language:
@@ -42,7 +42,7 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"@type":"ApiCatalog","links":[{"@type":"Link","rel":"oauthRequestToken","uri":"https://sandboxapi.deere.com/platform/oauth/request_token"},{"@type":"Link","rel":"oauthAuthorizeRequestToken","uri":"https://my.deere.com/consentToUseOfData?oauth_token={token}"},{"@type":"Link","rel":"oauthAccessToken","uri":"https://sandboxapi.deere.com/platform/oauth/access_token"},{"@type":"Link","rel":"agencies","uri":"https://sandboxapi.deere.com/platform/agencies"}]}'
     http_version: 
-  recorded_at: Fri, 07 Feb 2020 21:29:19 GMT
+  recorded_at: Mon, 10 Feb 2020 17:29:17 GMT
 - request:
     method: get
     uri: https://sandboxapi.deere.com/platform/contributionProducts/00000000-0000-0000-0000-000000000000/contributionDefinitions
@@ -59,7 +59,7 @@ http_interactions:
       Authorization:
       - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
         oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
-        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_token="00000000-0000-0000-0000-000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_token="00000000-0000-0000-0000-000000000000",
         oauth_version="1.0"
   response:
     status:
@@ -67,15 +67,15 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Feb 2020 21:29:20 GMT
+      - Mon, 10 Feb 2020 17:29:17 GMT
       Content-Type:
       - application/vnd.deere.axiom.v3+json;charset=UTF-8
       X-Deere-Handling-Server:
-      - ip-10-214-45-86
+      - ip-10-214-45-144
       X-Frame-Options:
       - SAMEORIGIN
       X-Deere-Elapsed-Ms:
-      - '32'
+      - '74'
       Cache-Control:
       - no-store
       Content-Language:
@@ -87,5 +87,5 @@ http_interactions:
       string: '{"links":[{"rel":"self","uri":"https://sandboxapi.deere.com/platform/contributionProducts/00000000-0000-0000-0000-000000000000/contributionDefinitions"}],"total":1,"values":[{"@type":"ContributionDefinition","name":"Definition
         Name","actionDefinitions":[],"id":"00000000-0000-0000-0000-000000000000","links":[{"@type":"Link","rel":"self","uri":"https://sandboxapi.deere.com/platform/contributionDefinitions/00000000-0000-0000-0000-000000000000"},{"@type":"Link","rel":"contributionProduct","uri":"https://sandboxapi.deere.com/platform/contributionProducts/00000000-0000-0000-0000-000000000000"}]}]}'
     http_version: 
-  recorded_at: Fri, 07 Feb 2020 21:29:20 GMT
+  recorded_at: Mon, 10 Feb 2020 17:29:17 GMT
 recorded_with: VCR 5.0.0

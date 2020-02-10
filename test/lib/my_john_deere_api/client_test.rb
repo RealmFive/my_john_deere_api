@@ -65,7 +65,17 @@ describe 'MyJohnDeereApi::Client' do
   end
 
   describe '#post' do
-    let(:attributes) { CONFIG.asset_attributes }
+    let(:attributes) do
+      CONFIG.sanitized_asset_attributes.merge(
+        links: [
+          {
+            '@type' => 'Link',
+            'rel' => 'contributionDefinition',
+            'uri' => "#{CONFIG.url}/contributionDefinitions/#{CONFIG.sanitized_asset_attributes[:contribution_definition_id]}"
+          }
+        ]
+      )
+    end
 
     it 'returns the response as a Hash' do
       response = VCR.use_cassette('post_assets') do
@@ -92,14 +102,23 @@ describe 'MyJohnDeereApi::Client' do
     let(:new_title) { 'i REALLY like turtles!' }
 
     let(:attributes) do
-      CONFIG.asset_attributes.slice(
+      CONFIG.sanitized_asset_attributes.slice(
         :asset_category, :asset_type, :asset_sub_type, :links
-      ).merge(title: new_title)
+      ).merge(
+        title: new_title,
+        links: [
+          {
+            '@type' => 'Link',
+            'rel' => 'contributionDefinition',
+            'uri' => "#{CONFIG.url}/contributionDefinitions/#{CONFIG.sanitized_asset_attributes[:contribution_definition_id]}"
+          }
+        ]
+      )
     end
 
     it 'sends the request' do
       response = VCR.use_cassette('put_asset') { client.put("/assets/#{asset_id}", attributes) }
-
+      puts "HASH!! #{response.inspect}" if response.is_a?(Hash)
       assert_equal '204', response.code
       assert_equal 'No Content', response.message
     end

@@ -16,22 +16,22 @@ http_interactions:
       Authorization:
       - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
         oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
-        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_version="1.0"
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_version="1.0"
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Fri, 07 Feb 2020 16:22:24 GMT
+      - Mon, 10 Feb 2020 17:29:28 GMT
       Content-Type:
       - application/vnd.deere.axiom.v3+json;charset=UTF-8
       X-Deere-Handling-Server:
-      - ip-10-214-44-29
+      - ip-10-214-44-28
       X-Frame-Options:
       - SAMEORIGIN
       X-Deere-Elapsed-Ms:
-      - '19'
+      - '11'
       Cache-Control:
       - no-store
       Content-Language:
@@ -42,7 +42,7 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"@type":"ApiCatalog","links":[{"@type":"Link","rel":"oauthRequestToken","uri":"https://sandboxapi.deere.com/platform/oauth/request_token"},{"@type":"Link","rel":"oauthAuthorizeRequestToken","uri":"https://my.deere.com/consentToUseOfData?oauth_token={token}"},{"@type":"Link","rel":"oauthAccessToken","uri":"https://sandboxapi.deere.com/platform/oauth/access_token"},{"@type":"Link","rel":"agencies","uri":"https://sandboxapi.deere.com/platform/agencies"}]}'
     http_version: 
-  recorded_at: Fri, 07 Feb 2020 16:22:24 GMT
+  recorded_at: Mon, 10 Feb 2020 17:29:28 GMT
 - request:
     method: get
     uri: https://sandboxapi.deere.com/platform/organizations
@@ -59,7 +59,7 @@ http_interactions:
       Authorization:
       - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
         oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
-        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_token="00000000-0000-0000-0000-000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_token="00000000-0000-0000-0000-000000000000",
         oauth_version="1.0"
   response:
     status:
@@ -67,15 +67,15 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Feb 2020 16:22:25 GMT
+      - Mon, 10 Feb 2020 17:29:28 GMT
       Content-Type:
       - application/vnd.deere.axiom.v3+json;charset=UTF-8
       X-Deere-Handling-Server:
-      - ip-10-214-45-97
+      - ip-10-214-45-144
       X-Frame-Options:
       - SAMEORIGIN
       X-Deere-Elapsed-Ms:
-      - '151'
+      - '47'
       Cache-Control:
       - no-store
       Content-Language:
@@ -96,7 +96,7 @@ http_interactions:
         Name","type":"customer","member":true,"id":"000000","links":[{"@type":"Link","rel":"self","uri":"https://sandboxapi.deere.com/platform/organizations/000000"},{"@type":"Link","rel":"machines","uri":"https://sandboxapi.deere.com/platform/organizations/000000/machines"},{"@type":"Link","rel":"wdtCapableMachines","uri":"https://sandboxapi.deere.com/platform/organizations/000000/machines?capability=wdt"},{"@type":"Link","rel":"files","uri":"https://sandboxapi.deere.com/platform/organizations/000000/files"},{"@type":"Link","rel":"transferableFiles","uri":"https://sandboxapi.deere.com/platform/organizations/000000/files?transferable=true"},{"@type":"Link","rel":"uploadFile","uri":"https://sandboxapi.deere.com/platform/organizations/000000/files"},{"@type":"Link","rel":"sendFileToMachine","uri":"https://sandboxapi.deere.com/platform/organizations/000000/fileTransfers"},{"@type":"Link","rel":"addMachine","uri":"https://sandboxapi.deere.com/platform/organizations/000000/machines"},{"@type":"Link","rel":"addField","uri":"https://sandboxapi.deere.com/platform/organizations/000000/fields"},{"@type":"Link","rel":"assets","uri":"https://sandboxapi.deere.com/platform/organizations/000000/assets"},{"@type":"Link","rel":"fields","uri":"https://sandboxapi.deere.com/platform/organizations/000000/fields"},{"@type":"Link","rel":"farms","uri":"https://sandboxapi.deere.com/platform/organizations/000000/farms"},{"@type":"Link","rel":"boundaries","uri":"https://sandboxapi.deere.com/platform/organizations/000000/boundaries"},{"@type":"Link","rel":"clients","uri":"https://sandboxapi.deere.com/platform/organizations/000000/clients"},{"@type":"Link","rel":"flags","uri":"https://sandboxapi.deere.com/platform/organizations/000000/flags"},{"@type":"Link","rel":"flagCategory","uri":"https://sandboxapi.deere.com/platform/organizations/000000/flagCategories"},{"@type":"Link","rel":"controllers","uri":"https://sandboxapi.deere.com/platform/organizations/000000/orgController"}]},{"@type":"Organization","name":"Organization
         Name","type":"customer","member":true,"id":"000000","links":[{"@type":"Link","rel":"self","uri":"https://sandboxapi.deere.com/platform/organizations/000000"},{"@type":"Link","rel":"machines","uri":"https://sandboxapi.deere.com/platform/organizations/000000/machines"},{"@type":"Link","rel":"wdtCapableMachines","uri":"https://sandboxapi.deere.com/platform/organizations/000000/machines?capability=wdt"},{"@type":"Link","rel":"files","uri":"https://sandboxapi.deere.com/platform/organizations/000000/files"},{"@type":"Link","rel":"transferableFiles","uri":"https://sandboxapi.deere.com/platform/organizations/000000/files?transferable=true"},{"@type":"Link","rel":"uploadFile","uri":"https://sandboxapi.deere.com/platform/organizations/000000/files"},{"@type":"Link","rel":"sendFileToMachine","uri":"https://sandboxapi.deere.com/platform/organizations/000000/fileTransfers"},{"@type":"Link","rel":"addMachine","uri":"https://sandboxapi.deere.com/platform/organizations/000000/machines"},{"@type":"Link","rel":"addField","uri":"https://sandboxapi.deere.com/platform/organizations/000000/fields"},{"@type":"Link","rel":"assets","uri":"https://sandboxapi.deere.com/platform/organizations/000000/assets"},{"@type":"Link","rel":"fields","uri":"https://sandboxapi.deere.com/platform/organizations/000000/fields"},{"@type":"Link","rel":"farms","uri":"https://sandboxapi.deere.com/platform/organizations/000000/farms"},{"@type":"Link","rel":"boundaries","uri":"https://sandboxapi.deere.com/platform/organizations/000000/boundaries"},{"@type":"Link","rel":"clients","uri":"https://sandboxapi.deere.com/platform/organizations/000000/clients"},{"@type":"Link","rel":"flags","uri":"https://sandboxapi.deere.com/platform/organizations/000000/flags"},{"@type":"Link","rel":"flagCategory","uri":"https://sandboxapi.deere.com/platform/organizations/000000/flagCategories"},{"@type":"Link","rel":"controllers","uri":"https://sandboxapi.deere.com/platform/organizations/000000/orgController"}]}]}'
     http_version: 
-  recorded_at: Fri, 07 Feb 2020 16:22:25 GMT
+  recorded_at: Mon, 10 Feb 2020 17:29:29 GMT
 - request:
     method: get
     uri: https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000
@@ -113,7 +113,7 @@ http_interactions:
       Authorization:
       - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
         oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
-        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581028214", oauth_token="00000000-0000-0000-0000-000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_token="00000000-0000-0000-0000-000000000000",
         oauth_version="1.0"
   response:
     status:
@@ -121,15 +121,15 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Feb 2020 16:22:25 GMT
+      - Mon, 10 Feb 2020 17:29:29 GMT
       Content-Type:
       - application/vnd.deere.axiom.v3+json;charset=UTF-8
       X-Deere-Handling-Server:
-      - ip-10-214-45-143
+      - ip-10-214-44-33
       X-Frame-Options:
       - SAMEORIGIN
       X-Deere-Elapsed-Ms:
-      - '42'
+      - '81'
       Cache-Control:
       - no-store
       Content-Language:
@@ -138,7 +138,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"@type":"ContributedAsset","title":"Asset Title","assetCategory":"DEVICE","assetType":"SENSOR","assetSubType":"ENVIRONMENTAL","lastModifiedDate":"2020-02-06T22:30:14.000Z","id":"00000000-0000-0000-0000-000000000000","links":[{"@type":"Link","rel":"self","uri":"https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000"},{"@type":"Link","rel":"contributionDefinition","uri":"https://sandboxapi.deere.com/platform/contributionDefinitions/00000000-0000-0000-0000-000000000000"},{"@type":"Link","rel":"organization","uri":"https://sandboxapi.deere.com/platform/organizations/000000"},{"@type":"Link","rel":"locations","uri":"https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000/locations"},{"@type":"Link","rel":"lastKnownLocation","uri":"https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000/locations?lastKnown=true"}]}'
+      string: '{"@type":"ContributedAsset","title":"Asset Title","assetCategory":"DEVICE","assetType":"SENSOR","assetSubType":"ENVIRONMENTAL","lastModifiedDate":"2020-02-10T11:29:32.000Z","id":"00000000-0000-0000-0000-000000000000","links":[{"@type":"Link","rel":"self","uri":"https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000"},{"@type":"Link","rel":"contributionDefinition","uri":"https://sandboxapi.deere.com/platform/contributionDefinitions/00000000-0000-0000-0000-000000000000"},{"@type":"Link","rel":"organization","uri":"https://sandboxapi.deere.com/platform/organizations/000000"},{"@type":"Link","rel":"locations","uri":"https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000/locations"},{"@type":"Link","rel":"lastKnownLocation","uri":"https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000/locations?lastKnown=true"}]}'
     http_version: 
-  recorded_at: Fri, 07 Feb 2020 16:22:26 GMT
+  recorded_at: Mon, 10 Feb 2020 17:29:29 GMT
 recorded_with: VCR 5.0.0
