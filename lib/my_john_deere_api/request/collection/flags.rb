@@ -15,5 +15,19 @@ module MyJohnDeereApi::Request
     def model
       MyJohnDeereApi::Model::Flag
     end
+
+    ##
+    # Create a new flag (NOT YET IMPLEMENTED)
+
+    def create(attributes)
+      raise NotImplementedError
+    end
+
+    ##
+    # Retrieve an flag from JD (NOT YET IMPLEMENTED)
+
+    def find(asset_id)
+      raise NotImplementedError
+    end
   end
 end

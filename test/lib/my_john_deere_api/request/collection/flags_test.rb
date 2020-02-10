@@ -57,6 +57,18 @@ describe 'MyJohnDeereApi::Request::Collection::Flags' do
     end
   end
 
+  describe '#create(attributes)' do
+    it 'raises an error, not yet implemented' do
+      assert_raises(NotImplementedError) { collection.create({}) }
+    end
+  end
+
+  describe '#find(id)' do
+    it 'raises an error, not yet implemented' do
+      assert_raises(NotImplementedError) { collection.find(123) }
+    end
+  end
+
   describe 'results' do
     let(:flag_geometries) do
       contents = File.read('test/support/vcr/get_flags.yml')
