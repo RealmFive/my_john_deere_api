@@ -10,6 +10,10 @@ describe 'MyJohnDeereApi Errors' do
       assert JD::InvalidRecordError
     end
 
+    it 'loads NotYetImplementedError' do
+      assert JD::NotYetImplementedError
+    end
+
     it 'loads TypeMismatchError' do
       assert JD::TypeMismatchError
     end
