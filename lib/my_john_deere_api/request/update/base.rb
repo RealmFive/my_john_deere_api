@@ -1,14 +1,18 @@
 require 'json'
 
-module MyJohnDeereApi
-  class Request::Create::Base
-    attr_reader :accessor, :attributes, :errors, :response
+module MyJohnDeereApi::Request
+  class Update::Base
+    attr_reader :accessor, :item, :attributes, :errors, :response
 
     ##
-    # Accepts a valid oAuth AccessToken, and a hash of attributes.
+    # Accepts a valid oAuth AccessToken, the item to be updated, 
+    # and a hash of attributes.
+    #
+    # category/type/subtype must be a recognized combination as defined above.
 
-    def initialize(accessor, attributes)
+    def initialize(accessor, item, attributes)
       @accessor = accessor
+      @item = item
       @attributes = attributes
 
       process_attributes
@@ -19,43 +23,43 @@ module MyJohnDeereApi
     ##
     # Make the request, if the instance is valid
 
-    def request
-      validate!
-
-      @response = accessor.post(resource, request_body.to_json, headers)
-    end
+    # def request
+    #   validate!
+    #
+    #   @response = accessor.post(resource, request_body.to_json, headers)
+    # end
 
     ##
     # Object created by request
 
-    def object
-      return @object if defined?(@object)
-
-      request unless response
-
-      @object = model.new(fetch_record, accessor)
-    end
+    # def object
+    #   return @object if defined?(@object)
+    #
+    #   request unless response
+    #
+    #   @object = model.new(fetch_record, accessor)
+    # end
 
     ##
     # Runs validations, adding to the errors hash as needed. Returns true
     # if the errors hash is still empty after all validations have been run.
 
-    def valid?
-      return @is_valid if defined?(@is_valid)
-
-      validate_required
-      validate_attributes
-
-      @is_valid = errors.empty?
-    end
+    # def valid?
+    #   return @is_valid if defined?(@is_valid)
+    #
+    #   validate_required
+    #   validate_attributes
+    #
+    #   @is_valid = errors.empty?
+    # end
 
     ##
     # Raises an error if the record is invalid. Passes the errors hash
     # to the error, in order to build a useful message string.
 
-    def validate!
-      raise(InvalidRecordError, errors) unless valid?
-    end
+    # def validate!
+    #   raise(InvalidRecordError, errors) unless valid?
+    # end
 
     private
 
@@ -63,8 +67,8 @@ module MyJohnDeereApi
     # Run validations unique to a given model. This should be overridden
     # by children where needed.
 
-    def validate_attributes
-    end
+    # def validate_attributes
+    # end
 
     ##
     # Convert inputs into working attributes. This allows us to auto-create
@@ -91,7 +95,7 @@ module MyJohnDeereApi
     end
 
     ##
-    # Headers for POST request
+    # Headers for PUT request
 
     def headers
       @headers ||= {

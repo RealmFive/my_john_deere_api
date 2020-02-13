@@ -13,5 +13,9 @@ describe 'MyJohnDeereApi::Request' do
     it 'loads Request::Individuaal' do
       assert JD::Request::Individual
     end
+
+    it 'loads Request::Update' do
+      assert JD::Request::Update
+    end
   end
 end

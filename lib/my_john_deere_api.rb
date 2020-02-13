@@ -10,6 +10,7 @@ module MyJohnDeereApi
   autoload :Request,        'my_john_deere_api/request'
   autoload :Model,          'my_john_deere_api/model'
   autoload :Helpers,        'my_john_deere_api/helpers'
+  autoload :Validators,     'my_john_deere_api/validators'
 
   require 'my_john_deere_api/errors'
 end

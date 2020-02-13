@@ -29,5 +29,9 @@ class MyJohnDeereApiTest < MiniTest::Test
     it 'loads Helpers' do
       assert JD::Helpers
     end
+
+    it 'loads Validators' do
+      assert JD::Validators
+    end
   end
 end
