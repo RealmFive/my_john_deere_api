@@ -2,6 +2,8 @@ require 'date'
 
 module MyJohnDeereApi
   class Request::Create::AssetLocation < Request::Create::Base
+    include Validators::AssetLocation
+
     private
 
     ##
@@ -74,13 +76,6 @@ module MyJohnDeereApi
     end
 
     ##
-    # Required attributes for this class
-
-    def required_attributes
-      [:asset_id, :timestamp, :geometry, :measurement_data]
-    end
-
-    ##
     # Retrieve newly created record
 
     def fetch_record
@@ -110,29 +105,6 @@ module MyJohnDeereApi
 
     def model
       Model::AssetLocation
-    end
-
-    ##
-    # Custom validations for this class
-
-    def validate_attributes
-      validate_measurement_data
-    end
-
-    def validate_measurement_data
-      unless attributes[:measurement_data].is_a?(Array)
-        errors[:measurement_data] ||= 'must be an array'
-        return
-      end
-
-      attributes[:measurement_data].each do |measurement|
-        [:name, :value, :unit].each do |attr|
-          unless measurement.has_key?(attr)
-            errors[:measurement_data] ||= "must include #{attr}"
-            return
-          end
-        end
-      end
     end
   end
 end

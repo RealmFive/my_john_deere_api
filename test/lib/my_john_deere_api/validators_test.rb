@@ -9,5 +9,9 @@ describe 'MyJohnDeereApi::Validators' do
     it 'loads Validators::Asset' do
       assert JD::Validators::Asset
     end
+
+    it 'loads Validators::AssetLocation' do
+      assert JD::Validators::AssetLocation
+    end
   end
 end

@@ -1,22 +1,17 @@
 require 'support/helper'
 
-module AssetValidatorTest
-  class Base
-    include JD::Validators::Asset
+class AssetValidatorTest
+  include JD::Validators::Asset
 
-    attr_reader :attributes
+  attr_reader :attributes
 
-    def initialize(attributes)
-      @attributes = attributes
-    end
-  end
-
-  class Vanilla < Base
+  def initialize(attributes)
+    @attributes = attributes
   end
 end
 
 describe 'MyJohnDeereApi::Validators::Asset' do
-  let(:klass) { AssetValidatorTest::Base }
+  let(:klass) { AssetValidatorTest }
   let(:object) { klass.new(attributes) }
   let(:attributes) { valid_attributes }
 
