@@ -25,11 +25,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
       assert_equal attributes, object.attributes
     end
 
-    it 'creates an empty error hash' do
-      object = JD::Request::Create::AssetLocation.new(accessor, {})
-      assert_equal({}, object.errors)
-    end
-
     it 'accepts simple coordinates and generates the geometry' do
       attributes = {
         asset_id: asset_id,

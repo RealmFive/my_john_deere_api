@@ -24,11 +24,6 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
       assert_equal accessor, object.accessor
       assert_equal attributes, object.attributes
     end
-
-    it 'creates an empty error hash' do
-      object = JD::Request::Create::Asset.new(accessor, {})
-      assert_equal({}, object.errors)
-    end
   end
 
   describe '#valid?' do

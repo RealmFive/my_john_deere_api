@@ -2,7 +2,7 @@ require 'json'
 
 module MyJohnDeereApi
   class Request::Create::Base
-    attr_reader :accessor, :attributes, :errors, :response
+    attr_reader :accessor, :attributes, :response
 
     ##
     # Accepts a valid oAuth AccessToken, and a hash of attributes.
@@ -12,8 +12,6 @@ module MyJohnDeereApi
       @attributes = attributes
 
       process_attributes
-
-      @errors = {}
     end
 
     ##
