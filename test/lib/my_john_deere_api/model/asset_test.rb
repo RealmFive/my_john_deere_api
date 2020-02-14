@@ -52,6 +52,19 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
   end
 
+  describe '#attributes' do
+    it 'converts properties back to an attributes hash' do
+      asset = JD::Model::Asset.new(record)
+      attributes = asset.attributes
+
+      assert_equal asset.id, attributes[:id]
+      assert_equal asset.title, attributes[:title]
+      assert_equal asset.asset_category, attributes[:asset_category]
+      assert_equal asset.asset_type, attributes[:asset_type]
+      assert_equal asset.asset_sub_type, attributes[:asset_sub_type]
+    end
+  end
+
   describe '#locations' do
     it 'returns a collection of locations for this asset' do
       accessor

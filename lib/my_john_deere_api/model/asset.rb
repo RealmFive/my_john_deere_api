@@ -3,6 +3,19 @@ module MyJohnDeereApi
     attr_reader :title, :asset_category, :asset_type, :asset_sub_type, :last_modified_date
 
     ##
+    # A listing of attributes that can be passed back to John Deere
+
+    def attributes
+      {
+        id: id,
+        title: title,
+        asset_category: asset_category,
+        asset_type: asset_type,
+        asset_sub_type: asset_sub_type
+      }
+    end
+
+    ##
     # locations associated with this asset
 
     def locations
