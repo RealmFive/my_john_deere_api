@@ -34,7 +34,7 @@ describe 'MyJohnDeereApi::Client' do
 
   describe '#get' do
     it 'returns the response as a Hash' do
-      VCR.use_cassette('catalog') { client.send(:accessor) }
+      VCR.use_cassette('catalog') { client.accessor }
       response = VCR.use_cassette('get_organizations') { client.get('/organizations') }
 
       assert_kind_of Hash, response
@@ -44,7 +44,7 @@ describe 'MyJohnDeereApi::Client' do
     end
 
     it 'prepends the leading slash if needed' do
-      VCR.use_cassette('catalog') { client.send(:accessor) }
+      VCR.use_cassette('catalog') { client.accessor }
       response = VCR.use_cassette('get_organizations') { client.get('organizations') }
 
       assert_kind_of Hash, response
@@ -54,7 +54,7 @@ describe 'MyJohnDeereApi::Client' do
     end
 
     it 'allows symbols for simple resources' do
-      VCR.use_cassette('catalog') { client.send(:accessor) }
+      VCR.use_cassette('catalog') { client.accessor }
       response = VCR.use_cassette('get_organizations') { client.get(:organizations) }
 
       assert_kind_of Hash, response

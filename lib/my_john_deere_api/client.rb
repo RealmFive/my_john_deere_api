@@ -35,6 +35,15 @@ module MyJohnDeereApi
     end
 
     ##
+    # Returns an oAuth AccessToken object which can be used to make
+    # user-specific API requests
+
+    def accessor
+      return @accessor if defined?(@accessor)
+      @accessor = OAuth::AccessToken.new(consumer.user_get, access_token, access_secret)
+    end
+
+    ##
     # generic user-specific GET request method that returns JSON
 
     def get resource
@@ -114,15 +123,6 @@ module MyJohnDeereApi
     def consumer
       return @consumer if defined?(@consumer)
       @consumer = MyJohnDeereApi::Consumer.new(@api_key, @api_secret, environment: environment)
-    end
-
-    ##
-    # Returns an oAuth AccessToken object which can be used to make
-    # user-specific API requests
-
-    def accessor
-      return @accessor if defined?(@accessor)
-      @accessor = OAuth::AccessToken.new(consumer.user_get, access_token, access_secret)
     end
 
     def headers
