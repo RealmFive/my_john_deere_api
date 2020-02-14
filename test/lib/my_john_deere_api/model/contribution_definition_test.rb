@@ -46,11 +46,9 @@ describe 'MyJohnDeereApi::Model::ContributionDefinition' do
       end
     end
 
-    it 'accepts an optional accessor' do
-      mock_accessor = 'mock-accessor'
-
-      asset = klass.new(record, mock_accessor)
-      assert_equal mock_accessor, asset.accessor
+    it 'accepts an optional client' do
+      asset = klass.new(record, client)
+      assert_equal client, asset.client
     end
   end
 end

@@ -2,6 +2,8 @@ require 'support/helper'
 require 'json'
 
 describe 'MyJohnDeereApi::Model::AssetLocation' do
+  let(:klass) { JD::Model::AssetLocation }
+
   let(:record) do
     {
       '@type' => 'ContributedAssetLocation',
@@ -18,7 +20,7 @@ describe 'MyJohnDeereApi::Model::AssetLocation' do
     end
 
     it 'sets the attributes from the given record' do
-      location = JD::Model::AssetLocation.new(record)
+      location = klass.new(record)
 
       assert_nil location.accessor
 
@@ -32,11 +34,9 @@ describe 'MyJohnDeereApi::Model::AssetLocation' do
       assert_equal 0, location.links.size
     end
 
-    it 'accepts an optional accessor' do
-      mock_accessor = 'mock-accessor'
-
-      location = JD::Model::AssetLocation.new(record, mock_accessor)
-      assert_equal mock_accessor, location.accessor
+    it 'accepts an optional client' do
+      location = klass.new(record, client)
+      assert_equal client, location.client
     end
   end
 end

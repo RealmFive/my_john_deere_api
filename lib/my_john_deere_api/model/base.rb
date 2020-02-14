@@ -3,23 +3,24 @@ module MyJohnDeereApi
     include Helpers::CaseConversion
     include Helpers::UriHelpers
 
-    attr_reader :id, :record_type, :accessor, :links
+    attr_reader :id, :record_type, :client, :links
 
     ##
     # arguments:
     #
     # [record] a JSON object of type 'Field', returned from the API.
     #
-    # [accessor (optional)] a valid oAuth Access Token. This is only
-    #                       needed if further API requests are going
-    #                       to be made, as is the case with *flags*.
+    # [client] the client, because it contains all the config info.
+    #          The alternative would be a true Config block, but then
+    #          settings would be app-wide. This allows one app to have
+    #          multiple clients with different settings.
 
-    def initialize(record, accessor = nil)
+    def initialize(record, client = nil)
       verify_record_type(record['@type'])
 
       @id = record['id']
       @record_type = record['@type']
-      @accessor = accessor
+      @client = client
 
       map_attributes(record)
 
@@ -28,6 +29,14 @@ module MyJohnDeereApi
       record['links'].each do |association|
         @links[underscore(association['rel'])] = uri_path(association['uri'])
       end
+    end
+
+    ##
+    # The client accessor
+
+    def accessor
+      return @accessor if defined?(@accessor)
+      @accessor = client&.accessor
     end
 
     private

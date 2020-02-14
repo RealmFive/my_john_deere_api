@@ -3,12 +3,13 @@ require 'yaml'
 require 'json'
 
 describe 'MyJohnDeereApi::Request::Individual::Asset' do
-  let(:object) { JD::Request::Individual::Asset.new(accessor, asset_id) }
+  let(:object) { JD::Request::Individual::Asset.new(client, asset_id) }
 
   inherits_from JD::Request::Individual::Base
 
-  describe '#initialize(access_token, asset_id)' do
-    it 'accepts an access token' do
+  describe '#initialize(client, asset_id)' do
+    it 'accepts a client' do
+      assert_equal client, object.client
       assert_equal accessor, object.accessor
     end
 

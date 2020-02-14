@@ -2,8 +2,8 @@ require 'support/helper'
 
 describe 'MyJohnDeereApi::Request::Update::Asset' do
   let(:klass) { JD::Request::Update::Asset }
-  let(:object) { klass.new(accessor, item, attributes) }
-  let(:item) { JD::Model::Asset.new(record, accessor) }
+  let(:object) { klass.new(client, item, attributes) }
+  let(:item) { JD::Model::Asset.new(record, client) }
 
   let(:attributes) do
     {
@@ -27,8 +27,9 @@ describe 'MyJohnDeereApi::Request::Update::Asset' do
 
   inherits_from MyJohnDeereApi::Request::Update::Base
 
-  describe '#initialize(access_token, item, attributes)' do
-    it 'accepts an accessor, item and attributes' do
+  describe '#initialize(client, item, attributes)' do
+    it 'accepts a client, item and attributes' do
+      assert_equal client, object.client
       assert_equal accessor, object.accessor
       assert_equal item, object.item
       assert_equal item.attributes.merge(attributes), object.attributes
@@ -49,7 +50,7 @@ describe 'MyJohnDeereApi::Request::Update::Asset' do
 
   describe '#headers' do
     it 'sets the accept and content-type headers' do
-      object = JD::Request::Update::Asset.new(accessor, item, attributes)
+      object = klass.new(client, item, attributes)
       headers = object.send(:headers)
 
       expected = 'application/vnd.deere.axiom.v3+json'

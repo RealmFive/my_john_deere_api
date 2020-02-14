@@ -13,14 +13,16 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     )
   end
 
-  let(:object) { JD::Request::Create::Asset.new(accessor, attributes) }
+  let(:klass) { JD::Request::Create::Asset }
+  let(:object) { klass.new(client, attributes) }
 
   let(:attributes) { valid_attributes }
 
   inherits_from MyJohnDeereApi::Request::Create::Base
 
-  describe '#initialize(access_token, attributes)' do
-    it 'accepts an accessor and attributes' do
+  describe '#initialize(client, attributes)' do
+    it 'accepts a client and attributes' do
+      assert_equal client, object.client
       assert_equal accessor, object.accessor
       assert_equal attributes, object.attributes
     end
@@ -33,42 +35,42 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     end
 
     it 'requires organization_id' do
-      object = JD::Request::Create::Asset.new(accessor, attributes_without(:organization_id))
+      object = klass.new(client, attributes_without(:organization_id))
 
       refute object.valid?
       assert_equal 'is required', object.errors[:organization_id]
     end
 
     it 'requires contribution_definition_id' do
-      object = JD::Request::Create::Asset.new(accessor, attributes_without(:contribution_definition_id))
+      object = klass.new(client, attributes_without(:contribution_definition_id))
 
       refute object.valid?
       assert_equal 'is required', object.errors[:contribution_definition_id]
     end
 
     it 'requires title' do
-      object = JD::Request::Create::Asset.new(accessor, attributes_without(:title))
+      object = klass.new(client, attributes_without(:title))
 
       refute object.valid?
       assert_equal 'is required', object.errors[:title]
     end
 
     it 'requires a valid category' do
-      object = JD::Request::Create::Asset.new(accessor, attributes.merge(asset_category: 'TURTLES'))
+      object = klass.new(client, attributes.merge(asset_category: 'TURTLES'))
 
       refute object.valid?
       assert_equal 'requires valid combination of category/type/subtype', object.errors[:asset_category]
     end
 
     it 'requires a valid type' do
-      object = JD::Request::Create::Asset.new(accessor, attributes.merge(asset_type: 'TURTLES'))
+      object = klass.new(client, attributes.merge(asset_type: 'TURTLES'))
 
       refute object.valid?
       assert_equal 'requires valid combination of category/type/subtype', object.errors[:asset_category]
     end
 
     it 'requires a valid subtype' do
-      object = JD::Request::Create::Asset.new(accessor, attributes.merge(asset_sub_type: 'TURTLES'))
+      object = klass.new(client, attributes.merge(asset_sub_type: 'TURTLES'))
 
       refute object.valid?
       assert_equal 'requires valid combination of category/type/subtype', object.errors[:asset_category]
@@ -77,7 +79,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
   describe '#validate!' do
     it 'raises an error when invalid' do
-      object = JD::Request::Create::Asset.new(accessor, attributes_without(:organization_id))
+      object = klass.new(client, attributes_without(:organization_id))
 
       exception = assert_raises(JD::InvalidRecordError) { object.validate! }
       assert_includes exception.message, 'Record is invalid'
@@ -87,7 +89,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
   describe '#valid_categories?(category, type, subtype)' do
     it 'only allows pre-defined combinations' do
-      object = JD::Request::Create::Asset.new(accessor, {})
+      object = klass.new(client, {})
 
       valid_combos = [
         ['DEVICE', 'SENSOR', 'ENVIRONMENTAL'],
@@ -126,14 +128,14 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
   describe '#resource' do
     it 'is built from the organization id' do
-      object = JD::Request::Create::Asset.new(accessor, attributes)
+      object = klass.new(client, attributes)
       assert_equal "/organizations/#{organization_id}/assets", object.send(:resource)
     end
   end
 
   describe '#request_body' do
     it 'properly forms the request body' do
-      object = JD::Request::Create::Asset.new(accessor, attributes)
+      object = klass.new(client, attributes)
       body = object.send(:request_body)
 
       assert_equal attributes[:title], body[:title]
@@ -162,7 +164,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
   describe '#object' do
     it 'returns the asset model instance' do
-      object = JD::Request::Create::Asset.new(accessor, attributes)
+      object = klass.new(client, attributes)
       result = VCR.use_cassette('post_assets') { object.object }
 
       assert_kind_of JD::Model::Asset, result

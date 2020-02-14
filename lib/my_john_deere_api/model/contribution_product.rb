@@ -10,7 +10,7 @@ module MyJohnDeereApi
 
     def contribution_definitions
       return @contribution_definitions if defined?(@contribution_definitions)
-      @contribution_definitions = Request::Collection::ContributionDefinitions.new(accessor, contribution_product: id)
+      @contribution_definitions = Request::Collection::ContributionDefinitions.new(client, contribution_product: id)
     end
 
     private

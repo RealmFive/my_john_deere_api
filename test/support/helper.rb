@@ -42,7 +42,7 @@ class Minitest::Spec
   end
 
   def accessor
-    @_accessor ||= VCR.use_cassette('catalog') { client.send(:accessor) }
+    @_accessor ||= VCR.use_cassette('catalog') { client.accessor }
   end
 
   def base_url
@@ -88,4 +88,9 @@ class Minitest::Spec
   def verify_code
     CONFIG.verify_code
   end
+
+  # pre-load the accessor so the info is available in all specs without
+  # a special call to accessor
+  before { accessor }
 end
+

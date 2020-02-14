@@ -15,12 +15,14 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
   let(:attributes) { valid_attributes }
 
-  let(:object) { JD::Request::Create::AssetLocation.new(accessor, attributes) }
+  let(:klass) { JD::Request::Create::AssetLocation }
+  let(:object) { klass.new(client, attributes) }
 
   inherits_from MyJohnDeereApi::Request::Create::Base
 
-  describe '#initialize(access_token, attributes)' do
-    it 'accepts an accessor and attributes' do
+  describe '#initialize(client, attributes)' do
+    it 'accepts a client and attributes' do
+      assert_equal client, object.client
       assert_equal accessor, object.accessor
       assert_equal attributes, object.attributes
     end
@@ -33,13 +35,13 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
         measurement_data: valid_attributes[:measurement_data]
       }
 
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
+      object = klass.new(client, attributes)
       assert_equal valid_attributes[:geometry].to_json, object.attributes[:geometry]
     end
 
     it 'defaults timestamp to current time' do
       attributes = valid_attributes.slice(:asset_id, :geometry, :measurement_data)
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes)
+      object = klass.new(client, attributes)
 
       expected_stamp = Time.now.utc.to_i
       actual_stamp = DateTime.parse(object.attributes[:timestamp]).to_time.to_i
@@ -55,21 +57,21 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
     end
 
     it 'requires asset_id' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes_without(:asset_id))
+      object = klass.new(client, attributes_without(:asset_id))
 
       refute object.valid?
       assert_equal 'is required', object.errors[:asset_id]
     end
 
     it 'requires geometry' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes_without(:geometry))
+      object = klass.new(client, attributes_without(:geometry))
 
       refute object.valid?
       assert_equal 'is required', object.errors[:geometry]
     end
 
     it 'requires measurement_data' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes_without(:measurement_data))
+      object = klass.new(client, attributes_without(:measurement_data))
 
       refute object.valid?
       assert_equal 'is required', object.errors[:measurement_data]
@@ -77,7 +79,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
     describe 'validating measurement_data' do
       it 'must be an array' do
-        object = JD::Request::Create::AssetLocation.new(accessor, attributes.merge(measurement_data: 'something'))
+        object = klass.new(client, attributes.merge(measurement_data: 'something'))
 
         refute object.valid?
         assert_equal 'must be an array', object.errors[:measurement_data]
@@ -85,7 +87,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
       it 'must include a name' do
         without_attr = [attributes[:measurement_data].first.reject{|k,v| k == :name}]
-        object = JD::Request::Create::AssetLocation.new(accessor, attributes.merge(measurement_data: without_attr))
+        object = klass.new(client, attributes.merge(measurement_data: without_attr))
 
         refute object.valid?
         assert_equal 'must include name', object.errors[:measurement_data]
@@ -93,7 +95,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
       it 'must include a value' do
         without_attr = [attributes[:measurement_data].first.reject{|k,v| k == :value}]
-        object = JD::Request::Create::AssetLocation.new(accessor, attributes.merge(measurement_data: without_attr))
+        object = klass.new(client, attributes.merge(measurement_data: without_attr))
 
         refute object.valid?
         assert_equal 'must include value', object.errors[:measurement_data]
@@ -101,7 +103,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
       it 'must include a unit' do
         without_attr = [attributes[:measurement_data].first.reject{|k,v| k == :unit}]
-        object = JD::Request::Create::AssetLocation.new(accessor, attributes.merge(measurement_data: without_attr))
+        object = klass.new(client, attributes.merge(measurement_data: without_attr))
 
         refute object.valid?
         assert_equal 'must include unit', object.errors[:measurement_data]
@@ -111,7 +113,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
 
   describe '#validate!' do
     it 'raises an error when invalid' do
-      object = JD::Request::Create::AssetLocation.new(accessor, attributes_without(:asset_id))
+      object = klass.new(client, attributes_without(:asset_id))
 
       exception = assert_raises(JD::InvalidRecordError) { object.validate! }
       assert_includes exception.message, 'Record is invalid'

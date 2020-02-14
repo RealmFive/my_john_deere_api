@@ -20,7 +20,7 @@ module MyJohnDeereApi::Request
     # Retrieve a field from JD
 
     def find(field_id)
-      Individual::Field.new(accessor, field_id, organization: associations[:organization]).object
+      Individual::Field.new(client, field_id, organization: associations[:organization]).object
     end
   end
 end

@@ -5,18 +5,18 @@ require 'json'
 describe 'MyJohnDeereApi::Request::Collection::ContributionProducts' do
   let(:klass) { MyJohnDeereApi::Request::Collection::ContributionProducts }
 
-  let(:collection) { klass.new(accessor) }
+  let(:collection) { klass.new(client) }
   let(:object) { collection }
 
   inherits_from JD::Request::Collection::Base
 
-  describe '#initialize(access_token)' do
-    it 'accepts an access token' do
-      assert_kind_of OAuth::AccessToken, collection.accessor
+  describe '#initialize(client)' do
+    it 'accepts a client' do
+      assert_equal client, collection.client
     end
 
     it 'accepts associations' do
-      collection = klass.new(accessor, something: 123)
+      collection = klass.new(client, something: 123)
 
       assert_kind_of Hash, collection.associations
       assert_equal 123, collection.associations[:something]

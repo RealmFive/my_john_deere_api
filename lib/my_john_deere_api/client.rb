@@ -104,7 +104,7 @@ module MyJohnDeereApi
 
     def organizations
       return @organizations if defined?(@organizations)
-      @organizations = MyJohnDeereApi::Request::Collection::Organizations.new(accessor)
+      @organizations = MyJohnDeereApi::Request::Collection::Organizations.new(self)
     end
 
     ##
@@ -112,7 +112,7 @@ module MyJohnDeereApi
 
     def contribution_products
       return @contribution_products if defined?(@contribution_products)
-      @contribution_products = MyJohnDeereApi::Request::Collection::ContributionProducts.new(accessor)
+      @contribution_products = MyJohnDeereApi::Request::Collection::ContributionProducts.new(self)
     end
 
     private

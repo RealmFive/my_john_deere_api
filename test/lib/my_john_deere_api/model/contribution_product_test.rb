@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Model::ContributionProduct' do
+  let(:klass) { JD::Model::ContributionProduct }
+
   let(:record) do
     {
       "@type" => "ContributionProduct",
@@ -36,7 +38,7 @@ describe 'MyJohnDeereApi::Model::ContributionProduct' do
     end
 
     it 'sets the attributes from the given record' do
-      product = JD::Model::ContributionProduct.new(record)
+      product = klass.new(record)
 
       # basic attributes
       assert_equal record['id'], product.id
@@ -51,24 +53,22 @@ describe 'MyJohnDeereApi::Model::ContributionProduct' do
     end
 
     it 'links to other things' do
-      product = JD::Model::ContributionProduct.new(record)
+      product = klass.new(record)
 
       ['self', 'contribution_definition'].each do |association|
         assert_equal link_for(association), product.links[association]
       end
     end
 
-    it 'accepts an optional accessor' do
-      mock_accessor = 'mock-accessor'
-
-      asset = JD::Model::ContributionProduct.new(record, mock_accessor)
-      assert_equal mock_accessor, asset.accessor
+    it 'accepts an optional client' do
+      asset = klass.new(record, client)
+      assert_equal client, asset.client
     end
   end
 
   describe '#contribution_definitions' do
     it 'returns a collection of contribution definitions for this contributon product' do
-      product = JD::Model::ContributionProduct.new(record, accessor)
+      product = klass.new(record, client)
 
       contribution_definitions = VCR.use_cassette('get_contribution_definitions') do
         product.contribution_definitions.all; product.contribution_definitions

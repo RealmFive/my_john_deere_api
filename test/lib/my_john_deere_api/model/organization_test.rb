@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Model::Organization' do
+  let(:klass) { JD::Model::Organization }
+
   let(:record) do
     {
       "@type"=>"Organization",
@@ -28,13 +30,13 @@ describe 'MyJohnDeereApi::Model::Organization' do
     }
   end
 
-  describe '#initialize(record, accessor = nil)' do
+  describe '#initialize(record, client = nil)' do
     def link_for label
       record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
     end
 
     it 'sets the attributes from the given record' do
-      organization = JD::Model::Organization.new(record)
+      organization = klass.new(record)
 
       # basic attributes
       assert_equal record['name'], organization.name
@@ -51,17 +53,14 @@ describe 'MyJohnDeereApi::Model::Organization' do
       end
     end
 
-    it 'accepts an optional accessor' do
-      mock_accessor = 'mock-accessor'
-
-      organization = JD::Model::Organization.new(record, mock_accessor)
-      assert_equal mock_accessor, organization.accessor
+    it 'accepts an optional client' do
+      organization = klass.new(record, client)
+      assert_equal client, organization.client
     end
   end
 
   describe '#fields' do
     it 'returns a collection of fields for this organization' do
-      accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
       fields = VCR.use_cassette('get_fields') { organization.fields.all }
 
@@ -73,7 +72,7 @@ describe 'MyJohnDeereApi::Model::Organization' do
     end
 
     it 'raises an exception if an accessor is not available' do
-      organization = JD::Model::Organization.new(record)
+      organization = klass.new(record)
 
       exception = assert_raises(JD::AccessTokenError) { organization.fields }
 
@@ -83,7 +82,6 @@ describe 'MyJohnDeereApi::Model::Organization' do
 
   describe '#assets' do
     it 'returns a collection of assets for this organization' do
-      accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
       assets = VCR.use_cassette('get_assets') { organization.assets.all; organization.assets }
 
@@ -95,7 +93,7 @@ describe 'MyJohnDeereApi::Model::Organization' do
     end
 
     it 'raises an exception if an accessor is not available' do
-      organization = JD::Model::Organization.new(record)
+      organization = klass.new(record)
 
       exception = assert_raises(JD::AccessTokenError) { organization.assets }
       assert_includes exception.message, 'Access Token must be supplied'

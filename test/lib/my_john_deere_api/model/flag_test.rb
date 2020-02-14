@@ -2,6 +2,8 @@ require 'support/helper'
 require 'json'
 
 describe 'MyJohnDeereApi::Model::Flag' do
+  let(:klass) { JD::Model::Flag }
+  
   let(:record) do
     {
       "@type"=>"Flag",
@@ -24,7 +26,7 @@ describe 'MyJohnDeereApi::Model::Flag' do
     end
 
     it 'sets the attributes from the given record' do
-      field = JD::Model::Flag.new(record)
+      field = klass.new(record)
 
       assert_nil field.accessor
 
@@ -42,11 +44,9 @@ describe 'MyJohnDeereApi::Model::Flag' do
       assert_equal link_for('lastModifiedBy'), field.links['last_modified_by']
     end
 
-    it 'accepts an optional accessor' do
-      accessor = 'mock-accessor'
-
-      field = JD::Model::Flag.new(record, accessor)
-      assert_equal accessor, field.accessor
+    it 'accepts an optional client' do
+      field = klass.new(record, client)
+      assert_equal client, field.client
     end
   end
 end

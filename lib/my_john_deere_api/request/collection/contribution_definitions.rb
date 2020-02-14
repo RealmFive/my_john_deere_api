@@ -20,7 +20,7 @@ module MyJohnDeereApi::Request
     # Retrieve an item from JD
 
     def find(item_id)
-      Individual::ContributionDefinition.new(accessor, item_id).object
+      Individual::ContributionDefinition.new(client, item_id).object
     end
   end
 end

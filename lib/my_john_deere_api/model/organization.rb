@@ -19,7 +19,7 @@ module MyJohnDeereApi
       raise AccessTokenError unless accessor
 
       return @fields if defined?(@fields)
-      @fields = MyJohnDeereApi::Request::Collection::Fields.new(accessor, organization: id)
+      @fields = MyJohnDeereApi::Request::Collection::Fields.new(client, organization: id)
     end
 
     ##
@@ -29,7 +29,7 @@ module MyJohnDeereApi
       raise AccessTokenError unless accessor
 
       return @assets if defined?(@assets)
-      @assets = MyJohnDeereApi::Request::Collection::Assets.new(accessor, organization: id)
+      @assets = MyJohnDeereApi::Request::Collection::Assets.new(client, organization: id)
     end
 
     private

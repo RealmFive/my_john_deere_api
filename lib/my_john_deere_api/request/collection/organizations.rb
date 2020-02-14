@@ -20,7 +20,7 @@ module MyJohnDeereApi::Request
     # Retrieve an organization from JD
 
     def find(organization_id)
-      Individual::Organization.new(accessor, organization_id).object
+      Individual::Organization.new(client, organization_id).object
     end
   end
 end

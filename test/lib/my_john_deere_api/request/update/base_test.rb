@@ -14,12 +14,14 @@ class UpdateBaseItem
 end
 
 describe 'MyJohnDeereApi::Request::Update::Base' do
-  let(:object) { JD::Request::Update::Base.new(accessor, item, attributes) }
+  let(:klass) { JD::Request::Update::Base }
+  let(:object) { klass.new(client, item, attributes) }
   let(:item) { UpdateBaseItem.new }
   let(:attributes) { {} }
 
-  describe '#initialize(access_token, item, attributes)' do
-    it 'accepts an accessor, item and attributes' do
+  describe '#initialize(client, item, attributes)' do
+    it 'accepts a client, item and attributes' do
+      assert_equal client, object.client
       assert_equal accessor, object.accessor
       assert_equal item, object.item
     end
@@ -45,7 +47,7 @@ describe 'MyJohnDeereApi::Request::Update::Base' do
 
   describe '#headers' do
     it 'sets the accept and content-type headers' do
-      object = JD::Request::Update::Base.new(accessor, item, attributes)
+      object = klass.new(client, item, attributes)
       headers = object.send(:headers)
 
       expected = 'application/vnd.deere.axiom.v3+json'

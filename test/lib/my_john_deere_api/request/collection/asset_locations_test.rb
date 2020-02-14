@@ -3,18 +3,19 @@ require 'yaml'
 require 'json'
 
 describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
-  let(:collection) { JD::Request::Collection::AssetLocations.new(accessor, asset: asset_id) }
+  let(:klass) { JD::Request::Collection::AssetLocations }
+  let(:collection) { klass.new(client, asset: asset_id) }
   let(:object) { collection }
 
   inherits_from JD::Request::Collection::Base
 
-  describe '#initialize(access_token)' do
-    it 'accepts an access token' do
-      assert_kind_of OAuth::AccessToken, collection.accessor
+  describe '#initialize(client)' do
+    it 'accepts a client' do
+      assert_equal client, collection.client
     end
 
     it 'accepts associations' do
-      collection = JD::Request::Collection::AssetLocations.new(accessor, asset: asset_id)
+      collection = klass.new(client, asset: asset_id)
 
       assert_kind_of Hash, collection.associations
       assert_equal asset_id, collection.associations[:asset]

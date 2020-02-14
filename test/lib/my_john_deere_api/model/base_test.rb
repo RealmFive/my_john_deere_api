@@ -9,7 +9,8 @@ class SampleModel < JD::Model::Base
 end
 
 describe 'MyJohnDeereApi::Model::Base' do
-  let(:object) { JD::Model::Base.new(record, accessor) }
+  let(:klass) { JD::Model::Base }
+  let(:object) { klass.new(record, client) }
 
   let(:record) do
     {
@@ -29,7 +30,7 @@ describe 'MyJohnDeereApi::Model::Base' do
     assert_includes object.private_methods, :id_from_uri
   end
 
-  describe '#initialize(record, accessor = nil)' do
+  describe '#initialize(record, client)' do
     def link_for label
       record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
     end
@@ -40,14 +41,14 @@ describe 'MyJohnDeereApi::Model::Base' do
         'links'=>[]
       }
 
-      exception = assert_raises(JD::TypeMismatchError) { JD::Model::Base.new(record) }
+      exception = assert_raises(JD::TypeMismatchError) { klass.new(record) }
       assert_equal "Expected record of type 'Base', but received type 'WrongType'", exception.message
     end
 
     it 'sets the base attributes' do
       assert_equal record['id'], object.id
       assert_equal record['@type'], object.record_type
-      assert_equal accessor, object.accessor
+      assert_equal client, object.client
     end
 
     it 'sets the links' do
@@ -65,9 +66,9 @@ describe 'MyJohnDeereApi::Model::Base' do
       assert_equal 'somevalue', object.somefield
     end
 
-    it 'does not require accessor' do
-      object = JD::Model::Base.new(record)
-      assert_nil object.accessor
+    it 'does not require client' do
+      object = klass.new(record)
+      assert_nil object.client
     end
   end
 end

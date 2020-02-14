@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Model::Field' do
+  let(:klass) { JD::Model::Field }
+
   let(:record) do
     {
       "@type"=>"Field",
@@ -21,9 +23,9 @@ describe 'MyJohnDeereApi::Model::Field' do
     end
 
     it 'sets the attributes from the given record' do
-      field = JD::Model::Field.new(record)
+      field = klass.new(record)
 
-      assert_nil field.accessor
+      assert_nil field.client
 
       # basic attributes
       assert_equal record['name'], field.name
@@ -39,16 +41,13 @@ describe 'MyJohnDeereApi::Model::Field' do
     end
 
     it 'accepts an optional accessor' do
-      mock_accessor = 'mock-accessor'
-
-      field = JD::Model::Field.new(record, mock_accessor)
-      assert_equal mock_accessor, field.accessor
+      field = klass.new(record, client)
+      assert_equal client, field.client
     end
   end
 
   describe '#flags' do
     it 'returns a collection of flags for this organization' do
-      accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
       field = VCR.use_cassette('get_fields') { organization.fields.first }
       flags = VCR.use_cassette('get_flags') { field.flags.all }
@@ -61,7 +60,7 @@ describe 'MyJohnDeereApi::Model::Field' do
     end
 
     it 'raises an exception if an accessor is not available' do
-      field = JD::Model::Field.new(record)
+      field = klass.new(record)
 
       exception = assert_raises(JD::AccessTokenError) { field.flags }
 
@@ -71,7 +70,7 @@ describe 'MyJohnDeereApi::Model::Field' do
 
   describe 'private #organization_id' do
     it "infers the organization_id from links" do
-      field = JD::Model::Field.new(record)
+      field = klass.new(record)
       assert_equal organization_id, field.send(:organization_id)
     end
   end

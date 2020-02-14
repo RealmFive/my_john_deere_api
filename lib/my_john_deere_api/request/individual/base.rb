@@ -2,15 +2,23 @@ require 'json'
 
 module MyJohnDeereApi::Request
   class Individual::Base
-    attr_reader :accessor, :id, :associations, :response
+    attr_reader :client, :id, :associations, :response
 
     ##
-    # Initialize with an accessor, and asset id
+    # Initialize with a client, and asset id
 
-    def initialize(accessor, id, associations = {})
-      @accessor = accessor
+    def initialize(client, id, associations = {})
+      @client = client
       @id = id
       @associations = associations
+    end
+    
+    ##
+    # client accessor
+    
+    def accessor
+      return @accessor if defined?(@accessor)
+      @accessor = client&.accessor
     end
 
     ##
@@ -20,7 +28,7 @@ module MyJohnDeereApi::Request
       return @object if defined?(@object)
 
       request unless response
-      @object = model.new(JSON.parse(response.body), accessor)
+      @object = model.new(JSON.parse(response.body), client)
     end
 
     private

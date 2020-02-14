@@ -3,14 +3,15 @@ require 'yaml'
 require 'json'
 
 describe 'MyJohnDeereApi::Request::Collection::Organizations' do
-  let(:collection) { JD::Request::Collection::Organizations.new(accessor) }
+  let(:klass) { JD::Request::Collection::Organizations }
+  let(:collection) { klass.new(client) }
   let(:object) { collection }
 
   inherits_from JD::Request::Collection::Base
 
-  describe '#initialize(access_token)' do
-    it 'accepts an access token' do
-      assert_kind_of OAuth::AccessToken, collection.accessor
+  describe '#initialize(client)' do
+    it 'accepts a client' do
+      assert_equal client, collection.client
     end
   end
 
@@ -75,11 +76,11 @@ describe 'MyJohnDeereApi::Request::Collection::Organizations' do
       end
     end
 
-    it 'passes the accessor to all organizations' do
+    it 'passes the client to all organizations' do
       organizations = VCR.use_cassette('get_organizations') { collection.all }
 
       organizations.each do |organization|
-        assert_equal accessor, organization.accessor
+        assert_equal client, organization.client
       end
     end
   end

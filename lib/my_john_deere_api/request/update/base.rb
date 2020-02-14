@@ -4,7 +4,7 @@ module MyJohnDeereApi
   class Request::Update::Base
     include Validators::Base
 
-    attr_reader :accessor, :item, :attributes, :response
+    attr_reader :client, :item, :attributes, :response
 
     ##
     # Accepts a valid oAuth AccessToken, the item to be updated, 
@@ -12,12 +12,20 @@ module MyJohnDeereApi
     #
     # category/type/subtype must be a recognized combination as defined above.
 
-    def initialize(accessor, item, attributes)
-      @accessor = accessor
+    def initialize(client, item, attributes)
+      @client = client
       @item = item
       @attributes = item.attributes.merge(attributes)
 
       process_attributes
+    end
+
+    #
+    # client accessor
+
+    def accessor
+      return @accessor if defined?(@accessor)
+      @accessor = client&.accessor
     end
 
     ##

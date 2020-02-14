@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Model::Asset' do
+  let(:klass) { JD::Model::Asset }
+
   let(:record) do
     {
       "@type"=>"ContributedAsset",
@@ -24,7 +26,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
 
     it 'sets the attributes from the given record' do
-      asset = JD::Model::Asset.new(record)
+      asset = klass.new(record)
 
       assert_nil asset.accessor
 
@@ -44,17 +46,15 @@ describe 'MyJohnDeereApi::Model::Asset' do
       end
     end
 
-    it 'accepts an optional accessor' do
-      mock_accessor = 'mock-accessor'
-
-      asset = JD::Model::Asset.new(record, mock_accessor)
-      assert_equal mock_accessor, asset.accessor
+    it 'accepts an optional client' do
+      asset = klass.new(record, client)
+      assert_equal client, asset.client
     end
   end
 
   describe '#attributes' do
     it 'converts properties back to an attributes hash' do
-      asset = JD::Model::Asset.new(record)
+      asset = klass.new(record)
       attributes = asset.attributes
 
       assert_equal asset.id, attributes[:id]
@@ -67,7 +67,6 @@ describe 'MyJohnDeereApi::Model::Asset' do
 
   describe '#locations' do
     it 'returns a collection of locations for this asset' do
-      accessor
       organization = VCR.use_cassette('get_organizations') { client.organizations.first }
       asset = VCR.use_cassette('get_assets') { organization.assets.first }
 
@@ -84,7 +83,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
 
     it 'raises an exception if an accessor is not available' do
-      asset = JD::Model::Asset.new(record)
+      asset = klass.new(record)
 
       exception = assert_raises(JD::AccessTokenError) { asset.locations }
       assert_includes exception.message, 'Access Token must be supplied'

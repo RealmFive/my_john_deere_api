@@ -2,16 +2,24 @@ require 'json'
 
 module MyJohnDeereApi
   class Request::Create::Base
-    attr_reader :accessor, :attributes, :response
+    attr_reader :client, :attributes, :response
 
     ##
     # Accepts a valid oAuth AccessToken, and a hash of attributes.
 
-    def initialize(accessor, attributes)
-      @accessor = accessor
+    def initialize(client, attributes)
+      @client = client
       @attributes = attributes
 
       process_attributes
+    end
+
+    ##
+    # client accessor
+
+    def accessor
+      return @accessor if defined?(@accessor)
+      @accessor = client&.accessor
     end
 
     ##
@@ -31,7 +39,7 @@ module MyJohnDeereApi
 
       request unless response
 
-      @object = model.new(fetch_record, accessor)
+      @object = model.new(fetch_record, client)
     end
 
     ##

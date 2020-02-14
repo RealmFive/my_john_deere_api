@@ -3,16 +3,24 @@ module MyJohnDeereApi
     include Enumerable
     include Helpers::UriHelpers
 
-    attr_reader :accessor, :associations
+    attr_reader :client, :associations
 
     ##
-    # accessor is an OAuth::AccessToken object which has the necessary
-    # credentials to make the desired requests.
+    # client is the original client instance which contains
+    # the necessary config info.
 
-    def initialize(accessor, associations = {})
-      @accessor = accessor
+    def initialize(client, associations = {})
+      @client = client
       @associations = associations
       @items = []
+    end
+
+    ##
+    # client accessor
+
+    def accessor
+      return @accessor if defined?(@accessor)
+      @accessor = client&.accessor
     end
 
     ##
@@ -46,7 +54,7 @@ module MyJohnDeereApi
     def first_page
       return @first_page if defined?(@first_page)
 
-      @first_page = JSON.parse(@accessor.get(resource, headers).body)
+      @first_page = JSON.parse(accessor.get(resource, headers).body)
       extract_page_contents(@first_page)
 
       @first_page
@@ -55,7 +63,7 @@ module MyJohnDeereApi
     def fetch
       return unless @next_page
 
-      page = JSON.parse(@accessor.get(@next_page, headers).body)
+      page = JSON.parse(accessor.get(@next_page, headers).body)
       extract_page_contents(page)
     end
 
@@ -69,7 +77,7 @@ module MyJohnDeereApi
     end
 
     def add_items_from_page(page)
-      @items += page['values'].map{|record| model.new(record, accessor) }
+      @items += page['values'].map{|record| model.new(record, client) }
     end
 
     def set_next_page(page)

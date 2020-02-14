@@ -21,14 +21,14 @@ module MyJohnDeereApi::Request
 
     def create(attributes)
       merged_attributes = attributes.merge(organization_id: associations[:organization])
-      Create::Asset.new(accessor, merged_attributes).object
+      Create::Asset.new(client, merged_attributes).object
     end
 
     ##
     # Retrieve an asset from JD
 
     def find(asset_id)
-      Individual::Asset.new(accessor, asset_id).object
+      Individual::Asset.new(client, asset_id).object
     end
   end
 end
