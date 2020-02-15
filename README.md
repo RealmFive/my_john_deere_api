@@ -113,6 +113,10 @@ client = JD::Client.new(
   # the chosen environment (:sandbox or :live)
   environment: :sandbox,
 
+  # optional contribution_definition_id. This is needed for some requests,
+  # but the client can be created without it, in order to find it.
+  contribution_definition_id: CONTRIBUTION_DEFINITION_ID,
+
   # the user's access credentials
   access: [ACCESS_TOKEN, ACCESS_SECRET]
 )
@@ -145,16 +149,17 @@ client
     ├── first
     └── find(organization_id)
         ├── assets(attributes)
+        |   ├── create(attributes)
         |   ├── count
         |   ├── all
         |   ├── first
-        |   ├── find(asset_id)
-        |   |   └── locations
-        |   |       ├── count
-        |   |       ├── all
-        |   |       ├── first
-        |   |       └── create(attributes)
-        |   └── create(attributes)
+        |   └── find(asset_id)
+        |       ├── update(attributes)
+        |       └── locations
+        |           ├── create(attributes)
+        |           ├── count
+        |           ├── all
+        |           └── first
         └── fields
             ├── count
             ├── all
@@ -170,7 +175,7 @@ client
 #### [Contribution Products](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fproducts.htm)
 
 Contribution Product collections act like a list. In addition to all the methods included via Ruby's
-[Enumerable Module](https://ruby-doc.org/core-2.7.0/Enumerable.html), contribution product 
+[Enumerable Module](https://ruby-doc.org/core-2.7.0/Enumerable.html), contribution product
 collections support the following methods:
 
 * all
@@ -310,11 +315,11 @@ organization.fields
 
 Handles an organization's assets. Asset collections support the following methods:
 
+* create(attributes)
 * all
 * count
 * first
 * find(asset\_id)
-* create(attributes)
 
 An individual asset supports the following methods and associations:
 
@@ -324,6 +329,7 @@ An individual asset supports the following methods and associations:
 * type
 * sub\_type
 * links
+* update(attributes)
 * location (collection of this asset's locations)
 
 ```ruby
@@ -352,13 +358,10 @@ asset.links
 # => a hash of API urls related to this asset
 ```
 
-Creating an asset requires a contribution\_definition\_id, in addition to the attributes listed in the
-[John Deere API docs](https://developer.deere.com/#!documentation). This method creates the asset in
-the John Deere platform, and returns the newly created record.
+The `create` method creates the asset in the John Deere platform, and returns the newly created record.
 
 ```ruby
 asset = organization.assets.create(
-  contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
   title: 'Asset Title',
   asset_category: 'DEVICE',
   asset_type: 'SENSOR',
@@ -367,6 +370,15 @@ asset = organization.assets.create(
 
 asset.title
 # => 'Asset Title'
+```
+
+The `update` method updates the local object, and also the asset on the John Deere platform.
+Only the title of an asset can be updated.
+
+```ruby
+asset.update(title: 'New Title')
+asset.title
+# => 'New Title', also John Deere record is updated
 ```
 
 
