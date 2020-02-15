@@ -43,7 +43,7 @@ describe 'MyJohnDeereApi::Request::Collection::Assets' do
 
   describe '#create(attributes)' do
     it 'creates a new asset with the given attributes' do
-      attributes = CONFIG.sanitized_asset_attributes
+      attributes = CONFIG.asset_attributes
       object = VCR.use_cassette('post_assets') { collection.create(attributes) }
 
       assert_kind_of JD::Model::Asset, object

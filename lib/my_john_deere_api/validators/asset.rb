@@ -16,7 +16,7 @@ module MyJohnDeereApi::Validators
     private
 
     def required_attributes
-      [:organization_id, :contribution_definition_id, :title]
+      [:organization_id, :title]
     end
 
     def validate_attributes

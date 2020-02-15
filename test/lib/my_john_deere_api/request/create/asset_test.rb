@@ -7,9 +7,8 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
   end
 
   let(:valid_attributes) do
-    CONFIG.sanitized_asset_attributes.merge(
+    CONFIG.asset_attributes.merge(
       organization_id: organization_id,
-      contribution_definition_id: contribution_definition_id,
     )
   end
 
@@ -39,13 +38,6 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
       refute object.valid?
       assert_equal 'is required', object.errors[:organization_id]
-    end
-
-    it 'requires contribution_definition_id' do
-      object = klass.new(client, attributes_without(:contribution_definition_id))
-
-      refute object.valid?
-      assert_equal 'is required', object.errors[:contribution_definition_id]
     end
 
     it 'requires title' do
@@ -137,7 +129,6 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     it 'properly forms the request body' do
       object = klass.new(client, attributes)
       body = object.send(:request_body)
-
       assert_equal attributes[:title], body[:title]
       assert_equal attributes[:asset_category], body[:assetCategory]
       assert_equal attributes[:asset_type], body[:assetType]

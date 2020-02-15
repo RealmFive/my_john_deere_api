@@ -68,12 +68,12 @@ describe 'MyJohnDeereApi::Client' do
 
   describe '#post' do
     let(:attributes) do
-      CONFIG.sanitized_asset_attributes.merge(
+      CONFIG.asset_attributes.merge(
         links: [
           {
             '@type' => 'Link',
             'rel' => 'contributionDefinition',
-            'uri' => "#{CONFIG.url}/contributionDefinitions/#{CONFIG.sanitized_asset_attributes[:contribution_definition_id]}"
+            'uri' => "#{CONFIG.url}/contributionDefinitions/#{contribution_definition_id}"
           }
         ]
       )
@@ -104,7 +104,7 @@ describe 'MyJohnDeereApi::Client' do
     let(:new_title) { 'i REALLY like turtles!' }
 
     let(:attributes) do
-      CONFIG.sanitized_asset_attributes.slice(
+      CONFIG.asset_attributes.slice(
         :asset_category, :asset_type, :asset_sub_type, :links
       ).merge(
         title: new_title,
@@ -112,7 +112,7 @@ describe 'MyJohnDeereApi::Client' do
           {
             '@type' => 'Link',
             'rel' => 'contributionDefinition',
-            'uri' => "#{CONFIG.url}/contributionDefinitions/#{CONFIG.sanitized_asset_attributes[:contribution_definition_id]}"
+            'uri' => "#{CONFIG.url}/contributionDefinitions/#{contribution_definition_id}"
           }
         ]
       )

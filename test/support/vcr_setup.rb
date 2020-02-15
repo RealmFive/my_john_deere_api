@@ -87,7 +87,13 @@ class VcrSetup
 
   # provide a client with sanitized credentials
   def client
-    JD::Client.new(api_key, api_secret, environment: :sandbox, access: [access_token, access_secret])
+    JD::Client.new(
+      api_key,
+      api_secret,
+      contribution_definition_id: contribution_definition_id,
+      environment: :sandbox,
+      access: [access_token, access_secret]
+    )
   end
 
   def timestamp
@@ -138,17 +144,6 @@ class VcrSetup
 
   def asset_attributes
     @asset_attributes ||= {
-      contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
-      title: 'Asset Title',
-      asset_category: 'DEVICE',
-      asset_type: 'SENSOR',
-      asset_sub_type: 'ENVIRONMENTAL'
-    }.freeze
-  end
-
-  def sanitized_asset_attributes
-    @sanitized_asset_attributes ||= {
-      contribution_definition_id: contribution_definition_id,
       title: 'Asset Title',
       asset_category: 'DEVICE',
       asset_type: 'SENSOR',
@@ -195,6 +190,7 @@ class VcrSetup
       ENV['API_KEY'],
       ENV['API_SECRET'],
       environment: :sandbox,
+      contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
       access: [ENV['ACCESS_TOKEN'], ENV['ACCESS_SECRET']]
     )
   end

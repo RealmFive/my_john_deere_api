@@ -8,7 +8,6 @@ describe 'MyJohnDeereApi::Request::Update::Asset' do
   let(:attributes) do
     {
       organization_id: organization_id,
-      contribution_definition_id: contribution_definition_id
     }
   end
 

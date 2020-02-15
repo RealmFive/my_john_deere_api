@@ -18,7 +18,6 @@ describe 'MyJohnDeereApi::Validators::Asset' do
   let(:valid_attributes) do
     {
       organization_id: '000000',
-      contribution_definition_id: '00000000-0000-0000-0000-000000000000',
       title: "Bob's Stuff"
     }
   end
@@ -32,7 +31,7 @@ describe 'MyJohnDeereApi::Validators::Asset' do
   end
 
   it 'requires several attributes' do
-    [:organization_id, :contribution_definition_id, :title].each do |attr|
+    [:organization_id, :title].each do |attr|
       object = klass.new(valid_attributes.merge(attr => nil))
 
       refute object.valid?
