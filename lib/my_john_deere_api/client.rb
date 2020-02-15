@@ -3,20 +3,24 @@ module MyJohnDeereApi
     include Helpers::EnvironmentHelper
     include Helpers::CaseConversion
 
-    attr_reader :api_key, :api_secret, :access_token, :access_secret, :environment
+    attr_reader :api_key, :api_secret, :access_token, :access_secret,
+                :contribution_definition_id
 
     DEFAULTS = {
       environment: :live
     }
 
     ##
-    # Creates the client with everthing it needs to perform API requests.
+    # Creates the client with everything it needs to perform API requests.
     # User-specific credentials are optional, but user-specific API
     # requests are only possible if they are supplied.
     #
     # options:
     #
     # [:environment] :sandbox or :live
+    #
+    # [:contribution_definition_id] optional, but needed for some requests
+    #                               like asset create/update.
     #
     # [:access] an array with two elements, the access_token
     #           and the access_secret of the given user
@@ -32,6 +36,7 @@ module MyJohnDeereApi
       end
 
       self.environment = options[:environment]
+      @contribution_definition_id = options[:contribution_definition_id]
     end
 
     ##

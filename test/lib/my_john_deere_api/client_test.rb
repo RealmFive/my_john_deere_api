@@ -30,6 +30,11 @@ describe 'MyJohnDeereApi::Client' do
       client = JD::Client.new(api_key, api_secret, environment: environment)
       assert_equal environment, client.environment
     end
+
+    it 'accepts a contribution_definition_id' do
+      client = JD::Client.new(api_key, api_secret, contribution_definition_id: contribution_definition_id)
+      assert_equal contribution_definition_id, client.contribution_definition_id
+    end
   end
 
   describe '#get' do
