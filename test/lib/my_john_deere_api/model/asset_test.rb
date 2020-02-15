@@ -10,7 +10,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
       "assetCategory"=>"DEVICE",
       "assetType"=>"SENSOR",
       "assetSubType"=>"OTHER",
-      "id"=>"123456",
+      "id"=>asset_id,
       "lastModifiedDate"=>"2018-01-31T20:36:16.727Z",
       "links"=>[
         {"@type"=>"Link", "rel"=>"self", "uri"=>"https://sandboxapi.deere.com/platform/assets/#{asset_id}"},
@@ -54,7 +54,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
 
   describe '#attributes' do
     it 'converts properties back to an attributes hash' do
-      asset = klass.new(record)
+      asset = klass.new(record, client)
       attributes = asset.attributes
 
       assert_equal asset.id, attributes[:id]
@@ -62,6 +62,27 @@ describe 'MyJohnDeereApi::Model::Asset' do
       assert_equal asset.asset_category, attributes[:asset_category]
       assert_equal asset.asset_type, attributes[:asset_type]
       assert_equal asset.asset_sub_type, attributes[:asset_sub_type]
+    end
+  end
+
+  describe '#update' do
+    it 'updates the attributes' do
+      asset = klass.new(record, client)
+
+      new_title = 'i REALLY like turtles!'
+      VCR.use_cassette('put_asset') { asset.update(title: new_title) }
+
+      assert_equal new_title, asset.title
+      assert_equal new_title, asset.attributes[:title]
+    end
+
+    it 'sends the update to John Deere' do
+      asset = klass.new(record, client)
+
+      new_title = 'i REALLY like turtles!'
+      response = VCR.use_cassette('put_asset') { asset.update(title: new_title) }
+
+      assert_kind_of Net::HTTPNoContent, response
     end
   end
 
