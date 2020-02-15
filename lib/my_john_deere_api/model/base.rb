@@ -21,6 +21,7 @@ module MyJohnDeereApi
       @id = record['id']
       @record_type = record['@type']
       @client = client
+      @unsaved = false
 
       map_attributes(record)
 
@@ -64,6 +65,33 @@ module MyJohnDeereApi
       unless type == expected_record_type
         raise TypeMismatchError, "Expected record of type '#{expected_record_type}', but received type '#{type}'"
       end
+    end
+
+    ##
+    # Mark as unsaved, so we know to save it later
+
+    def mark_as_unsaved
+      @unsaved = true
+    end
+
+    ##
+    # Mark as saved, so we don't try to save it later
+
+    def mark_as_saved
+      @unsaved = false
+    end
+
+    ##
+    # Are changes to this model synced with JD?
+    def saved?
+      !@unsaved
+    end
+
+    ##
+    # Are there pending changes to send to JD?
+
+    def unsaved?
+      @unsaved
     end
   end
 end

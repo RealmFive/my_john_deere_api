@@ -154,6 +154,7 @@ client
         |   ├── all
         |   ├── first
         |   └── find(asset_id)
+        |       ├── save
         |       ├── update(attributes)
         |       └── locations
         |           ├── create(attributes)
@@ -379,6 +380,14 @@ Only the title of an asset can be updated.
 asset.update(title: 'New Title')
 asset.title
 # => 'New Title', also John Deere record is updated
+```
+
+The `save` method updates John Deere with any local changes that have been made.
+
+```ruby
+asset.title = 'New Title'
+asset.save
+# => Successful Net::HTTPNoContent object
 ```
 
 

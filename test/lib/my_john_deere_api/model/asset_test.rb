@@ -65,6 +65,37 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
   end
 
+  describe '#save' do
+    it 'sends any recent updates to John Deere' do
+      asset = klass.new(record, client)
+      new_title = 'i REALLY like turtles!'
+
+      asset.title = new_title
+      assert_equal new_title, asset.title
+
+      response = VCR.use_cassette('put_asset') { asset.save }
+      assert_kind_of Net::HTTPNoContent, response
+    end
+
+    it 'does not make a JD request if nothing has changed' do
+      asset = klass.new(record, client)
+      response = asset.save
+
+      assert_nil response
+    end
+
+    it 'marks the record as saved' do
+      asset = klass.new(record, client)
+      asset.title = 'i REALLY like turtles!'
+
+      response = VCR.use_cassette('put_asset') { asset.save }
+      assert_kind_of Net::HTTPNoContent, response
+
+      response = asset.save
+      assert_nil response
+    end
+  end
+
   describe '#update' do
     it 'updates the attributes' do
       asset = klass.new(record, client)

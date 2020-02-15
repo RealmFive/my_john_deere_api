@@ -19,6 +19,24 @@ module MyJohnDeereApi
     end
 
     ##
+    # Change the title, locally
+
+    def title=(value)
+      mark_as_unsaved
+      @title = value
+    end
+
+    ##
+    # Save any attribute changes to John Deere
+
+    def save
+      if unsaved?
+        mark_as_saved
+        Request::Update::Asset.new(client, self, attributes).request
+      end
+    end
+
+    ##
     # Update the attributes in John Deere
 
     def update new_attributes
