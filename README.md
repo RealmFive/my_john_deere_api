@@ -499,6 +499,9 @@ Custom errors help clearly identify problems when using the client:
   unrecognized environment. Valid environments are `:sandbox` or `:production`.
 * **InvalidRecordError** is raised when bad input has been given, in an attempt to create or update
   a record on the John Deere platform.
+* **MissingContributionDefinitionIdError** is raised when the optional contribution\_definition\_id
+  has not been set in the client, but an operation has been attempted that requires it - like 
+  creating an asset in the John Deere platform.
 * **TypeMismatchError** is raised when a model is instantiated, typically when a record is received
   from John Deere and is being converted into a Ruby object. Model instantiation is normally handled
   by request objects, but this error is helpful if you're instantiating your own models for advanced
