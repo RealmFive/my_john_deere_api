@@ -2,6 +2,8 @@ require 'json'
 
 module MyJohnDeereApi
   class Request::Create::Base
+    include Validators::Base
+
     attr_reader :client, :attributes, :response
 
     ##
@@ -42,35 +44,7 @@ module MyJohnDeereApi
       @object = model.new(client, fetch_record)
     end
 
-    ##
-    # Runs validations, adding to the errors hash as needed. Returns true
-    # if the errors hash is still empty after all validations have been run.
-
-    def valid?
-      return @is_valid if defined?(@is_valid)
-
-      validate_required
-      validate_attributes
-
-      @is_valid = errors.empty?
-    end
-
-    ##
-    # Raises an error if the record is invalid. Passes the errors hash
-    # to the error, in order to build a useful message string.
-
-    def validate!
-      raise(InvalidRecordError, errors) unless valid?
-    end
-
     private
-
-    ##
-    # Run validations unique to a given model. This should be overridden
-    # by children where needed.
-
-    def validate_attributes
-    end
 
     ##
     # Convert inputs into working attributes. This allows us to auto-create
@@ -78,22 +52,6 @@ module MyJohnDeereApi
     # See Request::Create::AssetLocation for an example.
 
     def process_attributes
-    end
-
-    ##
-    # Attributes that must be specified, override in child class
-
-    def required_attributes
-      []
-    end
-
-    ##
-    # Validates required attributes
-
-    def validate_required
-      required_attributes.each do |attr|
-        errors[attr] = 'is required' unless attributes[attr]
-      end
     end
 
     ##
