@@ -490,6 +490,24 @@ client.delete('/assets/123123')
 
 John Deere's standard response is a 204 HTTP status code, with the message "No Content". This method returns the full Net::HTTP response.
 
+
+### Errors
+
+Custom errors help clearly identify problems when using the client:
+
+* **UnsupportedEnvironmentError** is raised when you attempt to instantiate a client with an
+  unrecognized environment. Valid environments are `:sandbox` or `:production`.
+* **InvalidRecordError** is raised when bad input has been given, in an attempt to create or update
+  a record on the John Deere platform.
+* **TypeMismatchError** is raised when a model is instantiated, typically when a record is received
+  from John Deere and is being converted into a Ruby object. Model instantiation is normally handled
+  by request objects, but this error is helpful if you're instantiating your own models for advanced
+  usage.
+* **NotYetImplementedError** is raised when you attempt to use a feature that is earmarked for future
+  development, but hasn't been implemented in this client yet. These are a great chance to contribute
+  to this gem!
+
+
 ### Contributing to This Gem
 
 The easiest way to contribute is:
