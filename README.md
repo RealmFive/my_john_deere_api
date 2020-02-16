@@ -508,7 +508,16 @@ Custom errors help clearly identify problems when using the client:
   to this gem!
 
 
-### Contributing to This Gem
+### How Can I Help?
+
+#### Give Us a Star!
+
+*Star* this gem on [GitHub](https://github.com/Intellifarm/my_john_deere_api). It helps developers
+find and choose this gem over others that may be out there. To our knowledge, there are no other
+John Deere gems that are being actively maintained.
+
+
+#### Contribute to This Gem
 
 The easiest way to contribute is:
 
