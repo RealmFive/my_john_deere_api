@@ -3,7 +3,7 @@ require 'support/helper'
 describe 'MyJohnDeereApi::Request::Update::Asset' do
   let(:klass) { JD::Request::Update::Asset }
   let(:object) { klass.new(client, item, attributes) }
-  let(:item) { JD::Model::Asset.new(record, client) }
+  let(:item) { JD::Model::Asset.new(client, record) }
 
   let(:attributes) do
     {

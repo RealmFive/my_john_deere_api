@@ -20,9 +20,10 @@ describe 'MyJohnDeereApi::Model::AssetLocation' do
     end
 
     it 'sets the attributes from the given record' do
-      location = klass.new(record)
+      location = klass.new(client, record)
 
-      assert_nil location.accessor
+      assert_equal client, location.client
+      assert_equal accessor, location.accessor
 
       # basic attributes
       assert_equal record['timestamp'], location.timestamp
@@ -32,11 +33,6 @@ describe 'MyJohnDeereApi::Model::AssetLocation' do
       # links to other things
       assert_kind_of Hash, location.links
       assert_equal 0, location.links.size
-    end
-
-    it 'accepts an optional client' do
-      location = klass.new(record, client)
-      assert_equal client, location.client
     end
   end
 end

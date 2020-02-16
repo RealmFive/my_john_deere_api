@@ -8,14 +8,14 @@ module MyJohnDeereApi
     ##
     # arguments:
     #
-    # [record] a JSON object of type 'Field', returned from the API.
-    #
     # [client] the client, because it contains all the config info.
     #          The alternative would be a true Config block, but then
     #          settings would be app-wide. This allows one app to have
     #          multiple clients with different settings.
+    #
+    # [record] a JSON object of type 'Field', returned from the API.
 
-    def initialize(record, client = nil)
+    def initialize(client, record)
       verify_record_type(record['@type'])
 
       @id = record['id']

@@ -12,10 +12,10 @@ module MyJohnDeereApi::Request
       @id = id
       @associations = associations
     end
-    
+
     ##
     # client accessor
-    
+
     def accessor
       return @accessor if defined?(@accessor)
       @accessor = client&.accessor
@@ -28,7 +28,7 @@ module MyJohnDeereApi::Request
       return @object if defined?(@object)
 
       request unless response
-      @object = model.new(JSON.parse(response.body), client)
+      @object = model.new(client, JSON.parse(response.body))
     end
 
     private

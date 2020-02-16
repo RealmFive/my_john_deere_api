@@ -38,7 +38,10 @@ describe 'MyJohnDeereApi::Model::ContributionProduct' do
     end
 
     it 'sets the attributes from the given record' do
-      product = klass.new(record)
+      product = klass.new(client, record)
+      
+      assert_equal client, product.client
+      assert_equal accessor, product.accessor
 
       # basic attributes
       assert_equal record['id'], product.id
@@ -53,22 +56,17 @@ describe 'MyJohnDeereApi::Model::ContributionProduct' do
     end
 
     it 'links to other things' do
-      product = klass.new(record)
+      product = klass.new(client, record)
 
       ['self', 'contribution_definition'].each do |association|
         assert_equal link_for(association), product.links[association]
       end
     end
-
-    it 'accepts an optional client' do
-      asset = klass.new(record, client)
-      assert_equal client, asset.client
-    end
   end
 
   describe '#contribution_definitions' do
     it 'returns a collection of contribution definitions for this contributon product' do
-      product = klass.new(record, client)
+      product = klass.new(client, record)
 
       contribution_definitions = VCR.use_cassette('get_contribution_definitions') do
         product.contribution_definitions.all; product.contribution_definitions

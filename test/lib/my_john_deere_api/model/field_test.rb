@@ -23,9 +23,10 @@ describe 'MyJohnDeereApi::Model::Field' do
     end
 
     it 'sets the attributes from the given record' do
-      field = klass.new(record)
+      field = klass.new(client, record)
 
-      assert_nil field.client
+      assert_equal client, field.client
+      assert_equal accessor, field.accessor
 
       # basic attributes
       assert_equal record['name'], field.name
@@ -38,11 +39,6 @@ describe 'MyJohnDeereApi::Model::Field' do
       ['clients', 'notes'].each do |association|
         assert_equal link_for(association), field.links[association]
       end
-    end
-
-    it 'accepts an optional accessor' do
-      field = klass.new(record, client)
-      assert_equal client, field.client
     end
   end
 
@@ -58,19 +54,11 @@ describe 'MyJohnDeereApi::Model::Field' do
         assert_kind_of JD::Model::Flag, flag
       end
     end
-
-    it 'raises an exception if an accessor is not available' do
-      field = klass.new(record)
-
-      exception = assert_raises(JD::AccessTokenError) { field.flags }
-
-      assert_includes exception.message, 'Access Token must be supplied'
-    end
   end
 
   describe 'private #organization_id' do
     it "infers the organization_id from links" do
-      field = klass.new(record)
+      field = klass.new(client, record)
       assert_equal organization_id, field.send(:organization_id)
     end
   end

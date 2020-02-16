@@ -3,7 +3,7 @@ require 'json'
 
 describe 'MyJohnDeereApi::Model::Flag' do
   let(:klass) { JD::Model::Flag }
-  
+
   let(:record) do
     {
       "@type"=>"Flag",
@@ -26,27 +26,23 @@ describe 'MyJohnDeereApi::Model::Flag' do
     end
 
     it 'sets the attributes from the given record' do
-      field = klass.new(record)
+      flag = klass.new(client, record)
 
-      assert_nil field.accessor
+      assert_equal client, flag.client
+      assert_equal accessor, flag.accessor
 
       # basic attributes
-      assert_equal JSON.parse(record['geometry']), field.geometry
-      assert_equal record['archived'], field.archived?
-      assert_equal record['proximityAlertEnabled'], field.proximity_alert_enabled?
-      assert_equal record['notes'], field.notes
-      assert_equal record['id'], field.id
+      assert_equal JSON.parse(record['geometry']), flag.geometry
+      assert_equal record['archived'], flag.archived?
+      assert_equal record['proximityAlertEnabled'], flag.proximity_alert_enabled?
+      assert_equal record['notes'], flag.notes
+      assert_equal record['id'], flag.id
 
       # links to other things
-      assert_kind_of Hash, field.links
-      assert_equal link_for('field'), field.links['field']
-      assert_equal link_for('createdBy'), field.links['created_by']
-      assert_equal link_for('lastModifiedBy'), field.links['last_modified_by']
-    end
-
-    it 'accepts an optional client' do
-      field = klass.new(record, client)
-      assert_equal client, field.client
+      assert_kind_of Hash, flag.links
+      assert_equal link_for('field'), flag.links['field']
+      assert_equal link_for('createdBy'), flag.links['created_by']
+      assert_equal link_for('lastModifiedBy'), flag.links['last_modified_by']
     end
   end
 end

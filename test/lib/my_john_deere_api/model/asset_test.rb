@@ -26,9 +26,10 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
 
     it 'sets the attributes from the given record' do
-      asset = klass.new(record)
+      asset = klass.new(client, record)
 
-      assert_nil asset.accessor
+      assert_equal client, asset.client
+      assert_equal accessor, asset.accessor
 
       # basic attributes
       assert_equal record['id'], asset.id
@@ -45,16 +46,11 @@ describe 'MyJohnDeereApi::Model::Asset' do
         assert_equal link_for(association), asset.links[association]
       end
     end
-
-    it 'accepts an optional client' do
-      asset = klass.new(record, client)
-      assert_equal client, asset.client
-    end
   end
 
   describe '#attributes' do
     it 'converts properties back to an attributes hash' do
-      asset = klass.new(record, client)
+      asset = klass.new(client, record)
       attributes = asset.attributes
 
       assert_equal asset.id, attributes[:id]
@@ -67,7 +63,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
 
   describe '#save' do
     it 'sends any recent updates to John Deere' do
-      asset = klass.new(record, client)
+      asset = klass.new(client, record)
       new_title = 'i REALLY like turtles!'
 
       asset.title = new_title
@@ -78,14 +74,14 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
 
     it 'does not make a JD request if nothing has changed' do
-      asset = klass.new(record, client)
+      asset = klass.new(client, record)
       response = asset.save
 
       assert_nil response
     end
 
     it 'marks the record as saved' do
-      asset = klass.new(record, client)
+      asset = klass.new(client, record)
       asset.title = 'i REALLY like turtles!'
 
       response = VCR.use_cassette('put_asset') { asset.save }
@@ -98,7 +94,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
 
   describe '#update' do
     it 'updates the attributes' do
-      asset = klass.new(record, client)
+      asset = klass.new(client, record)
 
       new_title = 'i REALLY like turtles!'
       VCR.use_cassette('put_asset') { asset.update(title: new_title) }
@@ -108,7 +104,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
     end
 
     it 'sends the update to John Deere' do
-      asset = klass.new(record, client)
+      asset = klass.new(client, record)
 
       new_title = 'i REALLY like turtles!'
       response = VCR.use_cassette('put_asset') { asset.update(title: new_title) }
@@ -132,13 +128,6 @@ describe 'MyJohnDeereApi::Model::Asset' do
       locations.each do |location|
         assert_kind_of JD::Model::AssetLocation, location
       end
-    end
-
-    it 'raises an exception if an accessor is not available' do
-      asset = klass.new(record)
-
-      exception = assert_raises(JD::AccessTokenError) { asset.locations }
-      assert_includes exception.message, 'Access Token must be supplied'
     end
   end
 end

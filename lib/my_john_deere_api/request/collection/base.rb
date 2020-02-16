@@ -77,7 +77,7 @@ module MyJohnDeereApi
     end
 
     def add_items_from_page(page)
-      @items += page['values'].map{|record| model.new(record, client) }
+      @items += page['values'].map{|record| model.new(client, record) }
     end
 
     def set_next_page(page)

@@ -39,7 +39,7 @@ module MyJohnDeereApi
 
       request unless response
 
-      @object = model.new(fetch_record, client)
+      @object = model.new(client, fetch_record)
     end
 
     ##

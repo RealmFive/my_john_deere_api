@@ -36,14 +36,16 @@ describe 'MyJohnDeereApi::Model::Organization' do
     end
 
     it 'sets the attributes from the given record' do
-      organization = klass.new(record)
+      organization = klass.new(client, record)
+
+      assert_equal client, organization.client
+      assert_equal accessor, organization.accessor
 
       # basic attributes
       assert_equal record['name'], organization.name
       assert_equal record['type'], organization.type
       assert_equal record['member'], organization.member?
       assert_equal record['id'], organization.id
-      assert_nil organization.accessor
 
       # links to other things
       assert_kind_of Hash, organization.links
@@ -51,11 +53,6 @@ describe 'MyJohnDeereApi::Model::Organization' do
       ['fields', 'machines', 'files', 'assets', 'farms', 'boundaries', 'clients', 'controllers'].each do |association|
         assert_equal link_for(association), organization.links[association]
       end
-    end
-
-    it 'accepts an optional client' do
-      organization = klass.new(record, client)
-      assert_equal client, organization.client
     end
   end
 
@@ -70,14 +67,6 @@ describe 'MyJohnDeereApi::Model::Organization' do
         assert_kind_of JD::Model::Field, field
       end
     end
-
-    it 'raises an exception if an accessor is not available' do
-      organization = klass.new(record)
-
-      exception = assert_raises(JD::AccessTokenError) { organization.fields }
-
-      assert_includes exception.message, 'Access Token must be supplied'
-    end
   end
 
   describe '#assets' do
@@ -90,13 +79,6 @@ describe 'MyJohnDeereApi::Model::Organization' do
       assets.each do |assets|
         assert_kind_of JD::Model::Asset, assets
       end
-    end
-
-    it 'raises an exception if an accessor is not available' do
-      organization = klass.new(record)
-
-      exception = assert_raises(JD::AccessTokenError) { organization.assets }
-      assert_includes exception.message, 'Access Token must be supplied'
     end
   end
 end

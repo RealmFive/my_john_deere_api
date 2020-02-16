@@ -31,7 +31,10 @@ describe 'MyJohnDeereApi::Model::ContributionDefinition' do
     end
 
     it 'sets the attributes from the given record' do
-      definition = klass.new(record)
+      definition = klass.new(client, record)
+
+      assert_equal client, definition.client
+      assert_equal accessor, definition.accessor
 
       # basic attributes
       assert_equal record['id'], definition.id
@@ -39,16 +42,11 @@ describe 'MyJohnDeereApi::Model::ContributionDefinition' do
     end
 
     it 'links to other things' do
-      product = klass.new(record)
+      product = klass.new(client, record)
 
       ['self', 'contribution_product'].each do |association|
         assert_equal link_for(association), product.links[association]
       end
-    end
-
-    it 'accepts an optional client' do
-      asset = klass.new(record, client)
-      assert_equal client, asset.client
     end
   end
 end
