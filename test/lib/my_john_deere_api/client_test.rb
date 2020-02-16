@@ -37,6 +37,16 @@ describe 'MyJohnDeereApi::Client' do
     end
   end
 
+  describe '#contribution_definition_id' do
+    it 'can be set after instantiation' do
+      client = JD::Client.new(api_key, api_secret)
+      assert_nil client.contribution_definition_id
+
+      client.contribution_definition_id = '123'
+      assert_equal '123', client.contribution_definition_id
+    end
+  end
+
   describe '#get' do
     it 'returns the response as a Hash' do
       response = VCR.use_cassette('get_organizations') { client.get('/organizations') }

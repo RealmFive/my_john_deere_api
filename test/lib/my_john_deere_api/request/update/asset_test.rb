@@ -78,6 +78,15 @@ describe 'MyJohnDeereApi::Request::Update::Asset' do
       assert_equal  "#{base_url}/contributionDefinitions/#{contribution_definition_id}",
                     body[:links].first['uri']
     end
+
+    it 'raises an exception when contribution_definition_id is not set' do
+      client.contribution_definition_id = nil
+      object = klass.new(client, item, attributes)
+
+      assert_raises(JD::MissingContributionDefinitionIdError) do
+        object.send(:request_body)
+      end
+    end
   end
 
   describe '#request' do

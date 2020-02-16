@@ -57,4 +57,20 @@ describe 'MyJohnDeereApi::Request::Update::Base' do
       assert_equal expected, headers['Content-Type']
     end
   end
+
+  describe '#validate_contribution_definition' do
+    it 'does nothing when contribution_definition_id is present' do
+      object = klass.new(client, item, attributes)
+      assert object.send(:validate_contribution_definition)
+    end
+
+    it 'raises an error when contribution_definition_id is missing' do
+      client.contribution_definition_id = nil
+      object = klass.new(client, item, attributes)
+
+      assert_raises(JD::MissingContributionDefinitionIdError) do
+        object.send(:validate_contribution_definition)
+      end
+    end
+  end
 end

@@ -3,8 +3,8 @@ module MyJohnDeereApi
     include Helpers::EnvironmentHelper
     include Helpers::CaseConversion
 
-    attr_reader :api_key, :api_secret, :access_token, :access_secret,
-                :contribution_definition_id
+    attr_accessor :contribution_definition_id
+    attr_reader :api_key, :api_secret, :access_token, :access_secret
 
     DEFAULTS = {
       environment: :live

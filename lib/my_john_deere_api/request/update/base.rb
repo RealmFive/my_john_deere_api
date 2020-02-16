@@ -55,6 +55,17 @@ module MyJohnDeereApi
     end
 
     ##
+    # Raise an error if contribution_definition_id is missing
+
+    def validate_contribution_definition
+      unless client.contribution_definition_id
+        raise MissingContributionDefinitionIdError
+      end
+
+      true
+    end
+
+    ##
     # Headers for PUT request
 
     def headers

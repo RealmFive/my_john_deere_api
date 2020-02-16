@@ -36,6 +36,8 @@ module MyJohnDeereApi
     def request_body
       return @body if defined?(@body)
 
+      validate_contribution_definition
+
       @body = {
         title: attributes[:title],
         assetCategory: attributes[:asset_category],

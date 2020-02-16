@@ -129,6 +129,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     it 'properly forms the request body' do
       object = klass.new(client, attributes)
       body = object.send(:request_body)
+
       assert_equal attributes[:title], body[:title]
       assert_equal attributes[:asset_category], body[:assetCategory]
       assert_equal attributes[:asset_type], body[:assetType]
@@ -142,6 +143,15 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
       assert_equal 'contributionDefinition', body[:links].first['rel']
       assert_equal  "#{base_url}/contributionDefinitions/#{contribution_definition_id}",
                     body[:links].first['uri']
+    end
+
+    it 'raises an exception when contribution_definition_id is not set' do
+      client.contribution_definition_id = nil
+      object = klass.new(client, attributes)
+
+      assert_raises(JD::MissingContributionDefinitionIdError) do
+        object.send(:request_body)
+      end
     end
   end
 
