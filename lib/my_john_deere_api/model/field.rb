@@ -14,8 +14,6 @@ module MyJohnDeereApi
     # flags associated with this organization
 
     def flags
-      raise AccessTokenError unless accessor
-
       return @flags if defined?(@flags)
       @flags = Request::Collection::Flags.new(client, organization: organization_id, field: id)
     end

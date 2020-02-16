@@ -48,8 +48,6 @@ module MyJohnDeereApi
     # locations associated with this asset
 
     def locations
-      raise AccessTokenError unless accessor
-
       return @locations if defined?(@locations)
       @locations = Request::Collection::AssetLocations.new(client, asset: id)
     end

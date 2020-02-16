@@ -16,8 +16,6 @@ module MyJohnDeereApi
     # fields associated with this organization
 
     def fields
-      raise AccessTokenError unless accessor
-
       return @fields if defined?(@fields)
       @fields = MyJohnDeereApi::Request::Collection::Fields.new(client, organization: id)
     end
@@ -26,8 +24,6 @@ module MyJohnDeereApi
     # assets associated with this organization
 
     def assets
-      raise AccessTokenError unless accessor
-
       return @assets if defined?(@assets)
       @assets = MyJohnDeereApi::Request::Collection::Assets.new(client, organization: id)
     end
