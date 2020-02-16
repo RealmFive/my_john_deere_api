@@ -6,6 +6,10 @@ describe 'MyJohnDeereApi Errors' do
       assert JD::InvalidRecordError
     end
 
+    it 'loads MissingContributionDefinitionIdError' do
+      assert JD::MissingContributionDefinitionIdError
+    end
+
     it 'loads NotYetImplementedError' do
       assert JD::NotYetImplementedError
     end
