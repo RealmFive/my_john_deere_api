@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/Intellifarm/my_john_deere_api.svg?style=svg)](https://circleci.com/gh/Intellifarm/my_john_deere_api)
 
 This client allows you to connect the [MyJohnDeere API](https://developer.deere.com/#!documentation)
-without having to code your own oauth process, API requests, and pagination.
+without having to code your own oAuth process, API requests, and pagination.
 
 * Works with Rails, but does not require it
 * Supports both sandbox and live mode
