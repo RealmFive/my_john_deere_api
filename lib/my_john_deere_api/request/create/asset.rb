@@ -3,6 +3,7 @@ require 'json'
 module MyJohnDeereApi
   class Request::Create::Asset < Request::Create::Base
     include Validators::Asset
+    include Helpers::ValidateContributionDefinition
 
     private
 

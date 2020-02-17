@@ -13,5 +13,9 @@ describe 'MyJohnDeereApi::Helpers' do
     it 'loads Helpers::EnvironmentHelper' do
       assert JD::Helpers::EnvironmentHelper
     end
+
+    it 'loads Helpers::ValidateContributionDefinition' do
+      assert JD::Helpers::ValidateContributionDefinition
+    end
   end
 end
