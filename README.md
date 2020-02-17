@@ -12,7 +12,28 @@ without having to code your own oauth process, API requests, and pagination.
 * Provides `get`, `create`, `put`, and `delete` methods to make easy, authenticated, direct API calls
 * Uses ruby enumerables to handle pagination behind the scenes. Calls like `each`, `map`, etc will fetch new pages of data as needed.
 
-## Documentation
+## Table of Contents
+
+* [How to Read This Documentation](#how-to-read-this-documentation)
+* [Authorizing with John Deere via oAuth 1.0](#authorizing-with-john-deere-via-oauth-10)
+* [Interacting with the User's John Deere Account](#interacting-with-the-users-john-deere-account)
+* [Using the Client to Do Stuff](#using-the-client-to-do-stuff)
+  * [Contribution Products](#contribution-products)
+  * [Contribution Definitions](#contribution-definitions)
+  * [Organizations](#organizations)
+  * [Assets](#assets)
+* [Direct API Requests](#direct-api-requests)
+  * [GET](#get)
+  * [POST](#post)
+  * [PUT](#put)
+  * [DELETE](#delete)
+* [Errors](#errors)
+* [How Can I Help?](#how-can-i-help)
+  * [Give Us a Star!](#give-us-a-star)
+  * [Contribute to This Gem](#contribute-to-this-gem)
+
+
+## How To Read This Documentation
 
 We provide RDoc documentation, but here is a helpful guide for getting started. Because the gem name is long, all examples are going
 to assume this shortcut:
@@ -32,7 +53,7 @@ It really means:
 MyJohnDeereApi::Authorize
 ```
 
-### Authorizing with John Deere via Auth 1.0
+## Authorizing with John Deere via oAuth 1.0
 
 This is the simplest path to authorization, though your user has to jump through an extra hoop of giving you the verification code:
 
@@ -96,7 +117,7 @@ authorize = JD::Authorize.new(API_KEY, API_SECRET, environment: :sandbox)
 authorize.verify(params[:oauth_verifier])
 ```
 
-### Interacting with the user's John Deere account
+## Interacting with the User's John Deere Account
 
 After authorization is complete, the `Client` object will provide most of the interface for this library. A client can
 be used with or without user credentials, because some API calls are specific to your application's relationship
@@ -123,7 +144,7 @@ client = JD::Client.new(
 ```
 
 
-### Using the Client to Do Stuff
+## Using the Client to Do Stuff
 
 Once you're connected, the client works like a simplified version of ActiveRecord. JSON hashes from the API are
 converted into objects to be easier to work with. Collections of things, like organizations, handle pagination
@@ -173,7 +194,7 @@ client
 ```
 
 
-#### [Contribution Products](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fproducts.htm)
+### [Contribution Products](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fproducts.htm)
 
 Contribution Product collections act like a list. In addition to all the methods included via Ruby's
 [Enumerable Module](https://ruby-doc.org/core-2.7.0/Enumerable.html), contribution product
@@ -219,7 +240,7 @@ contribution_product.contribution_definitions
 ```
 
 
-#### [Contribution Definitions](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fproducts.htm)
+### [Contribution Definitions](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fproducts.htm)
 
 Handles a contribution product's contribution definitions. Contribution definition collections support the following methods:
 
@@ -252,7 +273,7 @@ contribution_definition.name
 ```
 
 
-#### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
+### [Organizations](https://developer.deere.com/#!documentation&doc=myjohndeere%2Forganizations.htm)
 
 Handles an account's organizations. Organization collections support the following methods:
 
@@ -312,7 +333,7 @@ organization.fields
 ```
 
 
-#### [Assets](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fassets.htm)
+### [Assets](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fassets.htm)
 
 Handles an organization's assets. Asset collections support the following methods:
 
@@ -331,7 +352,7 @@ An individual asset supports the following methods and associations:
 * sub\_type
 * links
 * update(attributes)
-* location (collection of this asset's locations)
+* locations (collection of this asset's locations)
 
 ```ruby
 organization = client.organizations.first
@@ -391,13 +412,13 @@ asset.save
 ```
 
 
-### Direct API Requests
+## Direct API Requests
 
 While the goal of the client is to eliminate the need to make/interpret calls to the John Deere API, it's important
 to be able to make calls that are not yet fully supported by the client. Or sometimes, you need to troubleshoot.
 
 
-#### GET
+### GET
 
 
 GET requests require only a resource path.
@@ -428,7 +449,7 @@ Abbreviated sample response:
 This won't provide any client goodies like pagination or validation, but it does parse the returned JSON.
 
 
-#### POST
+### POST
 
 POST requests require a resource path, and a hash for the request body. The client will camelize the keys, and convert to JSON.
 
@@ -454,7 +475,7 @@ client.post(
 John Deere's standard response is a 201 HTTP status code, with the message "Created". This method returns the full Net::HTTP response.
 
 
-#### PUT
+### PUT
 
 PUT requests require a resource path, and a hash for the request body. The client will camelize the keys, and convert to JSON.
 
@@ -480,7 +501,7 @@ client.put(
 John Deere's standard response is a 204 HTTP status code, with the message "No Content". This method returns the full Net::HTTP response.
 
 
-#### DELETE
+### DELETE
 
 DELETE requests require only a resource path.
 
@@ -491,7 +512,7 @@ client.delete('/assets/123123')
 John Deere's standard response is a 204 HTTP status code, with the message "No Content". This method returns the full Net::HTTP response.
 
 
-### Errors
+## Errors
 
 Custom errors help clearly identify problems when using the client:
 
@@ -511,16 +532,16 @@ Custom errors help clearly identify problems when using the client:
   to this gem!
 
 
-### How Can I Help?
+## How Can I Help?
 
-#### Give Us a Star!
+### Give Us a Star!
 
 *Star* this gem on [GitHub](https://github.com/Intellifarm/my_john_deere_api). It helps developers
 find and choose this gem over others that may be out there. To our knowledge, there are no other
 John Deere gems that are being actively maintained.
 
 
-#### Contribute to This Gem
+### Contribute to This Gem
 
 The easiest way to contribute is:
 
