@@ -1,4 +1,4 @@
-# my\_john\_deer\_api
+# Ruby Client for the MyJohnDeere API
 
 [![CircleCI](https://circleci.com/gh/Intellifarm/my_john_deere_api.svg?style=svg)](https://circleci.com/gh/Intellifarm/my_john_deere_api)
 
@@ -15,6 +15,7 @@ without having to code your own oauth process, API requests, and pagination.
 ## Table of Contents
 
 * [How to Read This Documentation](#how-to-read-this-documentation)
+* [Installation](#installation)
 * [Authorizing with John Deere via oAuth 1.0](#authorizing-with-john-deere-via-oauth-10)
 * [Interacting with the User's John Deere Account](#interacting-with-the-users-john-deere-account)
 * [Using the Client to Do Stuff](#using-the-client-to-do-stuff)
@@ -52,6 +53,28 @@ It really means:
 ```ruby
 MyJohnDeereApi::Authorize
 ```
+
+
+## Installation
+
+This library is available as a gem. To use it, just install the gem:
+
+```bash
+gem install my_john_deere_api
+```
+
+If you're using [Bundler](https://bundler.io/) (and why wouldn't you?) then add the gem to your gemfile:
+
+```ruby
+gem 'my_john_deere_api'
+```
+
+and run:
+
+```bash
+bundle install
+```
+
 
 ## Authorizing with John Deere via oAuth 1.0
 
