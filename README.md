@@ -23,6 +23,7 @@ without having to code your own oAuth process, API requests, and pagination.
   * [Contribution Definitions](#contribution-definitions)
   * [Organizations](#organizations)
   * [Assets](#assets)
+  * [Asset Locations](#asset-locations)
 * [Direct API Requests](#direct-api-requests)
   * [GET](#get)
   * [POST](#post)
@@ -435,6 +436,128 @@ asset.save
 ```
 
 
+### [Asset Locations](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fassets.htm)
+
+Handles an asset's locations. Asset Location collections support the following methods:
+
+* create(attributes)
+* all
+* count
+* first
+
+An individual location supports the following methods:
+
+* timestamp
+* geometry
+* measurement\_data
+
+```ruby
+asset = organizations.assets.first
+# => the first asset returned by the organization
+
+asset.locations
+# => collection of locations belonging to this asset
+
+location = asset.locations.first
+# => the first location returned by the asset. Note that locations do not have their own id's
+#    in the JD platform, and therefore cannot be requested individually via a "find" method.
+
+location.timestamp
+# => "2019-11-11T23:00:00.000Z"
+#    John Deere includes 3 decimal places in the format, but does not actually
+#    store fractions of a second, so it will always end in ".000". This is
+#    important, because timestamps must be unique.
+
+location.geometry
+# =>  a GeoJSON formatted hash, for example:
+#     {
+#       "type"=>"Feature",
+#       "geometry"=>{
+#         "geometries"=>[
+#             {
+#               "coordinates"=>[-95.123456, 40.123456], 
+#               "type"=>"Point"
+#             }
+#           ],
+#         "type"=>"GeometryCollection"
+#       }
+#     }
+
+location.measurement_data
+# =>  the status details of this location, for example:
+#     [
+#       {
+#         "@type"=>"BasicMeasurement",
+#         "name"=>"[Soil Temperature](http://example.com/current_temperature)", 
+#         "value"=>"21.0", 
+#         "unit"=>"°C"
+#       }
+#     ]
+```
+
+The `create` method creates the location in the John Deere platform, and returns the newly created
+object from John Deere. However, there will be no new information since there is no unique ID
+generated. The timestamp submitted (which defaults to "now") will be rounded
+to the nearest second.
+
+```ruby
+locaton = asset.locatons.create(
+  # You can pass fractional seconds, but they will be truncated by JD.
+  timestamp: "2019-11-11T23:00:00.123Z",
+
+  # JD requires more complicated JSON geometry, but this client will convert a simple
+  # set of lat/long coordinates into the larger format automatically.
+  geometry: [-95.123456, 40.123456],
+
+  # This is a list of "measurements"
+  measurement_data: [
+    {
+      name: 'Temperature',
+      value: '68.0',
+      unit: 'F'
+    }
+  ]
+)
+
+location.timestamp
+# =>  "2019-11-11T23:00:00.000Z"
+#     Note that the timestamp's fractional second is truncated by John Deere, though they
+#     still return the record with three digits of precision.
+
+location.geometry
+# =>  a GeoJSON formatted hash in its larger format
+#     {
+#       "type"=>"Feature",
+#       "geometry"=>{
+#         "geometries"=>[
+#             {
+#               "coordinates"=>[-95.123456, 40.123456], 
+#               "type"=>"Point"
+#             }
+#           ],
+#         "type"=>"GeometryCollection"
+#       }
+#     }
+
+location.measurement_data
+#     [
+#       {
+#         "@type"=>"BasicMeasurement",
+#         "name"=>"Temperature", 
+#         "value"=>"68.0", 
+#         "unit"=>"F"
+#       }
+#     ]
+
+```
+
+There is no updating or deleting of a location. The newest location record always acts as the status
+for the given asset, and is what appears on the map view.
+
+Note that locations are called "Asset Locations" in John Deere, but we call the association "locations", as in
+`asset.locations`, for brevity.
+
+
 ## Direct API Requests
 
 While the goal of the client is to eliminate the need to make/interpret calls to the John Deere API, it's important
@@ -544,7 +667,7 @@ Custom errors help clearly identify problems when using the client:
 * **InvalidRecordError** is raised when bad input has been given, in an attempt to create or update
   a record on the John Deere platform.
 * **MissingContributionDefinitionIdError** is raised when the optional contribution\_definition\_id
-  has not been set in the client, but an operation has been attempted that requires it - like 
+  has not been set in the client, but an operation has been attempted that requires it - like
   creating an asset in the John Deere platform.
 * **TypeMismatchError** is raised when a model is instantiated, typically when a record is received
   from John Deere and is being converted into a Ruby object. Model instantiation is normally handled
