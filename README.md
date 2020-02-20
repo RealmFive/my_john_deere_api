@@ -600,10 +600,71 @@ field.archived?
 # => false
 
 field.links
-# => a hash of API urls related to this asset
+# => a hash of API urls related to this field
 
 field.flags
 # => collection of flags belonging to this field
+```
+
+
+### [Flags](https://developer.deere.com/#!documentation&doc=.%2Fmyjohndeere%2Fflags.htm)
+
+Handles a field's flags. Flag collections support the following methods. Note, John Deere does not provide an endpoint to retrieve a specific flag by id:
+
+* all
+* count
+* first
+
+An individual flag supports the following methods and associations:
+
+* id
+* notes
+* geometry
+* archived?
+* proximity\_alert\_enabled?
+* links
+
+The `count` method only requires loading the first page of results, so it's a relatively cheap call. On the other hand,
+`all` forces the entire collection to be loaded from John Deere's API, so use with caution. Flags can be
+created via the API, but there is no `create` method on this collection yet.
+
+```ruby
+field.flags
+# => collection of flags under this field
+
+field.flags.count
+# => 15
+
+flag = field.flags.first
+# => an individual flag object
+
+flag.notes
+# => 'A big rock on the left after entering the field'
+
+flag.geometry
+# =>  a GeoJSON formatted hash, for example:
+#     {
+#       "type"=>"Feature",
+#       "geometry"=>{
+#         "geometries"=>[
+#             {
+#               "coordinates"=>[-95.123456, 40.123456], 
+#               "type"=>"Point"
+#             }
+#           ],
+#         "type"=>"GeometryCollection"
+#       }
+#     }
+
+
+field.archived?
+# => false
+
+field.proximity_alert_enabled?
+# => true
+
+field.links
+# => a hash of API urls related to this flag
 ```
 
 
