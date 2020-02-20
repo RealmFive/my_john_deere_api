@@ -24,6 +24,7 @@ without having to code your own oAuth process, API requests, and pagination.
   * [Organizations](#organizations)
   * [Assets](#assets)
   * [Asset Locations](#asset-locations)
+  * [Fields](#fields)
 * [Direct API Requests](#direct-api-requests)
   * [GET](#get)
   * [POST](#post)
@@ -346,7 +347,7 @@ organization.links
 # =>  {
 #       'self' => 'https://sandboxapi.deere.com/platform/organizations/1234',
 #       'machines' => 'https://sandboxapi.deere.com/platform/organizations/1234/machines',
-#       'wdtCapableMachines' => 'ttps://sandboxapi.deere.com/platform/organizations/1234/machines?capability=wdt'   
+#       'wdtCapableMachines' => 'https://sandboxapi.deere.com/platform/organizations/1234/machines?capability=wdt'   
 #     }
 
 organization.assets
@@ -556,6 +557,54 @@ for the given asset, and is what appears on the map view.
 
 Note that locations are called "Asset Locations" in John Deere, but we call the association "locations", as in
 `asset.locations`, for brevity.
+
+
+### [Fields](https://developer.deere.com/#!documentation&doc=myjohndeere%2FfieldsADS.htm)
+
+Handles an organization's fields. Field collections support the following methods:
+
+* all
+* count
+* first
+* find(field\_id)
+
+An individual field supports the following methods and associations:
+
+* id
+* name
+* archived?
+* links
+* flags (collection of this field's flags)
+
+The `count` method only requires loading the first page of results, so it's a relatively cheap call. On the other hand,
+`all` forces the entire collection to be loaded from John Deere's API, so use with caution. Fields can be
+created via the API, but there is no `create` method on this collection yet.
+
+```ruby
+organization.fields
+# => collection of fields under this organization
+
+organization.fields.count
+# => 15
+
+organization.fields.first
+# => an individual field object
+
+field = organization.fields.find(1234)
+# => an individual field object, fetched by ID
+
+field.name
+# => 'Smith Field'
+
+field.archived?
+# => false
+
+field.links
+# => a hash of API urls related to this asset
+
+field.flags
+# => collection of flags belonging to this field
+```
 
 
 ## Direct API Requests
