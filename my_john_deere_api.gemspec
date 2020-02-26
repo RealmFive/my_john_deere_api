@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.summary     = "Interact with John Deere's Developer API"
   s.authors     = ["Jaime Bellmyer", 'Justin Collier']
   s.email       = 'online@bellmyer.com'
-  s.homepage    = 'https://github.com/Intellifarm/my_john_deere_api'
+  s.homepage    = 'https://github.com/RealmFive/my_john_deere_api'
   s.license       = 'MIT'
 
   s.files       = Dir["{lib,test}/**/*", "Rakefile", "README.md"]
