@@ -19,6 +19,96 @@ http_interactions:
         oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_version="1.0"
   response:
     status:
+      code: 429
+      message: Too Many Requests
+    headers:
+      Date:
+      - Mon, 10 Feb 2020 17:29:29 GMT
+      Content-Type:
+      - application/vnd.deere.axiom.v3+json;charset=UTF-8
+      X-Deere-Handling-Server:
+      - ip-10-214-45-99
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Deere-Elapsed-Ms:
+      - '10'
+      Cache-Control:
+      - no-store
+      Content-Language:
+      - en-US
+      Transfer-Encoding:
+      - chunked
+      Retry-After:
+      - '0'
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Feb 2020 17:29:29 GMT
+- request:
+    method: get
+    uri: https://sandboxapi.deere.com/platform/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.deere.axiom.v3+json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - OAuth gem v0.5.4
+      Authorization:
+      - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_version="1.0"
+  response:
+    status:
+      code: 503
+      message: Service Unavailable
+    headers:
+      Date:
+      - Mon, 10 Feb 2020 17:29:29 GMT
+      Content-Type:
+      - application/vnd.deere.axiom.v3+json;charset=UTF-8
+      X-Deere-Handling-Server:
+      - ip-10-214-45-99
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Deere-Elapsed-Ms:
+      - '10'
+      Cache-Control:
+      - no-store
+      Content-Language:
+      - en-US
+      Transfer-Encoding:
+      - chunked
+      Retry-After:
+      - '0'
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Feb 2020 17:29:29 GMT
+- request:
+    method: get
+    uri: https://sandboxapi.deere.com/platform/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.deere.axiom.v3+json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - OAuth gem v0.5.4
+      Authorization:
+      - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_version="1.0"
+  response:
+    status:
       code: 200
       message: OK
     headers:
@@ -43,6 +133,92 @@ http_interactions:
       string: '{"@type":"ApiCatalog","links":[{"@type":"Link","rel":"oauthRequestToken","uri":"https://sandboxapi.deere.com/platform/oauth/request_token"},{"@type":"Link","rel":"oauthAuthorizeRequestToken","uri":"https://my.deere.com/consentToUseOfData?oauth_token={token}"},{"@type":"Link","rel":"oauthAccessToken","uri":"https://sandboxapi.deere.com/platform/oauth/access_token"},{"@type":"Link","rel":"agencies","uri":"https://sandboxapi.deere.com/platform/agencies"}]}'
     http_version: 
   recorded_at: Mon, 10 Feb 2020 17:29:29 GMT
+- request:
+    method: put
+    uri: https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000
+    body:
+      encoding: UTF-8
+      string: '{"assetCategory":"DEVICE","assetType":"SENSOR","assetSubType":"ENVIRONMENTAL","title":"i
+        REALLY like turtles!","links":[{"@type":"Link","rel":"contributionDefinition","uri":"https://sandboxapi.deere.com/contributionDefinitions/00000000-0000-0000-0000-000000000000"}]}'
+    headers:
+      Accept:
+      - application/vnd.deere.axiom.v3+json
+      Content-Type:
+      - application/vnd.deere.axiom.v3+json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - OAuth gem v0.5.4
+      Content-Length:
+      - '267'
+      Authorization:
+      - OAuth oauth_body_hash="JXqhMr0ayK5gfHyej3M1xuUfSbw%3D", oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_token="00000000-0000-0000-0000-000000000000",
+        oauth_version="1.0"
+  response:
+    status:
+      code: 429
+      message: Too Many Requests
+    headers:
+      Date:
+      - Mon, 10 Feb 2020 17:29:30 GMT
+      X-Deere-Handling-Server:
+      - ip-10-214-44-33
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Deere-Elapsed-Ms:
+      - '185'
+      Retry-After:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Feb 2020 17:29:30 GMT
+- request:
+    method: put
+    uri: https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000
+    body:
+      encoding: UTF-8
+      string: '{"assetCategory":"DEVICE","assetType":"SENSOR","assetSubType":"ENVIRONMENTAL","title":"i
+        REALLY like turtles!","links":[{"@type":"Link","rel":"contributionDefinition","uri":"https://sandboxapi.deere.com/contributionDefinitions/00000000-0000-0000-0000-000000000000"}]}'
+    headers:
+      Accept:
+      - application/vnd.deere.axiom.v3+json
+      Content-Type:
+      - application/vnd.deere.axiom.v3+json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - OAuth gem v0.5.4
+      Content-Length:
+      - '267'
+      Authorization:
+      - OAuth oauth_body_hash="JXqhMr0ayK5gfHyej3M1xuUfSbw%3D", oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_token="00000000-0000-0000-0000-000000000000",
+        oauth_version="1.0"
+  response:
+    status:
+      code: 503
+      message: Service Unavailable
+    headers:
+      Date:
+      - Mon, 10 Feb 2020 17:29:30 GMT
+      X-Deere-Handling-Server:
+      - ip-10-214-44-33
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Deere-Elapsed-Ms:
+      - '185'
+      Retry-After:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Feb 2020 17:29:30 GMT
 - request:
     method: put
     uri: https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000
