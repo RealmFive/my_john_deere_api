@@ -1,47 +1,32 @@
 module MyJohnDeereApi
-  class Accessor < SimpleDelegator
-    def get(*args)
-      result = super(*args)
+  class Accessor
+    attr_reader :access_token
+
+    REQUEST_METHODS = [:get, :post, :put, :delete] #[:get, :post, :put, :delete]
+
+    def initialize(oauth_access_token)
+      @access_token = oauth_access_token
+    end
+
+    def request(method_name, *args)
+      result = access_token.send(method_name, *args)
 
       while result['retry-after']
         sleep result['retry-after'].to_i
-        result = super(*args)
+        result = access_token.send(method_name, *args)
       end
 
       result
     end
 
-    def post(*args)
-      result = super(*args)
+    private
 
-      while result['retry-after']
-        sleep result['retry-after'].to_i
-        result = super(*args)
+    def method_missing(method_name, *args, &block)
+      if REQUEST_METHODS.include?(method_name)
+        request(method_name, *args)
+      else
+        access_token.send(method_name, *args, &block)
       end
-
-      result
-    end
-
-    def put(*args)
-      result = super(*args)
-
-      while result['retry-after']
-        sleep result['retry-after'].to_i
-        result = super(*args)
-      end
-
-      result
-    end
-
-    def delete(*args)
-      result = super(*args)
-
-      while result['retry-after']
-        sleep result['retry-after'].to_i
-        result = super(*args)
-      end
-
-      result
     end
   end
 end
