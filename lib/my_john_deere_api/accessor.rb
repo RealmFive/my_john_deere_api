@@ -2,18 +2,25 @@ module MyJohnDeereApi
   class Accessor
     attr_reader :access_token
 
-    REQUEST_METHODS = [:get, :post, :put, :delete] #[:get, :post, :put, :delete]
+    REQUEST_METHODS = [:get, :post, :put, :delete]
+
+    RETRY_DELAY_EXPONENT = 2
+    RETRIABLE_RESPONSE_CODES = ['429', '503']
 
     def initialize(oauth_access_token)
       @access_token = oauth_access_token
     end
 
     def request(method_name, *args)
+      retries = 0
       result = access_token.send(method_name, *args)
 
-      while result['retry-after']
-        sleep result['retry-after'].to_i
+      while RETRIABLE_RESPONSE_CODES.include?(result.code)
+        delay = [result['retry-after'].to_i, RETRY_DELAY_EXPONENT ** retries].max
+        sleep(delay)
+
         result = access_token.send(method_name, *args)
+        retries += 1
       end
 
       result
