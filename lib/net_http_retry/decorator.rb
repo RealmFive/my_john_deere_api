@@ -1,8 +1,8 @@
 require 'net_http_retry/max_retries_exceeded_error'
 
 module NetHttpRetry
-  class Accessor
-    attr_reader :access_token
+  class Decorator
+    attr_reader :object
 
     REQUEST_METHODS = [:get, :post, :put, :delete]
 
@@ -10,13 +10,13 @@ module NetHttpRetry
     MAX_RETRIES = 12
     RETRIABLE_RESPONSE_CODES = ['429', '503']
 
-    def initialize(oauth_access_token)
-      @access_token = oauth_access_token
+    def initialize(object)
+      @object = object
     end
 
     def request(method_name, *args)
       retries = 0
-      result = access_token.send(method_name, *args)
+      result = object.send(method_name, *args)
 
       while RETRIABLE_RESPONSE_CODES.include?(result.code)
         if retries >= MAX_RETRIES
@@ -26,7 +26,7 @@ module NetHttpRetry
         delay = [result['retry-after'].to_i, RETRY_DELAY_EXPONENT ** retries].max
         sleep(delay)
 
-        result = access_token.send(method_name, *args)
+        result = object.send(method_name, *args)
         retries += 1
       end
 
@@ -39,7 +39,7 @@ module NetHttpRetry
       if REQUEST_METHODS.include?(method_name)
         request(method_name, *args)
       else
-        access_token.send(method_name, *args, &block)
+        object.send(method_name, *args, &block)
       end
     end
   end

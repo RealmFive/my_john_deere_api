@@ -1,6 +1,6 @@
 require 'support/helper'
 
-describe 'NetHttpRetry::Accessor' do
+describe 'NetHttpRetry::Decorator' do
   REQUESTS = {
     get:    '/',
     post:   '/organizations/000000/assets',
@@ -12,10 +12,10 @@ describe 'NetHttpRetry::Accessor' do
 
   let(:retry_values) { [13, 17, 19, 23] }
   let(:exponential_retries) { (0..max_retries-1).map{|i| 2 ** i} }
-  let(:max_retries) { NetHttpRetry::Accessor::MAX_RETRIES }
+  let(:max_retries) { NetHttpRetry::Decorator::MAX_RETRIES }
 
-  it 'wraps an oauth access token' do
-    assert_kind_of OAuth::AccessToken, accessor.access_token
+  it 'wraps a "net-http"-responsive object' do
+    assert_kind_of OAuth::AccessToken, accessor.object
   end
 
   describe "honors Retry-After headers" do

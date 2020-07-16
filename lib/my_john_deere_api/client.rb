@@ -45,7 +45,7 @@ module MyJohnDeereApi
 
     def accessor
       return @accessor if defined?(@accessor)
-      @accessor = NetHttpRetry::Accessor.new(OAuth::AccessToken.new(consumer.user_get, access_token, access_secret))
+      @accessor = NetHttpRetry::Decorator.new(OAuth::AccessToken.new(consumer.user_get, access_token, access_secret))
     end
 
     ##
