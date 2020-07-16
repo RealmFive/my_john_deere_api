@@ -4,10 +4,11 @@ module MyJohnDeereApi
     include Helpers::CaseConversion
 
     attr_accessor :contribution_definition_id
-    attr_reader :api_key, :api_secret, :access_token, :access_secret
+    attr_reader :api_key, :api_secret, :access_token, :access_secret, :http_retry_options
 
     DEFAULTS = {
-      environment: :live
+      environment: :live,
+      http_retry: {}
     }
 
     ##
@@ -37,6 +38,7 @@ module MyJohnDeereApi
 
       self.environment = options[:environment]
       @contribution_definition_id = options[:contribution_definition_id]
+      @http_retry_options = options[:http_retry]
     end
 
     ##
@@ -45,7 +47,15 @@ module MyJohnDeereApi
 
     def accessor
       return @accessor if defined?(@accessor)
-      @accessor = NetHttpRetry::Decorator.new(OAuth::AccessToken.new(consumer.user_get, access_token, access_secret))
+
+      @accessor = NetHttpRetry::Decorator.new(
+        OAuth::AccessToken.new(
+          consumer.user_get,
+          access_token,
+          access_secret
+        ),
+        http_retry_options
+      )
     end
 
     ##

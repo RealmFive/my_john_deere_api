@@ -6,7 +6,7 @@ describe 'MyJohnDeereApi::Client' do
     assert_equal 'thisIsATest', client.send(:camelize, :this_is_a_test)
   end
 
-  describe '#initialize(api_key, api_secret)' do
+  describe '#initialize(api_key, api_secret, options={})' do
     it 'sets the api key/secret' do
       client = JD::Client.new(api_key, api_secret)
 
@@ -34,6 +34,23 @@ describe 'MyJohnDeereApi::Client' do
     it 'accepts a contribution_definition_id' do
       client = JD::Client.new(api_key, api_secret, contribution_definition_id: contribution_definition_id)
       assert_equal contribution_definition_id, client.contribution_definition_id
+    end
+
+    it 'accepts a list of parameters for NetHttpRetry' do
+      custom_retries = NetHttpRetry::Decorator::DEFAULTS[:max_retries] + 10
+
+      VCR.use_cassette('catalog') do
+        new_client = JD::Client.new(
+          api_key,
+          api_secret,
+          contribution_definition_id: contribution_definition_id,
+          environment: :sandbox,
+          access: [access_token, access_secret],
+          http_retry: {max_retries: custom_retries}
+        )
+
+        assert_equal custom_retries, new_client.accessor.max_retries
+      end
     end
   end
 
