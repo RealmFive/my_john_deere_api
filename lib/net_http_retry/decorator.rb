@@ -2,28 +2,35 @@ require 'net_http_retry/max_retries_exceeded_error'
 
 module NetHttpRetry
   class Decorator
-    attr_reader :object
+    attr_reader :object, :request_methods, :retry_delay_exponent, :max_retries, :response_codes
 
-    REQUEST_METHODS = [:get, :post, :put, :delete]
+    DEFAULTS = {
+      request_methods:      [:get, :post, :put, :delete],
+      retry_delay_exponent: 2,
+      max_retries: 12,
+      response_codes: ['429', '503']
+    }
 
-    RETRY_DELAY_EXPONENT = 2
-    MAX_RETRIES = 12
-    RETRIABLE_RESPONSE_CODES = ['429', '503']
-
-    def initialize(object)
+    def initialize(object, options={})
       @object = object
+
+      [:request_methods, :retry_delay_exponent, :max_retries].each do |option|
+        instance_variable_set(:"@#{option}", options[option] || DEFAULTS[option])
+      end
+
+      @response_codes = (options[:response_codes] || DEFAULTS[:response_codes]).map(&:to_s)
     end
 
     def request(method_name, *args)
       retries = 0
       result = object.send(method_name, *args)
 
-      while RETRIABLE_RESPONSE_CODES.include?(result.code)
-        if retries >= MAX_RETRIES
+      while response_codes.include?(result.code)
+        if retries >= max_retries
           raise MaxRetriesExceededError.new(method_name, "#{result.code} #{result.message}")
         end
 
-        delay = [result['retry-after'].to_i, RETRY_DELAY_EXPONENT ** retries].max
+        delay = [result['retry-after'].to_i, retry_delay_exponent ** retries].max
         sleep(delay)
 
         result = object.send(method_name, *args)
@@ -36,7 +43,7 @@ module NetHttpRetry
     private
 
     def method_missing(method_name, *args, &block)
-      if REQUEST_METHODS.include?(method_name)
+      if request_methods.include?(method_name)
         request(method_name, *args)
       else
         object.send(method_name, *args, &block)

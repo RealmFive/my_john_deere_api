@@ -10,12 +10,94 @@ describe 'NetHttpRetry::Decorator' do
 
   REQUEST_METHODS = REQUESTS.keys
 
+  let(:klass) { NetHttpRetry::Decorator }
+  let(:object) { klass.new(mock, options) }
+
+  let(:options) do
+    {
+      request_methods: request_methods,
+      retry_delay_exponent: retry_delay_exponent,
+      max_retries: max_retries,
+      response_codes: response_codes
+    }
+  end
+
+  let(:request_methods) { nil }
+  let(:retry_delay_exponent) { nil }
+  let(:max_retries) { nil }
+  let(:response_codes) { nil }
+
   let(:retry_values) { [13, 17, 19, 23] }
-  let(:exponential_retries) { (0..max_retries-1).map{|i| 2 ** i} }
-  let(:max_retries) { NetHttpRetry::Decorator::MAX_RETRIES }
+  let(:exponential_retries) { (0..klass::DEFAULTS[:max_retries]-1).map{|i| 2 ** i} }
 
   it 'wraps a "net-http"-responsive object' do
     assert_kind_of OAuth::AccessToken, accessor.object
+  end
+
+  describe '#initialize' do
+    describe 'when request methods are specified' do
+      let(:request_methods) { [:banana, :fana, :fofana] }
+
+      it 'uses the supplied values' do
+        assert_equal request_methods, object.request_methods
+      end
+    end
+
+    describe 'when request methods are not specified' do
+      it 'uses the default values' do
+        assert_equal klass::DEFAULTS[:request_methods], object.request_methods
+      end
+    end
+
+    describe 'when retry_delay_exponent is specified' do
+      let(:retry_delay_exponent) { 42 }
+
+      it 'uses the supplied value' do
+        assert_equal retry_delay_exponent, object.retry_delay_exponent
+      end
+    end
+
+    describe 'when retry_delay_exponent is not specified' do
+      it 'uses the default value' do
+        assert_equal klass::DEFAULTS[:retry_delay_exponent], object.retry_delay_exponent
+      end
+    end
+
+    describe 'when max_retries is specified' do
+      let(:max_retries) { 42 }
+
+      it 'uses the supplied value' do
+        assert_equal max_retries, object.max_retries
+      end
+    end
+
+    describe 'when max_retries is not specified' do
+      it 'uses the default value' do
+        assert_equal klass::DEFAULTS[:max_retries], object.max_retries
+      end
+    end
+
+    describe 'when response_codes are specified' do
+      let(:response_codes) { ['200', '201'] }
+
+      it 'uses the supplied values' do
+        assert_equal response_codes, object.response_codes
+      end
+    end
+
+    describe 'when response_codes are specified as integers' do
+      let(:response_codes) { [200, 201] }
+
+      it 'uses the stringified versions of the supplied values' do
+        assert_equal response_codes.map(&:to_s), object.response_codes
+      end
+    end
+
+    describe 'when response_codes are not specified' do
+      it 'uses the default values' do
+        assert_equal klass::DEFAULTS[:response_codes], object.response_codes
+      end
+    end
   end
 
   describe "honors Retry-After headers" do
@@ -73,7 +155,7 @@ describe 'NetHttpRetry::Decorator' do
           end
         end
 
-        expected_error = "Max retries (#{max_retries}) exceeded for #{request_method.to_s.upcase} request: 429 Too Many Requests"
+        expected_error = "Max retries exceeded for #{request_method.to_s.upcase} request: 429 Too Many Requests"
         assert_equal expected_error, exception.message
       end
     end
