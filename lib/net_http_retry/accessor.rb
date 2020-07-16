@@ -1,4 +1,6 @@
-module MyJohnDeereApi
+require 'net_http_retry/max_retries_exceeded_error'
+
+module NetHttpRetry
   class Accessor
     attr_reader :access_token
 
@@ -42,4 +44,3 @@ module MyJohnDeereApi
     end
   end
 end
-

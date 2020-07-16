@@ -4,7 +4,6 @@ require 'json'
 
 module MyJohnDeereApi
   autoload :VERSION,        'my_john_deere_api/version'
-  autoload :Accessor,       'my_john_deere_api/accessor'
   autoload :Authorize,      'my_john_deere_api/authorize'
   autoload :Client,         'my_john_deere_api/client'
   autoload :Consumer,       'my_john_deere_api/consumer'

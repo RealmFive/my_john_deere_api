@@ -1,5 +1,6 @@
 $LOAD_PATH << './lib'
 require 'my_john_deere_api'
+require 'net_http_retry'
 require 'dotenv/load'
 
 def client

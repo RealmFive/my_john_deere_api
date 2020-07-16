@@ -199,7 +199,7 @@ describe 'MyJohnDeereApi::Client' do
 
   describe '#accessor' do
     it 'returns an object that can make user-specific requests' do
-      assert_kind_of JD::Accessor, accessor
+      assert_kind_of NetHttpRetry::Accessor, accessor
       assert_kind_of OAuth::Consumer, accessor.consumer
       assert_equal access_token, accessor.token
       assert_equal access_secret, accessor.secret

@@ -1,6 +1,6 @@
 require 'support/helper'
 
-describe 'MyJohnDeereApi::Accessor' do
+describe 'NetHttpRetry::Accessor' do
   REQUESTS = {
     get:    '/',
     post:   '/organizations/000000/assets',
@@ -12,7 +12,7 @@ describe 'MyJohnDeereApi::Accessor' do
 
   let(:retry_values) { [13, 17, 19, 23] }
   let(:exponential_retries) { (0..max_retries-1).map{|i| 2 ** i} }
-  let(:max_retries) { JD::Accessor::MAX_RETRIES }
+  let(:max_retries) { NetHttpRetry::Accessor::MAX_RETRIES }
 
   it 'wraps an oauth access token' do
     assert_kind_of OAuth::AccessToken, accessor.access_token
@@ -67,7 +67,7 @@ describe 'MyJohnDeereApi::Accessor' do
           accessor.expects(:sleep).with(retry_seconds)
         end
 
-        exception = assert_raises(JD::MaxRetriesExceededError) do
+        exception = assert_raises(NetHttpRetry::MaxRetriesExceededError) do
           VCR.use_cassette("accessor/#{request_method}_max_failed") do
             accessor.send(request_method, REQUESTS[request_method])
           end
