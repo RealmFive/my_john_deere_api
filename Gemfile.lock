@@ -16,6 +16,7 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
+    mocha (1.11.2)
     oauth (0.5.4)
     public_suffix (4.0.3)
     rake (13.0.1)
@@ -35,6 +36,7 @@ DEPENDENCIES
   json
   minitest
   minitest-reporters
+  mocha
   oauth
   rake
   vcr

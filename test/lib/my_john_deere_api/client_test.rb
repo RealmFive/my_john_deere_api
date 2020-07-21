@@ -6,7 +6,7 @@ describe 'MyJohnDeereApi::Client' do
     assert_equal 'thisIsATest', client.send(:camelize, :this_is_a_test)
   end
 
-  describe '#initialize(api_key, api_secret)' do
+  describe '#initialize(api_key, api_secret, options={})' do
     it 'sets the api key/secret' do
       client = JD::Client.new(api_key, api_secret)
 
@@ -34,6 +34,23 @@ describe 'MyJohnDeereApi::Client' do
     it 'accepts a contribution_definition_id' do
       client = JD::Client.new(api_key, api_secret, contribution_definition_id: contribution_definition_id)
       assert_equal contribution_definition_id, client.contribution_definition_id
+    end
+
+    it 'accepts a list of parameters for NetHttpRetry' do
+      custom_retries = NetHttpRetry::Decorator::DEFAULTS[:max_retries] + 10
+
+      VCR.use_cassette('catalog') do
+        new_client = JD::Client.new(
+          api_key,
+          api_secret,
+          contribution_definition_id: contribution_definition_id,
+          environment: :sandbox,
+          access: [access_token, access_secret],
+          http_retry: {max_retries: custom_retries}
+        )
+
+        assert_equal custom_retries, new_client.accessor.max_retries
+      end
     end
   end
 
@@ -130,7 +147,7 @@ describe 'MyJohnDeereApi::Client' do
 
     it 'sends the request' do
       response = VCR.use_cassette('put_asset') { client.put("/assets/#{asset_id}", attributes) }
-      puts "HASH!! #{response.inspect}" if response.is_a?(Hash)
+
       assert_equal '204', response.code
       assert_equal 'No Content', response.message
     end
@@ -199,7 +216,7 @@ describe 'MyJohnDeereApi::Client' do
 
   describe '#accessor' do
     it 'returns an object that can make user-specific requests' do
-      assert_kind_of OAuth::AccessToken, accessor
+      assert_kind_of NetHttpRetry::Decorator, accessor
       assert_kind_of OAuth::Consumer, accessor.consumer
       assert_equal access_token, accessor.token
       assert_equal access_secret, accessor.secret
