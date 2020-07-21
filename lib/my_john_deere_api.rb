@@ -13,4 +13,5 @@ module MyJohnDeereApi
   autoload :Validators,     'my_john_deere_api/validators'
 
   require 'my_john_deere_api/errors'
+  require 'my_john_deere_api/net_http_retry'
 end

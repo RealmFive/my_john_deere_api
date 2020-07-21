@@ -4,7 +4,6 @@ require 'dotenv/load'
 require 'minitest/autorun'
 require 'minitest/reporters'
 require 'my_john_deere_api'
-require 'net_http_retry'
 require 'mocha/minitest'
 
 require 'support/vcr_setup'

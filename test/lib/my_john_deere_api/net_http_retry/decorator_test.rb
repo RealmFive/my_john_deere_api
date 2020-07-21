@@ -1,6 +1,6 @@
 require 'support/helper'
 
-describe 'NetHttpRetry::Decorator' do
+describe 'JD::NetHttpRetry::Decorator' do
   REQUESTS = {
     get:    '/',
     post:   '/organizations/000000/assets',
@@ -10,7 +10,7 @@ describe 'NetHttpRetry::Decorator' do
 
   REQUEST_METHODS = REQUESTS.keys
 
-  let(:klass) { NetHttpRetry::Decorator }
+  let(:klass) { JD::NetHttpRetry::Decorator }
   let(:object) { klass.new(mock, options) }
 
   let(:options) do
@@ -149,7 +149,7 @@ describe 'NetHttpRetry::Decorator' do
           accessor.expects(:sleep).with(retry_seconds)
         end
 
-        exception = assert_raises(NetHttpRetry::MaxRetriesExceededError) do
+        exception = assert_raises(JD::NetHttpRetry::MaxRetriesExceededError) do
           VCR.use_cassette("accessor/#{request_method}_max_failed") do
             accessor.send(request_method, REQUESTS[request_method])
           end
