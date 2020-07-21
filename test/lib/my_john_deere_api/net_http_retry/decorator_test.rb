@@ -18,7 +18,8 @@ describe 'JD::NetHttpRetry::Decorator' do
       request_methods: request_methods,
       retry_delay_exponent: retry_delay_exponent,
       max_retries: max_retries,
-      retry_codes: retry_codes
+      retry_codes: retry_codes,
+      valid_codes: valid_codes
     }
   end
 
@@ -26,6 +27,7 @@ describe 'JD::NetHttpRetry::Decorator' do
   let(:retry_delay_exponent) { nil }
   let(:max_retries) { nil }
   let(:retry_codes) { nil }
+  let(:valid_codes) { nil }
 
   let(:retry_values) { [13, 17, 19, 23] }
   let(:exponential_retries) { (0..klass::DEFAULTS[:max_retries]-1).map{|i| 2 ** i} }
@@ -96,6 +98,31 @@ describe 'JD::NetHttpRetry::Decorator' do
     describe 'when retry_codes are not specified' do
       it 'uses the default values' do
         assert_equal klass::DEFAULTS[:retry_codes], object.retry_codes
+      end
+    end
+
+    describe 'when valid_codes are specified' do
+      let(:valid_codes) { ['123', '234'] }
+
+      it 'uses the supplied values' do
+        assert_equal valid_codes, object.valid_codes
+      end
+    end
+
+    describe 'when valid_codes are specified as integers' do
+      let(:valid_codes) { [123, 234] }
+
+      it 'uses the stringified versions of the supplied values' do
+        assert_equal valid_codes.map(&:to_s), object.valid_codes
+      end
+    end
+
+    describe 'when valid_codes are not specified' do
+      it 'uses the default values' do
+        assert_kind_of Array, klass::DEFAULTS[:valid_codes]
+        refute klass::DEFAULTS[:valid_codes].empty?
+
+        assert_equal klass::DEFAULTS[:valid_codes], object.valid_codes
       end
     end
   end

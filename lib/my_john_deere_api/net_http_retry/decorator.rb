@@ -1,23 +1,28 @@
 module MyJohnDeereApi
   module NetHttpRetry
     class Decorator
-      attr_reader :object, :request_methods, :retry_delay_exponent, :max_retries, :retry_codes
+      attr_reader :object, :request_methods, :retry_delay_exponent, :max_retries, :retry_codes, :valid_codes
 
       DEFAULTS = {
         request_methods:      [:get, :post, :put, :delete],
         retry_delay_exponent: 2,
         max_retries: 12,
-        retry_codes: ['429', '503']
+        retry_codes: ['429', '503'],
+        valid_codes: ['200', '201', '204'],
       }
 
       def initialize(object, options={})
         @object = object
 
+        # defaults that can be used as-is
         [:request_methods, :retry_delay_exponent, :max_retries].each do |option|
           instance_variable_set(:"@#{option}", options[option] || DEFAULTS[option])
         end
 
-        @retry_codes = (options[:retry_codes] || DEFAULTS[:retry_codes]).map(&:to_s)
+        # defaults that require casting as string arrays
+        [:retry_codes, :valid_codes].each do |option|
+          instance_variable_set(:"@#{option}", (options[option] || DEFAULTS[option]).map(&:to_s))
+        end
       end
 
       def request(method_name, *args)
@@ -35,6 +40,8 @@ module MyJohnDeereApi
           result = object.send(method_name, *args)
           retries += 1
         end
+
+        # unless
 
         result
       end
