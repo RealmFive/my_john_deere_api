@@ -41,7 +41,9 @@ module MyJohnDeereApi
           retries += 1
         end
 
-        # unless
+        unless valid_codes.include?(result.code)
+          raise InvalidResponseError.new(result)
+        end
 
         result
       end

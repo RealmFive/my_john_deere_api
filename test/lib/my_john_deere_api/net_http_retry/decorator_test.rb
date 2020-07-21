@@ -187,4 +187,22 @@ describe 'JD::NetHttpRetry::Decorator' do
       end
     end
   end
+
+  describe 'when an invalid response code is returned' do
+    REQUEST_METHODS.each do |request_method|
+      it "returns an error for #{request_method.to_s.upcase} requests" do
+        exception = assert_raises(JD::NetHttpRetry::InvalidResponseError) do
+          VCR.use_cassette("accessor/#{request_method}_invalid") do
+            accessor.send(request_method, REQUESTS[request_method])
+          end
+        end
+
+        exception_json = JSON.parse(exception.message)
+
+        assert_equal '500', exception_json['code']
+        assert_equal 'Internal Error', exception_json['message']
+        assert_equal 'You Have Died of Dysentery', exception_json['body']
+      end
+    end
+  end
 end

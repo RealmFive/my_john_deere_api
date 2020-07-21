@@ -1,0 +1,49 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandboxapi.deere.com/platform/organizations/000000/assets
+    body:
+      encoding: UTF-8
+      string: '{"title":"Asset Title","assetCategory":"DEVICE","assetType":"SENSOR","assetSubType":"ENVIRONMENTAL","links":[{"@type":"Link","rel":"contributionDefinition","uri":"https://sandboxapi.deere.com/platform/contributionDefinitions/00000000-0000-0000-0000-000000000000"}]}'
+    headers:
+      Accept:
+      - application/vnd.deere.axiom.v3+json
+      Content-Type:
+      - application/vnd.deere.axiom.v3+json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - OAuth gem v0.5.4
+      Content-Length:
+      - '265'
+      Authorization:
+      - OAuth oauth_body_hash="hObY6LROUn9S1WS8S28eTTfqmWk%3D", oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
+        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
+        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_token="00000000-0000-0000-0000-000000000000",
+        oauth_version="1.0"
+  response:
+    status:
+      code: 500
+      message: Internal Error
+    headers:
+      Date:
+      - Mon, 10 Feb 2020 17:29:25 GMT
+      Content-Type:
+      - application/vnd.deere.axiom.v3+json
+      X-Deere-Handling-Server:
+      - ip-10-214-45-213
+      X-Frame-Options:
+      - SAMEORIGIN
+      Location:
+      - https://sandboxapi.deere.com/platform/assets/00000000-0000-0000-0000-000000000000
+      X-Deere-Elapsed-Ms:
+      - '121'
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: You Have Died of Dysentery
+    http_version: 
+  recorded_at: Mon, 10 Feb 2020 17:29:26 GMT
+recorded_with: VCR 5.0.0
