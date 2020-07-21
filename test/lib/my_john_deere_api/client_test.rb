@@ -37,7 +37,7 @@ describe 'MyJohnDeereApi::Client' do
     end
 
     it 'accepts a list of parameters for NetHttpRetry' do
-      custom_retries = NetHttpRetry::Decorator::DEFAULTS[:max_retries] + 10
+      custom_retries = JD::NetHttpRetry::Decorator::DEFAULTS[:max_retries] + 10
 
       VCR.use_cassette('catalog') do
         new_client = JD::Client.new(
@@ -216,7 +216,7 @@ describe 'MyJohnDeereApi::Client' do
 
   describe '#accessor' do
     it 'returns an object that can make user-specific requests' do
-      assert_kind_of NetHttpRetry::Decorator, accessor
+      assert_kind_of JD::NetHttpRetry::Decorator, accessor
       assert_kind_of OAuth::Consumer, accessor.consumer
       assert_equal access_token, accessor.token
       assert_equal access_secret, accessor.secret

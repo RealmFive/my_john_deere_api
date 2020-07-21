@@ -1,18 +1,20 @@
-module NetHttpRetry
-  ##
-  # This error is used when a single request has exceeded
-  # the number of retries allowed by NetHttpRetry::Decorator::MAX_RETRIES.
-
-  class MaxRetriesExceededError < StandardError
-
+module MyJohnDeereApi
+  module NetHttpRetry
     ##
-    # argument is a string which describes the attempted request
+    # This error is used when a single request has exceeded
+    # the number of retries allowed by NetHttpRetry::Decorator::MAX_RETRIES.
 
-    def initialize(request_method, response_message)
-      message = "Max retries exceeded for #{request_method.to_s.upcase} " +
-                "request: #{response_message}"
+    class MaxRetriesExceededError < StandardError
 
-      super(message)
+      ##
+      # argument is a string which describes the attempted request
+
+      def initialize(request_method, response_message)
+        message = "Max retries exceeded for #{request_method.to_s.upcase} " +
+                  "request: #{response_message}"
+
+        super(message)
+      end
     end
   end
 end
