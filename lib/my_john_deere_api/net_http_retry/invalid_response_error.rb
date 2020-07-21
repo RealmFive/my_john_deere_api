@@ -1,13 +1,13 @@
 module MyJohnDeereApi
   module NetHttpRetry
     ##
-    # This error is used when a single request has exceeded
-    # the number of retries allowed by NetHttpRetry::Decorator::MAX_RETRIES.
+    # This error is used when an unexpected response code
+    # is returned from JD.
 
     class InvalidResponseError < StandardError
 
       ##
-      # argument is a string which describes the attempted request
+      # argument is a Net::HTTP response object
 
       def initialize(response)
         message = {
