@@ -6,7 +6,7 @@ require_relative VERSION_FILE
 
 @level = ARGV.shift
 
-unless [nil, 'minor', 'major', 'patch'].include?(@label)
+unless [nil, 'minor', 'major', 'patch'].include?(@level)
   puts "valid arguments: major, minor or patch (default)"
   exit
 end
