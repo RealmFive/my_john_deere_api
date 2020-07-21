@@ -18,14 +18,14 @@ describe 'JD::NetHttpRetry::Decorator' do
       request_methods: request_methods,
       retry_delay_exponent: retry_delay_exponent,
       max_retries: max_retries,
-      response_codes: response_codes
+      retry_codes: retry_codes
     }
   end
 
   let(:request_methods) { nil }
   let(:retry_delay_exponent) { nil }
   let(:max_retries) { nil }
-  let(:response_codes) { nil }
+  let(:retry_codes) { nil }
 
   let(:retry_values) { [13, 17, 19, 23] }
   let(:exponential_retries) { (0..klass::DEFAULTS[:max_retries]-1).map{|i| 2 ** i} }
@@ -77,25 +77,25 @@ describe 'JD::NetHttpRetry::Decorator' do
       end
     end
 
-    describe 'when response_codes are specified' do
-      let(:response_codes) { ['200', '201'] }
+    describe 'when retry_codes are specified' do
+      let(:retry_codes) { ['200', '201'] }
 
       it 'uses the supplied values' do
-        assert_equal response_codes, object.response_codes
+        assert_equal retry_codes, object.retry_codes
       end
     end
 
-    describe 'when response_codes are specified as integers' do
-      let(:response_codes) { [200, 201] }
+    describe 'when retry_codes are specified as integers' do
+      let(:retry_codes) { [200, 201] }
 
       it 'uses the stringified versions of the supplied values' do
-        assert_equal response_codes.map(&:to_s), object.response_codes
+        assert_equal retry_codes.map(&:to_s), object.retry_codes
       end
     end
 
-    describe 'when response_codes are not specified' do
+    describe 'when retry_codes are not specified' do
       it 'uses the default values' do
-        assert_equal klass::DEFAULTS[:response_codes], object.response_codes
+        assert_equal klass::DEFAULTS[:retry_codes], object.retry_codes
       end
     end
   end
