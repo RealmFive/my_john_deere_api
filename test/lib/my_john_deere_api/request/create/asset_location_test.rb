@@ -163,7 +163,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
     describe 'when location header is missing' do
       it 'raises an error' do
         exception = assert_raises(JD::MissingLocationHeaderError) do
-          VCR.use_cassette('post_asset_locations_missing_location') { object.object }
+          VCR.use_cassette('missing_location_header/post_asset_locations') { object.object }
         end
 
         json = JSON.parse(exception.message)
