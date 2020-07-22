@@ -11,8 +11,7 @@ module MyJohnDeereApi
     # Retrieve newly created record
 
     def fetch_record
-      path = response['location'].split('/platform').last
-      result = accessor.get(path, headers)
+      result = accessor.get(location_header, headers)
 
       JSON.parse(result.body)
     end

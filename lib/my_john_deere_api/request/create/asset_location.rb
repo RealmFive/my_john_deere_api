@@ -84,9 +84,7 @@ module MyJohnDeereApi
       # request to just the first record from the location list endpoint, since
       # locations are returned newest to oldest.
 
-      path = response['location'].split('/platform').last
-      path += "?count=1"
-
+      path = location_header + '?count=1'
       result = accessor.get(path, headers)
 
       JSON.parse(result.body)['values'].first

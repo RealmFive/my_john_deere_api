@@ -63,5 +63,16 @@ module MyJohnDeereApi
         'Content-Type'  => 'application/vnd.deere.axiom.v3+json'
       }
     end
+
+    ##
+    # Return response's Location header, and fail loudly if unavailable
+
+    def location_header
+      if response['location']
+        response['location'].split('/platform').last
+      else
+        raise MissingLocationHeaderError.new(response)
+      end
+    end
   end
 end

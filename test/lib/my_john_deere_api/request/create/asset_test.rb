@@ -178,5 +178,19 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
       assert_equal attributes[:asset_type], result.asset_type
       assert_equal attributes[:asset_sub_type], result.asset_sub_type
     end
+
+    describe 'when location header is missing' do
+      it 'raises an error' do
+        exception = assert_raises(JD::MissingLocationHeaderError) do
+          VCR.use_cassette('post_assets_missing_location') { object.object }
+        end
+
+        json = JSON.parse(exception.message)
+
+        assert_equal '201', json['code']
+        assert_equal 'Created', json['message']
+        assert_equal '', json['body']
+      end
+    end
   end
 end
