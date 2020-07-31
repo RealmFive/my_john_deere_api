@@ -18,14 +18,16 @@ describe 'JD::NetHttpRetry::Decorator' do
       request_methods: request_methods,
       retry_delay_exponent: retry_delay_exponent,
       max_retries: max_retries,
-      response_codes: response_codes
+      retry_codes: retry_codes,
+      valid_codes: valid_codes
     }
   end
 
   let(:request_methods) { nil }
   let(:retry_delay_exponent) { nil }
   let(:max_retries) { nil }
-  let(:response_codes) { nil }
+  let(:retry_codes) { nil }
+  let(:valid_codes) { nil }
 
   let(:retry_values) { [13, 17, 19, 23] }
   let(:exponential_retries) { (0..klass::DEFAULTS[:max_retries]-1).map{|i| 2 ** i} }
@@ -77,25 +79,50 @@ describe 'JD::NetHttpRetry::Decorator' do
       end
     end
 
-    describe 'when response_codes are specified' do
-      let(:response_codes) { ['200', '201'] }
+    describe 'when retry_codes are specified' do
+      let(:retry_codes) { ['200', '201'] }
 
       it 'uses the supplied values' do
-        assert_equal response_codes, object.response_codes
+        assert_equal retry_codes, object.retry_codes
       end
     end
 
-    describe 'when response_codes are specified as integers' do
-      let(:response_codes) { [200, 201] }
+    describe 'when retry_codes are specified as integers' do
+      let(:retry_codes) { [200, 201] }
 
       it 'uses the stringified versions of the supplied values' do
-        assert_equal response_codes.map(&:to_s), object.response_codes
+        assert_equal retry_codes.map(&:to_s), object.retry_codes
       end
     end
 
-    describe 'when response_codes are not specified' do
+    describe 'when retry_codes are not specified' do
       it 'uses the default values' do
-        assert_equal klass::DEFAULTS[:response_codes], object.response_codes
+        assert_equal klass::DEFAULTS[:retry_codes], object.retry_codes
+      end
+    end
+
+    describe 'when valid_codes are specified' do
+      let(:valid_codes) { ['123', '234'] }
+
+      it 'uses the supplied values' do
+        assert_equal valid_codes, object.valid_codes
+      end
+    end
+
+    describe 'when valid_codes are specified as integers' do
+      let(:valid_codes) { [123, 234] }
+
+      it 'uses the stringified versions of the supplied values' do
+        assert_equal valid_codes.map(&:to_s), object.valid_codes
+      end
+    end
+
+    describe 'when valid_codes are not specified' do
+      it 'uses the default values' do
+        assert_kind_of Array, klass::DEFAULTS[:valid_codes]
+        refute klass::DEFAULTS[:valid_codes].empty?
+
+        assert_equal klass::DEFAULTS[:valid_codes], object.valid_codes
       end
     end
   end
@@ -157,6 +184,24 @@ describe 'JD::NetHttpRetry::Decorator' do
 
         expected_error = "Max retries exceeded for #{request_method.to_s.upcase} request: 429 Too Many Requests"
         assert_equal expected_error, exception.message
+      end
+    end
+  end
+
+  describe 'when an invalid response code is returned' do
+    REQUEST_METHODS.each do |request_method|
+      it "returns an error for #{request_method.to_s.upcase} requests" do
+        exception = assert_raises(JD::NetHttpRetry::InvalidResponseError) do
+          VCR.use_cassette("accessor/#{request_method}_invalid") do
+            accessor.send(request_method, REQUESTS[request_method])
+          end
+        end
+
+        exception_json = JSON.parse(exception.message)
+
+        assert_equal '500', exception_json['code']
+        assert_equal 'Internal Error', exception_json['message']
+        assert_equal 'You Have Died of Dysentery', exception_json['body']
       end
     end
   end

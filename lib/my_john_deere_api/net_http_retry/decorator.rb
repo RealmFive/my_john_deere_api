@@ -1,30 +1,35 @@
 module MyJohnDeereApi
   module NetHttpRetry
     class Decorator
-      attr_reader :object, :request_methods, :retry_delay_exponent, :max_retries, :response_codes
+      attr_reader :object, :request_methods, :retry_delay_exponent, :max_retries, :retry_codes, :valid_codes
 
       DEFAULTS = {
         request_methods:      [:get, :post, :put, :delete],
         retry_delay_exponent: 2,
         max_retries: 12,
-        response_codes: ['429', '503']
+        retry_codes: ['429', '503'],
+        valid_codes: ['200', '201', '204'],
       }
 
       def initialize(object, options={})
         @object = object
 
+        # defaults that can be used as-is
         [:request_methods, :retry_delay_exponent, :max_retries].each do |option|
           instance_variable_set(:"@#{option}", options[option] || DEFAULTS[option])
         end
 
-        @response_codes = (options[:response_codes] || DEFAULTS[:response_codes]).map(&:to_s)
+        # defaults that require casting as string arrays
+        [:retry_codes, :valid_codes].each do |option|
+          instance_variable_set(:"@#{option}", (options[option] || DEFAULTS[option]).map(&:to_s))
+        end
       end
 
       def request(method_name, *args)
         retries = 0
         result = object.send(method_name, *args)
 
-        while response_codes.include?(result.code)
+        while retry_codes.include?(result.code)
           if retries >= max_retries
             raise MaxRetriesExceededError.new(method_name, "#{result.code} #{result.message}")
           end
@@ -34,6 +39,10 @@ module MyJohnDeereApi
 
           result = object.send(method_name, *args)
           retries += 1
+        end
+
+        unless valid_codes.include?(result.code)
+          raise InvalidResponseError.new(result)
         end
 
         result
