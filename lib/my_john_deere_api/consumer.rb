@@ -49,14 +49,14 @@ module MyJohnDeereApi
         site: site,
         header: header,
         http_method: :get,
-        request_token_url: links[:request_token],
-        access_token_url: links[:access_token],
-        authorize_url: links[:authorize_request_token]
+        request_token_url: authorization_links[:request_token],
+        access_token_url: authorization_links[:access_token],
+        authorize_url: authorization_links[:authorize_request_token]
       )
     end
 
-    def links
-      return @links if defined?(@links)
+    def authorization_links
+      return @authorization_links if defined?(@authorization_links)
 
       catalog = OAuth::Consumer.new(api_key, api_secret)
         .request(
@@ -67,16 +67,12 @@ module MyJohnDeereApi
           header
         ).body
 
-        @links = {}
-
-        JSON.parse(catalog)['links'].each do |link|
+        @authorization_links = JSON.parse(catalog)['links'].each_with_object({}) do |link, hash|
           uri = URI.parse(link['uri'])
           uri.query = nil
 
-          @links[keyify(link['rel'])] = uri.to_s
+          hash[keyify(link['rel'])] = uri.to_s
         end
-
-        @links
     end
 
     def header
