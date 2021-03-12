@@ -22,7 +22,8 @@ module MyJohnDeereApi::Helpers::CaseConversion
   def camelize(something)
     something = something.to_s if something.is_a?(Symbol)
 
-    if something.is_a?(String)
+    case something
+    when String
       list = something.strip.split(/[_\s]+/)
 
       # preserve case of the first element
@@ -30,8 +31,10 @@ module MyJohnDeereApi::Helpers::CaseConversion
       new_list += list.map(&:capitalize)
 
       new_list.join('')
-    elsif something.is_a?(Hash)
+    when Hash
       something.transform_keys{ |key| camelize(key) }
+    when Array
+      something.map{|element| camelize(element)}
     end
   end
 end

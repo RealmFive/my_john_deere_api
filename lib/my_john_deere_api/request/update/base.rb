@@ -20,21 +20,13 @@ module MyJohnDeereApi
       process_attributes
     end
 
-    #
-    # client accessor
-
-    def accessor
-      return @accessor if defined?(@accessor)
-      @accessor = client&.accessor
-    end
-
     ##
     # Make the request, if the instance is valid
 
     def request
       validate!
 
-      @response = accessor.put(resource, request_body.to_json, headers)
+      @response = client.put(resource, request_body.to_json)
     end
 
     ##
@@ -52,16 +44,6 @@ module MyJohnDeereApi
     # See Request::Create::AssetLocation for an example.
 
     def process_attributes
-    end
-
-    ##
-    # Headers for PUT request
-
-    def headers
-      @headers ||= {
-        'Accept'        => 'application/vnd.deere.axiom.v3+json',
-        'Content-Type'  => 'application/vnd.deere.axiom.v3+json'
-      }
     end
   end
 end

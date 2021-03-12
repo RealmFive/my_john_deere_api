@@ -17,20 +17,12 @@ module MyJohnDeereApi
     end
 
     ##
-    # client accessor
-
-    def accessor
-      return @accessor if defined?(@accessor)
-      @accessor = client&.accessor
-    end
-
-    ##
     # Make the request, if the instance is valid
 
     def request
       validate!
 
-      @response = accessor.post(resource, request_body.to_json, headers)
+      @response = client.post(resource, request_body)
     end
 
     ##
@@ -41,7 +33,7 @@ module MyJohnDeereApi
 
       request unless response
 
-      @object = model.new(client, fetch_record)
+      @object = individual_class.new(client, record_id).object
     end
 
     private
@@ -52,16 +44,6 @@ module MyJohnDeereApi
     # See Request::Create::AssetLocation for an example.
 
     def process_attributes
-    end
-
-    ##
-    # Headers for POST request
-
-    def headers
-      @headers ||= {
-        'Accept'        => 'application/vnd.deere.axiom.v3+json',
-        'Content-Type'  => 'application/vnd.deere.axiom.v3+json'
-      }
     end
   end
 end

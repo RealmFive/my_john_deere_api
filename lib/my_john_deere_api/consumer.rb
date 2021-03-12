@@ -3,12 +3,12 @@ module MyJohnDeereApi
     include Helpers::CaseConversion
     include Helpers::EnvironmentHelper
 
-    attr_reader :api_key, :api_secret, :environment, :base_url
+    attr_reader :api_key, :api_secret, :environment, :site
 
     # valid API urls
     URLS = {
       sandbox: 'https://sandboxapi.deere.com',
-      live: 'https://api.soa-proxy.deere.com',
+      live: 'https://partnerapi.deere.com',
     }
 
     DEFAULTS = {
@@ -22,61 +22,73 @@ module MyJohnDeereApi
       @api_secret = api_secret
 
       self.environment = options[:environment]
-      @base_url = options[:base_url] || URLS[@environment]
+      @site = options[:site] || URLS[@environment]
     end
 
     ##
-    # oAuth Consumer which uses just the base url, for
-    # app-wide, non user-specific GET requests.
+    # oAuth client for platform requests
 
-    def app_get
-      @app_get ||= consumer(base_url)
+    def platform_client
+      return @platform_client if defined?(@platform_client)
+
+      @platform_client = OAuth2::Client.new(
+        api_key,
+        api_secret,
+        site: site,
+        headers: headers,
+      )
     end
 
     ##
-    # oAuth Consumer which uses the proper url for user-specific GET requests.
+    # oAuth client for user authentication
 
-    def user_get
-      @user_get ||= consumer("#{base_url}/platform")
+    def auth_client
+      return @auth_client if defined?(@auth_client)
+
+      # We build this without the `client` method because the authorization links
+      # require an extra API call to JD that is only needed for authorization.
+
+      @auth_client = OAuth2::Client.new(
+        api_key,
+        api_secret,
+        site: site,
+        authorize_url: authorization_links[:authorization],
+        token_url: authorization_links[:token],
+      )
     end
 
     private
 
-    def consumer(site)
-      OAuth::Consumer.new(
-        api_key,
-        api_secret,
-        site: site,
-        header: header,
-        http_method: :get,
-        request_token_url: authorization_links[:request_token],
-        access_token_url: authorization_links[:access_token],
-        authorize_url: authorization_links[:authorize_request_token]
-      )
+    def authorization
+      return @authorization if defined?(@authorization)
+
+      json = OAuth2::Client.new(api_key, api_secret)
+        .request(
+          :get,
+          'https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/.well-known/oauth-authorization-server',
+          headers: headers
+        ).body
+
+      @authorization = JSON.parse(json)
     end
 
     def authorization_links
       return @authorization_links if defined?(@authorization_links)
 
-      catalog = OAuth::Consumer.new(api_key, api_secret)
-        .request(
-          :get,
-          "#{base_url}/platform/",
-          nil,
-          {},
-          header
-        ).body
-
-        @authorization_links = JSON.parse(catalog)['links'].each_with_object({}) do |link, hash|
-          uri = URI.parse(link['uri'])
-          uri.query = nil
-
-          hash[keyify(link['rel'])] = uri.to_s
-        end
+      @authorization_links = {
+        authorization: authorization['authorization_endpoint'],
+        token: authorization['token_endpoint'],
+        organizations: "https://connections.deere.com/connections/#{api_key}/select-organizations",
+      }
     end
 
-    def header
-      @header ||= {accept: 'application/vnd.deere.axiom.v3+json'}
+    def scopes
+      return @scopes if defined?(@scopes)
+      @scopes = authorization['scopes_supported']
+    end
+
+    def headers
+      @headers ||= {accept: 'application/vnd.deere.axiom.v3+json'}
     end
 
     def keyify key_name

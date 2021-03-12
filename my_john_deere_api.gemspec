@@ -15,12 +15,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'dotenv', '~> 2.7.5'
   s.add_development_dependency 'webmock', '~> 3.7.6'
 
-  s.add_runtime_dependency 'oauth', '~> 0.5.4'
+  s.add_runtime_dependency 'oauth2', '~> 1.4.4'
   s.add_runtime_dependency 'json', '~> 2.1', '>= 2.1.0'
 
   s.description = <<-TURTLES
 This gem interacts with the My John Deere API. It handles the hard work of
-John Deere's oAuth 1.0 authentication. It provides REST request methods for
+John Deere's oAuth 2.0 authentication. It provides REST request methods for
 GET, POST, PUT, and DELETE that abstract away the John Deere-specific headers
 and protocols. It provides convenience methods similar to ActiveRecord so
 you can write things like: `client.organizations.find(123).assets` or

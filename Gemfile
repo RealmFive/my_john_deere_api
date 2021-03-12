@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'oauth'
+gem 'oauth2'
 gem 'json'
 
 group :development, :test do

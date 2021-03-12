@@ -31,7 +31,7 @@ module MyJohnDeereApi
           {
             '@type' => 'Link',
             'rel' => 'contributionDefinition',
-            'uri' => "#{accessor.consumer.site}/contributionDefinitions/#{client.contribution_definition_id}"
+            'uri' => client.contribution_definition_uri,
           }
         ]
       }

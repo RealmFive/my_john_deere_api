@@ -2,33 +2,29 @@ require 'json'
 
 module MyJohnDeereApi
   class Request::Create::Asset < Request::Create::Base
-    include Validators::Asset
     include Helpers::ValidateContributionDefinition
 
     private
 
     ##
-    # Retrieve newly created record
+    # id of newly created record
 
-    def fetch_record
-      path = response['location'].split('/platform').last
-      result = accessor.get(path, headers)
-
-      JSON.parse(result.body)
+    def record_id
+      response.headers['location'].split('/').last
     end
 
     ##
-    # This is the class used to model the data
+    # This is the class used to fetch an individual item
 
-    def model
-      Model::Asset
+    def individual_class
+      Individual::Asset
     end
 
     ##
     # Path supplied to API
 
     def resource
-      @resource ||= "/organizations/#{attributes[:organization_id]}/assets"
+      @resource ||= "/platform/organizations/#{attributes[:organization_id]}/assets"
     end
 
     ##
@@ -48,7 +44,7 @@ module MyJohnDeereApi
           {
             '@type' => 'Link',
             'rel' => 'contributionDefinition',
-            'uri' => "#{accessor.consumer.site}/contributionDefinitions/#{client.contribution_definition_id}"
+            'uri' => client.contribution_definition_uri,
           }
         ]
       }

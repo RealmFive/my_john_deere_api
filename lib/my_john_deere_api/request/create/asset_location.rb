@@ -3,6 +3,29 @@ require 'date'
 module MyJohnDeereApi
   class Request::Create::AssetLocation < Request::Create::Base
     include Validators::AssetLocation
+    include Helpers::UriHelpers
+
+    ##
+    # Object created by request
+    #
+    # There is no endpoint to fetch a single location by id, so we have to
+    # override the `object` method from the base class.
+    #
+    # We have to fetch locations in bulk via the asset, but there could be
+    # thousands. We limit the request to just the first record from the 
+    # location list endpoint, since locations are returned newest to oldest.
+
+    def object
+      return @object if defined?(@object)
+
+      request unless response
+
+      path = uri_path(response.headers['location']) + '?count=1'
+      result = client.get(path)
+      record = result['values'].first
+
+      @object = Model::AssetLocation.new(client, record)
+    end
 
     private
 
@@ -72,24 +95,7 @@ module MyJohnDeereApi
     # Path supplied to API
 
     def resource
-      @resource ||= "/assets/#{attributes[:asset_id]}/locations"
-    end
-
-    ##
-    # Retrieve newly created record
-
-    def fetch_record
-      # There is no endpoint to fetch a single location by id. We have to fetch
-      # them in bulk via the asset, but there could be thousands. We limit the 
-      # request to just the first record from the location list endpoint, since
-      # locations are returned newest to oldest.
-
-      path = response['location'].split('/platform').last
-      path += "?count=1"
-
-      result = accessor.get(path, headers)
-
-      JSON.parse(result.body)['values'].first
+      @resource ||= "/platform/assets/#{attributes[:asset_id]}/locations"
     end
 
     ##
@@ -98,13 +104,6 @@ module MyJohnDeereApi
     def timestamp_add(timestamp, seconds)
       stamp = DateTime.parse(timestamp).to_time + seconds
       stamp.to_datetime.strftime('%Y-%m-%dT%H:%M:%SZ')
-    end
-
-    ##
-    # This is the class used to model the data
-
-    def model
-      Model::AssetLocation
     end
   end
 end
