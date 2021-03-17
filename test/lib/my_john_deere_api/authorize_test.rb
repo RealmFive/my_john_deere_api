@@ -52,18 +52,17 @@ describe 'MyJohnDeereApi::Authorize' do
   end
 
   describe '#verify(code)' do
-    it 'sets the access/refresh token' do
+    it 'sets the access/refresh token hash' do
       authorize = create_authorize
       code = 'VERIFY'
 
       VCR.use_cassette('get_request_url') { authorize.authorize_url }
-      token = VCR.use_cassette('get_access_token') { authorize.verify(code) }
+      VCR.use_cassette('get_access_token') { authorize.verify(code) }
 
-      # normalize hash
-      token = JSON.parse(token.to_hash.to_json)
+      hash = authorize.token_hash
 
-      assert_match TOKEN_PATTERN, token['access_token']
-      assert_match TOKEN_PATTERN, token['refresh_token']
+      assert_match TOKEN_PATTERN, hash['access_token']
+      assert_match TOKEN_PATTERN, hash['refresh_token']
     end
   end
 end

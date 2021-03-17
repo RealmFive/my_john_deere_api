@@ -2,7 +2,7 @@ module MyJohnDeereApi
   class Authorize
     include Helpers::EnvironmentHelper
 
-    attr_reader :api_key, :api_secret, :environment, :options
+    attr_reader :api_key, :api_secret, :environment, :options, :token_hash
 
     DEFAULTS = {
       environment: :live
@@ -20,6 +20,9 @@ module MyJohnDeereApi
       @api_key = api_key
       @api_secret = api_secret
       self.environment = @options[:environment]
+
+      # This is only set upon verification
+      @token_hash = nil
     end
 
     ##
@@ -56,13 +59,16 @@ module MyJohnDeereApi
     # Turn a verification code into access token.
 
     def verify(code)
-      oauth_client.auth_code.get_token(code, redirect_uri: options[:redirect_uri])
+      token = oauth_client.auth_code.get_token(code, redirect_uri: options[:redirect_uri])
+
+      # normalize hash
+      @token_hash = JSON.parse(token.to_hash.to_json)
     end
 
     ##
     # Use an old token hash to generate a new token hash.
 
-    def refresh_from_hash(token_hash)
+    def refresh_from_hash(old_token_hash)
       old_token = OAuth2::AccessToken.from_hash(oauth_client, token_hash)
       new_token = old_token.refresh!
 
