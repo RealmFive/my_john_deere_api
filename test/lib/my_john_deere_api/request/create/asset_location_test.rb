@@ -2,6 +2,8 @@ require 'support/helper'
 require 'date'
 
 describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
+  include JD::ResponseHelpers
+
   def attributes_without(*keys)
     keys = keys.to_a
     attributes.reject{|k,v| keys.include?(k)}
@@ -23,7 +25,6 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
   describe '#initialize(client, attributes)' do
     it 'accepts a client and attributes' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
       assert_equal attributes, object.attributes
     end
 
@@ -138,7 +139,7 @@ describe 'MyJohnDeereApi::Request::Create::AssetLocation' do
     it 'makes the request' do
       VCR.use_cassette('post_asset_locations') { object.request }
 
-      assert_kind_of Net::HTTPCreated, object.response
+      assert_created(object.response)
     end
   end
 

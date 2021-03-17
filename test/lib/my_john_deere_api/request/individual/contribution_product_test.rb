@@ -10,7 +10,6 @@ describe 'MyJohnDeereApi::Request::Individual::ContributionProduct' do
   describe '#initialize(client, contribution_product_id)' do
     it 'accepts a client' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
     end
 
     it 'accepts contribution_product_id as id' do
@@ -19,8 +18,8 @@ describe 'MyJohnDeereApi::Request::Individual::ContributionProduct' do
   end
 
   describe '#resource' do
-    it 'returns /contributionProducts/<product_id>' do
-      assert_equal "/contributionProducts/#{contribution_product_id}", object.resource
+    it 'returns /platform/contributionProducts/<product_id>' do
+      assert_equal "/platform/contributionProducts/#{contribution_product_id}", object.resource
     end
   end
 

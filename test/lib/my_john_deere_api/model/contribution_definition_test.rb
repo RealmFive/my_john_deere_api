@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Model::ContributionDefinition' do
+  include JD::LinkHelpers
+
   let(:klass) { JD::Model::ContributionDefinition }
 
   let(:record) do
@@ -25,16 +27,10 @@ describe 'MyJohnDeereApi::Model::ContributionDefinition' do
   end
 
   describe '#initialize' do
-    def link_for label
-      camel_label = label.gsub(/_(.)/){|m| m[1].upcase}
-      record['links'].detect{|link| link['rel'] == camel_label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
-    end
-
     it 'sets the attributes from the given record' do
       definition = klass.new(client, record)
 
       assert_equal client, definition.client
-      assert_equal accessor, definition.accessor
 
       # basic attributes
       assert_equal record['id'], definition.id
@@ -45,7 +41,7 @@ describe 'MyJohnDeereApi::Model::ContributionDefinition' do
       product = klass.new(client, record)
 
       ['self', 'contribution_product'].each do |association|
-        assert_equal link_for(association), product.links[association]
+        assert_link_for product, association
       end
     end
   end

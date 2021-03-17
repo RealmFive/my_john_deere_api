@@ -31,13 +31,12 @@ describe 'MyJohnDeereApi::Authorize' do
     end
   end
 
-  describe '#consumer' do
-    it "returns a non-user-specific consumer configured for GET requests" do
+  describe '#oauth_client' do
+    it "returns a non-user-specific client" do
       authorize = create_authorize
-      consumer = VCR.use_cassette('catalog') { authorize.consumer }
+      consumer = VCR.use_cassette('catalog') { authorize.oauth_client }
 
-      assert_kind_of OAuth::Consumer, consumer
-      assert_equal :get, consumer.http_method
+      assert_kind_of OAuth2::Client, consumer
     end
   end
 
@@ -45,37 +44,26 @@ describe 'MyJohnDeereApi::Authorize' do
     it 'retrieves a request url' do
       authorize = create_authorize
 
-      url = VCR.use_cassette('get_request_token') { authorize.authorize_url }
+      url = VCR.use_cassette('get_request_url') { authorize.authorize_url }
       links = VCR.use_cassette('catalog') { JD::Consumer.new(api_key, api_secret, environment: :sandbox).send(:authorization_links) }
 
-      assert_includes url, links[:authorize_request_token]
-
-      query = URI.parse(url).query
-      params = CGI::parse(query)
-
-      assert_match(TOKEN_PATTERN, params['oauth_token'].first)
-    end
-
-    it 'sets the request token/secret' do
-      authorize = create_authorize
-
-      VCR.use_cassette('get_request_token') { authorize.authorize_url }
-
-      assert_match TOKEN_PATTERN, authorize.request_token
-      assert_match SECRET_PATTERN, authorize.request_secret
+      assert_includes url, links[:authorization]
     end
   end
 
-  describe '#verify(code, token, secret)' do
-    it 'sets the access token/secret' do
+  describe '#verify(code)' do
+    it 'sets the access/refresh token' do
       authorize = create_authorize
       code = 'VERIFY'
 
-      VCR.use_cassette('get_request_token') { authorize.authorize_url }
-      VCR.use_cassette('get_access_token') { authorize.verify(code) }
+      VCR.use_cassette('get_request_url') { authorize.authorize_url }
+      token = VCR.use_cassette('get_access_token') { authorize.verify(code) }
 
-      assert_match TOKEN_PATTERN, authorize.access_token
-      assert_match SECRET_PATTERN, authorize.access_secret
+      # normalize hash
+      token = JSON.parse(token.to_hash.to_json)
+
+      assert_match TOKEN_PATTERN, token['access_token']
+      assert_match TOKEN_PATTERN, token['refresh_token']
     end
   end
 end

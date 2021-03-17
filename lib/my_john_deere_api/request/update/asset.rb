@@ -11,7 +11,7 @@ module MyJohnDeereApi
     # Path supplied to API
 
     def resource
-      @resource ||= "/assets/#{attributes[:id]}"
+      @resource ||= "/platform/assets/#{attributes[:id]}"
     end
 
     ##

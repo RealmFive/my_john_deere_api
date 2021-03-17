@@ -2,10 +2,7 @@ module MyJohnDeereApi
   class Authorize
     include Helpers::EnvironmentHelper
 
-    attr_reader :api_key, :api_secret,
-      :request_token, :request_secret,
-      :access_token, :access_secret,
-      :environment, :options
+    attr_reader :api_key, :api_secret, :environment, :options
 
     DEFAULTS = {
       environment: :live
@@ -39,6 +36,11 @@ module MyJohnDeereApi
         request_options[:scope] = options[:scopes].join(' ')
       end
 
+      # generate a default unique-ish "state" key if not provided
+      unless request_options.key?(:state)
+        request_options[:state] = (rand(8000) + 1000).to_s
+      end
+
       @authorize_url = oauth_client.auth_code.authorize_url(request_options)
     end
 
@@ -54,7 +56,7 @@ module MyJohnDeereApi
     # Turn a verification code into access token.
 
     def verify(code)
-      oauth_client.auth_code.get_token(code)
+      oauth_client.auth_code.get_token(code, redirect_uri: options[:redirect_uri])
     end
 
     ##

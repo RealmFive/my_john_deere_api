@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Request::Update::Asset' do
+  include JD::ResponseHelpers
+
   let(:klass) { JD::Request::Update::Asset }
   let(:object) { klass.new(client, item, attributes) }
   let(:item) { JD::Model::Asset.new(client, record) }
@@ -29,7 +31,6 @@ describe 'MyJohnDeereApi::Request::Update::Asset' do
   describe '#initialize(client, item, attributes)' do
     it 'accepts a client, item and attributes' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
       assert_equal item, object.item
       assert_equal item.attributes.merge(attributes), object.attributes
     end
@@ -42,21 +43,8 @@ describe 'MyJohnDeereApi::Request::Update::Asset' do
   end
 
   describe '#resource' do
-    it 'is /assets/<asset_id>' do
-      assert_equal "/assets/#{asset_id}", object.send(:resource)
-    end
-  end
-
-  describe '#headers' do
-    it 'sets the accept and content-type headers' do
-      object = klass.new(client, item, attributes)
-      headers = object.send(:headers)
-
-      expected = 'application/vnd.deere.axiom.v3+json'
-
-      assert_kind_of Hash, headers
-      assert_equal expected, headers['Accept']
-      assert_equal expected, headers['Content-Type']
+    it 'is /platform/assets/<asset_id>' do
+      assert_equal "/platform/assets/#{asset_id}", object.send(:resource)
     end
   end
 
@@ -93,7 +81,7 @@ describe 'MyJohnDeereApi::Request::Update::Asset' do
     it 'makes the request' do
       VCR.use_cassette('put_asset') { object.request }
 
-      assert_kind_of Net::HTTPNoContent, object.response
+      assert_no_content object.response
     end
   end
 end

@@ -2,40 +2,113 @@
 http_interactions:
 - request:
     method: get
-    uri: https://sandboxapi.deere.com/platform/oauth/access_token
+    uri: https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/.well-known/oauth-authorization-server
     body:
       encoding: US-ASCII
       string: ''
     headers:
+      User-Agent:
+      - Faraday v1.3.0
+      Accept:
+      - application/vnd.deere.axiom.v3+json
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - OAuth gem v0.5.4
-      Authorization:
-      - OAuth oauth_consumer_key="johndeere-0000000000000000000000000000000000000000",
-        oauth_nonce="000000000000000000000000000000000000000000", oauth_signature="0000000000000000000000000000",
-        oauth_signature_method="HMAC-SHA1", oauth_timestamp="1581334172", oauth_token="00000000-0000-0000-0000-000000000000",
-        oauth_verifier="VERIFY", oauth_version="1.0"
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Mon, 10 Feb 2020 17:29:12 GMT
+      - Wed, 17 Mar 2021 22:09:06 GMT
+      Server:
+      - nginx
       Content-Type:
-      - text/plain;charset=UTF-8
-      X-Deere-Handling-Server:
-      - ip-10-214-44-36
-      Vary:
-      - Accept-Encoding
+      - application/json
+      X-Xss-Protection:
+      - '0'
+      P3p:
+      - CP="HONK"
+      Expect-Ct:
+      - report-uri="https://oktaexpectct.report-uri.com/r/t/ct/reportOnly", max-age=0
+      Cache-Control:
+      - max-age=86400, must-revalidate
+      Expires:
+      - Thu, 18 Mar 2021 22:08:22 GMT
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=315360000; includeSubDomains
+      X-Okta-Request-Id:
+      - YFJ@AmsIRy8KxUkhAvDVHwAABL8
       Transfer-Encoding:
       - chunked
     body:
-      encoding: ASCII-8BIT
-      string: oauth_token=00000000-0000-0000-0000-000000000000&oauth_token_secret=000000000000000000000000000000000000000000
+      encoding: UTF-8
+      string: '{"issuer":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7","authorization_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/authorize","token_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/token","registration_endpoint":"https://signin.johndeere.com/oauth2/v1/clients","jwks_uri":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/keys","response_types_supported":["code","token","id_token","code
+        id_token","code token","id_token token","code id_token token"],"response_modes_supported":["query","fragment","form_post","okta_post_message"],"grant_types_supported":["authorization_code","implicit","refresh_token","password","client_credentials"],"subject_types_supported":["public"],"scopes_supported":["ag1","ag2","ag3","eq1","eq2","files","jobs","org1","org2","openid","profile","email","address","phone","offline_access"],"token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"claims_supported":["ver","jti","iss","aud","iat","exp","cid","uid","scp","sub"],"code_challenge_methods_supported":["S256"],"introspection_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"revocation_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"end_session_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/logout","request_parameter_supported":true,"request_object_signing_alg_values_supported":["HS256","HS384","HS512","RS256","RS384","RS512","ES256","ES384","ES512"]}'
     http_version: 
-  recorded_at: Mon, 10 Feb 2020 17:29:12 GMT
+  recorded_at: Wed, 17 Mar 2021 22:09:06 GMT
+- request:
+    method: post
+    uri: https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/token
+    body:
+      encoding: UTF-8
+      string: client_id=johndeere-0000000000000000000000000000000000000000&client_secret=0000000000000000000000000000000000000000000000000000000000000000&code=VERIFY&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost
+    headers:
+      User-Agent:
+      - Faraday v1.3.0
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 17 Mar 2021 22:09:23 GMT
+      Server:
+      - nginx
+      Content-Type:
+      - application/json
+      X-Okta-Request-Id:
+      - YFJ@E@UPsOFGB0k2w031WQAABe4
+      X-Xss-Protection:
+      - '0'
+      P3p:
+      - CP="HONK"
+      X-Rate-Limit-Limit:
+      - '2000'
+      X-Rate-Limit-Remaining:
+      - '1679'
+      X-Rate-Limit-Reset:
+      - '1581334172'
+      Cache-Control:
+      - no-cache, no-store
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      Expect-Ct:
+      - report-uri="https://oktaexpectct.report-uri.com/r/t/ct/reportOnly", max-age=0
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=315360000; includeSubDomains
+      X-Robots-Tag:
+      - none
+      Set-Cookie:
+      - JSESSIONID=4252AEA3F9DE9BA07D2163E73E6DA175; Path=/; Secure; HttpOnly
+      - sid=""; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"Bearer","expires_in":43200,"access_token":"eyJraWQiOiJNX0steFpHUGhEeUZTdFB2VHFWdzg3bjZuYWNyeEROMVRsNm5tNmx0YzBJIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULm5veklvRG8zU05pbmxBbFg3N0dwbXQ2aWpSUmhHTXZKcEZUYlR5UWRDWG8ub2Fyc3p3b2FQd3ZIbk1Pbkc1ZDUiLCJpc3MiOiJodHRwczovL3NpZ25pbi5qb2huZGVlcmUuY29tL29hdXRoMi9hdXM3OHRubGF5c01yYUZoQzF0NyIsImF1ZCI6ImNvbS5kZWVyZS5pc2cuYXhpb20iLCJpYXQiOjE2MTYwMTg5NjMsImV4cCI6MTYxNjA2MjE2MywiY2lkIjoiam9obmRlZXJlLXdnbUFEbmdZQ1JtZnBFYlZnU3ljNzA5d255UnV4NUo3UEF2OFNFN0IiLCJ1aWQiOiIwMHVic3U1Y3F6RUVXbFg5MDF0NyIsInNjcCI6WyJhZzIiLCJhZzEiLCJvZmZsaW5lX2FjY2VzcyIsImFnMyJdLCJzdWIiOiJiZWxsbXllcjUifQ.JuOev_fasT50B7RE1j11jDKz9YuDf4zMQKya91yK3m_Yd4M2zWmi5-iROKlsvya29s_stqH9WKknBXU1BJaCpX5j7Rys45GNBEIeqkxoghZhhP-VSDip7py4x47ZALU3QBV0oj4gPm_V3nVTduRGVJHHBBqpXjC-rf8GEf8jiWhdYav-0g_Ak__rgH3d1_nR2Flc3CXsGziupowzbo5IUSIU8TSn0fNAqFRpG3epUMlGnvPo14c8NdXY7PaCAwenKvfUUXoLeBbNH17WXc4JHpFP5pxrKRcYuUcjvT2OibTNjZMtsUK1qh1UFJHlu0yulxtdzKLTFDqeTCuFNh0q9w","scope":"ag2
+        ag1 offline_access ag3","refresh_token":"apONQEo9_e-AeofTGAUx3bHLzBzsOt4UQWqSm4jW51c"}'
+    http_version: 
+  recorded_at: Wed, 17 Mar 2021 22:09:23 GMT
 recorded_with: VCR 5.0.0

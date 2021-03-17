@@ -36,6 +36,7 @@ module MyJohnDeereApi
         api_secret,
         site: site,
         headers: headers,
+        raise_errors: false,
       )
     end
 
@@ -54,6 +55,7 @@ module MyJohnDeereApi
         site: site,
         authorize_url: authorization_links[:authorization],
         token_url: authorization_links[:token],
+        raise_errors: false,
       )
     end
 
@@ -66,7 +68,8 @@ module MyJohnDeereApi
         .request(
           :get,
           'https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/.well-known/oauth-authorization-server',
-          headers: headers
+          headers: headers,
+          raise_errors: false,
         ).body
 
       @authorization = JSON.parse(json)

@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Request::Create::Asset' do
+  include JD::ResponseHelpers
+
   def attributes_without(*keys)
     keys = keys.to_a
     attributes.reject{|k,v| keys.include?(k)}
@@ -22,7 +24,6 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
   describe '#initialize(client, attributes)' do
     it 'accepts a client and attributes' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
       assert_equal attributes, object.attributes
     end
   end
@@ -121,7 +122,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
   describe '#resource' do
     it 'is built from the organization id' do
       object = klass.new(client, attributes)
-      assert_equal "/organizations/#{organization_id}/assets", object.send(:resource)
+      assert_equal "/platform/organizations/#{organization_id}/assets", object.send(:resource)
     end
   end
 
@@ -159,7 +160,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
     it 'makes the request' do
       VCR.use_cassette('post_assets') { object.request }
 
-      assert_kind_of Net::HTTPCreated, object.response
+      assert_created object.response
     end
   end
 
@@ -170,7 +171,7 @@ describe 'MyJohnDeereApi::Request::Create::Asset' do
 
       assert_kind_of JD::Model::Asset, result
 
-      expected_id = object.response['location'].split('/').last
+      expected_id = object.response.headers['location'].split('/').last
 
       assert_equal expected_id, result.id
       assert_equal attributes[:title], result.title

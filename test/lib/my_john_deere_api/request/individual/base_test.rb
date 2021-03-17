@@ -8,7 +8,6 @@ describe 'MyJohnDeereApi::Request::Individual::Base' do
   describe '#initialize(client, asset_id)' do
     it 'accepts a client' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
     end
 
     it 'accepts asset_id as id' do

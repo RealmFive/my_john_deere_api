@@ -9,6 +9,8 @@ class SampleModel < JD::Model::Base
 end
 
 describe 'MyJohnDeereApi::Model::Base' do
+  include JD::LinkHelpers
+
   let(:klass) { JD::Model::Base }
   let(:object) { klass.new(client, record) }
 
@@ -31,10 +33,6 @@ describe 'MyJohnDeereApi::Model::Base' do
   end
 
   describe '#initialize(client, record)' do
-    def link_for label
-      record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
-    end
-
     describe 'when the wrong record type is passed' do
       let(:record) do
         {
@@ -59,12 +57,10 @@ describe 'MyJohnDeereApi::Model::Base' do
     end
 
     it 'sets the links' do
-      links = object.links
-
-      assert_kind_of Hash, links
+      assert_kind_of Hash, object.links
 
       ['self', 'organization', 'locations'].each do |link|
-        assert_equal link_for(link), links[link]
+        assert_link_for(object, link)
       end
     end
 

@@ -15,10 +15,6 @@ describe 'MyJohnDeereApi::Model::AssetLocation' do
   end
 
   describe '#initialize' do
-    def link_for label
-      record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
-    end
-
     it 'sets the attributes from the given record' do
       location = klass.new(client, record)
 

@@ -2,49 +2,6 @@
 http_interactions:
 - request:
     method: get
-    uri: https://sandboxapi.deere.com/platform
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      User-Agent:
-      - Faraday v1.3.0
-      Accept:
-      - application/vnd.deere.axiom.v3+json
-      Authorization:
-      - Bearer AccessToken0123456789abcdefghijklmnopqrstuvwxyz
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 17 Mar 2021 21:38:22 GMT
-      Content-Type:
-      - application/vnd.deere.axiom.v3+json;charset=UTF-8
-      X-Frame-Options:
-      - DENY
-      Cache-Control:
-      - no-store
-      Strict-Transport-Security:
-      - max-age=31536000 ; includeSubDomains
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Content-Type-Options:
-      - nosniff
-      Content-Language:
-      - en
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"@type":"ApiCatalog","links":[{"@type":"Link","rel":"oauthRequestToken","uri":"https://sandboxapi.deere.com/platform/oauth/request_token"},{"@type":"Link","rel":"oauthAuthorizeRequestToken","uri":"https://operationscenter.deere.com/consentToUseOfData?oauth_token={token}"},{"@type":"Link","rel":"oauthAccessToken","uri":"https://sandboxapi.deere.com/platform/oauth/access_token"},{"@type":"Link","rel":"currentUser","uri":"https://sandboxapi.deere.com/platform/users/@currentUser"},{"@type":"Link","rel":"organizations","uri":"https://sandboxapi.deere.com/platform/organizations"},{"@type":"Link","rel":"currentToken","uri":"https://sandboxapi.deere.com/platform/oauthTokens/@currentToken"},{"@type":"Link","rel":"contributionProducts","uri":"https://sandboxapi.deere.com/platform/contributionProducts"},{"@type":"Link","rel":"contributionDefinitions","uri":"https://sandboxapi.deere.com/platform/contributionDefinitions"},{"@type":"Link","rel":"assetCatalog","uri":"https://sandboxapi.deere.com/platform/assetCatalog"},{"@type":"Link","rel":"agencies","uri":"https://sandboxapi.deere.com/platform/agencies"}]}'
-    http_version: 
-  recorded_at: Wed, 17 Mar 2021 21:38:22 GMT
-- request:
-    method: get
     uri: https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/.well-known/oauth-authorization-server
     body:
       encoding: US-ASCII
@@ -54,8 +11,6 @@ http_interactions:
       - Faraday v1.3.0
       Accept:
       - application/vnd.deere.axiom.v3+json
-      Authorization:
-      - Bearer AccessToken0123456789abcdefghijklmnopqrstuvwxyz
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
   response:
@@ -64,7 +19,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 17 Mar 2021 21:38:22 GMT
+      - Tue, 16 Mar 2021 21:12:20 GMT
       Server:
       - nginx
       Content-Type:
@@ -78,13 +33,13 @@ http_interactions:
       Cache-Control:
       - max-age=86400, must-revalidate
       Expires:
-      - Thu, 18 Mar 2021 21:37:54 GMT
+      - Wed, 17 Mar 2021 21:12:08 GMT
       X-Content-Type-Options:
       - nosniff
       Strict-Transport-Security:
       - max-age=315360000; includeSubDomains
       X-Okta-Request-Id:
-      - YFJ2zq-5EtNqLxyo29u@LgAABaM
+      - YFEfNKAOG6XT8F4E1py7RwAACrM
       Transfer-Encoding:
       - chunked
     body:
@@ -92,5 +47,5 @@ http_interactions:
       string: '{"issuer":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7","authorization_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/authorize","token_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/token","registration_endpoint":"https://signin.johndeere.com/oauth2/v1/clients","jwks_uri":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/keys","response_types_supported":["code","token","id_token","code
         id_token","code token","id_token token","code id_token token"],"response_modes_supported":["query","fragment","form_post","okta_post_message"],"grant_types_supported":["authorization_code","implicit","refresh_token","password","client_credentials"],"subject_types_supported":["public"],"scopes_supported":["ag1","ag2","ag3","eq1","eq2","files","jobs","org1","org2","openid","profile","email","address","phone","offline_access"],"token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"claims_supported":["ver","jti","iss","aud","iat","exp","cid","uid","scp","sub"],"code_challenge_methods_supported":["S256"],"introspection_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"revocation_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"end_session_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/logout","request_parameter_supported":true,"request_object_signing_alg_values_supported":["HS256","HS384","HS512","RS256","RS384","RS512","ES256","ES384","ES512"]}'
     http_version: 
-  recorded_at: Wed, 17 Mar 2021 21:38:22 GMT
+  recorded_at: Tue, 16 Mar 2021 21:12:21 GMT
 recorded_with: VCR 5.0.0

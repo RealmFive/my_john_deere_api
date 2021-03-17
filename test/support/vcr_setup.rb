@@ -12,14 +12,14 @@ require 'date'
 ##########################################################################
 
 class VcrSetup
-  attr_reader :api_key, :api_secret, :access_token, :access_secret, :verify_code,
-              :contribution_product_id, :contribution_definition_id,
+  attr_reader :api_key, :api_secret, :access_token, :refresh_token,
+              :verify_code, :contribution_product_id, :contribution_definition_id,
               :placeholders, :organization_id, :asset_id, :field_id, :flag_id
 
-  AUTH_CASSETTES = [:catalog, :get_request_token, :get_access_token]
+  AUTH_CASSETTES = [:catalog, :get_request_url, :get_access_token]
 
   GENERATED_CASSETTES = [
-    :catalog, :get_request_token, :get_access_token,
+    :catalog, :get_request_url, :get_access_token,
     :get_contribution_products, :get_contribution_product,
     :get_contribution_definitions, :get_contribution_definition,
     :get_organizations, :get_organization,
@@ -39,8 +39,8 @@ class VcrSetup
     @uuid = '00000000-0000-0000-0000-000000000000'
     @api_key = 'johndeere-0000000000000000000000000000000000000000'
     @api_secret = '0' * 64
-    @access_token = @uuid
-    @access_secret = '0' * 107 + '='
+    @access_token = 'AccessToken0123456789abcdefghijklmnopqrstuvwxyz'
+    @refresh_token = 'RefreshToken0123456789abcdefghijklmnopqrstuvwxyz'
     @contribution_product_id = @uuid
     @contribution_definition_id = @uuid
     @organization_id = '000000'
@@ -60,15 +60,15 @@ class VcrSetup
     unless all_cassettes_generated?
       puts "\ngenerating:"
 
-      unless ENV['ACCESS_TOKEN'] && ENV['ACCESS_SECRET']
+      unless File.exist?(token_file)
         generate_cassettes(AUTH_CASSETTES)
       end
 
       @placeholders.merge!(
         ENV['API_KEY'] => @api_key,
         ENV['API_SECRET'] => @api_secret,
-        ENV['ACCESS_TOKEN'] => @access_token,
-        ENV['ACCESS_SECRET'] => @access_secret
+        current_access_token => @access_token,
+        current_refresh_token => @refresh_token
       )
 
       VCR.use_cassette('temp') do
@@ -77,7 +77,7 @@ class VcrSetup
         set_organization_id
       end
 
-      File.unlink("#{@vcr_dir}/temp.yml")
+      File.unlink("#{@vcr_dir}/temp.yml") if File.exist?("#{@vcr_dir}/temp.yml")
 
       generate_cassettes(GENERATED_CASSETTES)
     end
@@ -92,7 +92,8 @@ class VcrSetup
       api_secret,
       contribution_definition_id: contribution_definition_id,
       environment: :sandbox,
-      access: [access_token, access_secret]
+      token_hash: token_hash,
+      raise_errors: false,
     )
   end
 
@@ -164,6 +165,21 @@ class VcrSetup
     @url = JD::Consumer::URLS[:sandbox]
   end
 
+  def token_hash
+    return @token_hash if defined?(@token_hash)
+
+    @token_hash = JSON.parse(File.read(token_file))
+
+    token = OAuth2::AccessToken.from_hash(auth_client, @token_hash)
+
+    if token.expired?
+      new_token = token.refresh!
+      set_token_hash(new_token)
+    end
+
+    @token_hash
+  end
+
   private
 
   def generate_cassettes(list)
@@ -191,25 +207,61 @@ class VcrSetup
       ENV['API_SECRET'],
       environment: :sandbox,
       contribution_definition_id: ENV['CONTRIBUTION_DEFINITION_ID'],
-      access: [ENV['ACCESS_TOKEN'], ENV['ACCESS_SECRET']]
+      token_hash: token_hash,
+      raise_errors: false,
+    )
+  end
+
+  def token_file
+    './tmp/token_hash.json'
+  end
+
+  def current_access_token
+    token_hash['access_token']
+  end
+
+  def current_refresh_token
+    token_hash['refresh_token']
+  end
+
+  def set_token_hash(token)
+    @token_hash = token.to_hash
+    puts "TOKEN_HASH: #{@token_hash}"
+    puts "PLACEHOLDERS: #{@placeholders}"
+    File.write(token_file, @token_hash.to_json)
+  end
+
+  def auth_client
+    OAuth2::Client.new(
+      ENV['API_KEY'],
+      ENV['API_SECRET'],
+      site: 'https://sandboxapi.deere.com',
+      authorize_url: 'https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/authorize',
+      token_url: 'https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/token',
+      raise_errors: false,
     )
   end
 
   def catalog
-    new_client.get('/')
+    new_client.get('/platform')
+    new_client.get('https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/.well-known/oauth-authorization-server')
   end
 
-  def get_request_token
+  def get_request_url
     @temporary_authorize = JD::Authorize.new(
       ENV['API_KEY'],
       ENV['API_SECRET'],
-      environment: :sandbox
+      environment: :sandbox,
+      scopes: ['ag1', 'ag2', 'ag3'],
+      redirect_uri: 'http://localhost'
     )
 
     @temporary_authorize_url = @temporary_authorize.authorize_url
   end
 
   def get_access_token
+    get_request_url unless defined?(@temporary_authorize_url)
+
     puts "\n\n----\nFOLLOW THIS LINK, AND ENTER THE VERIFICATION CODE:\n#{@temporary_authorize_url}\n----\n\n"
     $stdout.print 'Verification Code: '; $stdout.flush
     code = $stdin.gets.chomp
@@ -217,12 +269,8 @@ class VcrSetup
 
     placeholders[code] = verify_code
 
-    @temporary_authorize.verify(code)
-
-    unless ENV['ACCESS_TOKEN'] && ENV['ACCESS_SECRET']
-      set_env 'ACCESS_TOKEN', @temporary_authorize.access_token
-      set_env 'ACCESS_SECRET', @temporary_authorize.access_secret
-    end
+    token = @temporary_authorize.verify(code)
+    set_token_hash(token)
   end
 
   def get_contribution_products

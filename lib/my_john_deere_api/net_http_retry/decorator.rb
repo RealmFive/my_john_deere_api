@@ -14,9 +14,14 @@ module MyJohnDeereApi
       def initialize(object, options={})
         @object = object
 
-        # defaults that can be used as-is
+        # options that can be used as-is
         [:request_methods, :retry_delay_exponent, :max_retries, :retry_codes, :valid_codes].each do |option|
           instance_variable_set(:"@#{option}", options[option] || DEFAULTS[option])
+        end
+
+        # options that require casting as integer arrays
+        [:retry_codes, :valid_codes].each do |option|
+          instance_variable_set(:"@#{option}", (options[option] || DEFAULTS[option]).map(&:to_i))
         end
       end
 
@@ -25,10 +30,10 @@ module MyJohnDeereApi
         result = object.send(method_name, *args)
         while retry_codes.include?(result.status)
           if retries >= max_retries
-            raise MaxRetriesExceededError.new(method_name, "#{result.status} #{result.message}")
+            raise MaxRetriesExceededError.new(method_name, "#{result.status} #{result.response.reason_phrase}")
           end
 
-          delay = [result['retry-after'].to_i, retry_delay_exponent ** retries].max
+          delay = [result.headers['retry-after'].to_i, retry_delay_exponent ** retries].max
           sleep(delay)
 
           result = object.send(method_name, *args)

@@ -23,8 +23,8 @@ describe 'MyJohnDeereApi::Request::Collection::AssetLocations' do
   end
 
   describe '#resource' do
-    it 'returns /assets/{asset_id}/locations' do
-      assert_equal "/assets/#{asset_id}/locations", collection.resource
+    it 'returns /platform/assets/{asset_id}/locations' do
+      assert_equal "/platform/assets/#{asset_id}/locations", collection.resource
     end
   end
 
