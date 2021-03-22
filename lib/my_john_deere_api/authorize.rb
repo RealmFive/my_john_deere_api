@@ -69,7 +69,7 @@ module MyJohnDeereApi
     # Use an old token hash to generate a new token hash.
 
     def refresh_from_hash(old_token_hash)
-      old_token = OAuth2::AccessToken.from_hash(oauth_client, token_hash)
+      old_token = OAuth2::AccessToken.from_hash(oauth_client, old_token_hash)
       new_token = old_token.refresh!
 
       new_token.to_hash

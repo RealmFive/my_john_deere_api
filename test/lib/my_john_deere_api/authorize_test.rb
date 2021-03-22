@@ -65,4 +65,29 @@ describe 'MyJohnDeereApi::Authorize' do
       assert_match TOKEN_PATTERN, hash['refresh_token']
     end
   end
+
+  describe '#refresh_from_hash(old_token_hash)' do
+    let(:authorize) { create_authorize }
+
+    let(:old_hash) do
+      {
+        "token_type": "Bearer",
+        "scope": "ag2 ag1 offline_access ag3",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expires_at": 1616484631
+      }
+    end
+
+    subject { authorize.refresh_from_hash(old_hash) }
+
+    it "fetches a new token hash using OAuth2's refresh! method" do
+      new_hash = VCR.use_cassette('get_refresh_token') { subject }
+
+      # normalize response hash
+      new_hash = JSON.parse(new_hash.to_json)
+
+      assert_equal new_access_token, new_hash['access_token']
+    end
+  end
 end

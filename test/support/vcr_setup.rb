@@ -12,14 +12,14 @@ require 'date'
 ##########################################################################
 
 class VcrSetup
-  attr_reader :api_key, :api_secret, :access_token, :refresh_token,
+  attr_reader :api_key, :api_secret, :access_token, :new_access_token, :refresh_token,
               :verify_code, :contribution_product_id, :contribution_definition_id,
               :placeholders, :organization_id, :asset_id, :field_id, :flag_id
 
-  AUTH_CASSETTES = [:catalog, :get_request_url, :get_access_token]
+  AUTH_CASSETTES = [:catalog, :get_request_url, :get_access_token, :get_refresh_token]
 
   GENERATED_CASSETTES = [
-    :catalog, :get_request_url, :get_access_token,
+    :catalog, :get_request_url, :get_access_token, :get_refresh_token,
     :get_contribution_products, :get_contribution_product,
     :get_contribution_definitions, :get_contribution_definition,
     :get_organizations, :get_organization,
@@ -40,6 +40,7 @@ class VcrSetup
     @api_key = 'johndeere-0000000000000000000000000000000000000000'
     @api_secret = '0' * 64
     @access_token = 'AccessToken0123456789abcdefghijklmnopqrstuvwxyz'
+    @new_access_token = 'NewAccessToken0123456789abcdefghijklmnopqrstuvwxyz'
     @refresh_token = 'RefreshToken0123456789abcdefghijklmnopqrstuvwxyz'
     @contribution_product_id = @uuid
     @contribution_definition_id = @uuid
@@ -68,6 +69,7 @@ class VcrSetup
         ENV['API_KEY'] => @api_key,
         ENV['API_SECRET'] => @api_secret,
         current_access_token => @access_token,
+        new_access_token => @new_access_token,
         current_refresh_token => @refresh_token
       )
 
@@ -225,9 +227,7 @@ class VcrSetup
   end
 
   def set_token_hash(token)
-    @token_hash = token.to_hash
-    puts "TOKEN_HASH: #{@token_hash}"
-    puts "PLACEHOLDERS: #{@placeholders}"
+    @token_hash = token.is_a?(Hash) ? token : token.to_hash
     File.write(token_file, @token_hash.to_json)
   end
 
@@ -260,7 +260,9 @@ class VcrSetup
   end
 
   def get_access_token
-    get_request_url unless defined?(@temporary_authorize_url)
+    unless defined?(@temporary_authorize_url)
+      VCR.use_cassette(:get_request_url) { get_request_url }
+    end
 
     puts "\n\n----\nFOLLOW THIS LINK, AND ENTER THE VERIFICATION CODE:\n#{@temporary_authorize_url}\n----\n\n"
     $stdout.print 'Verification Code: '; $stdout.flush
@@ -271,6 +273,17 @@ class VcrSetup
 
     token = @temporary_authorize.verify(code)
     set_token_hash(token)
+  end
+
+  def get_refresh_token
+    unless defined?(@temporary_authorize_url)
+      VCR.use_cassette(:get_request_url) { get_request_url }
+    end
+
+    old_hash = @temporary_authorize.token_hash || token_hash
+    new_hash = @temporary_authorize.refresh_from_hash(old_hash)
+
+    set_token_hash(new_hash)
   end
 
   def get_contribution_products

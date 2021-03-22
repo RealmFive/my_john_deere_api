@@ -67,6 +67,10 @@ class Minitest::Spec
     CONFIG.access_token
   end
 
+  def new_access_token
+    CONFIG.new_access_token
+  end
+
   def refresh_token
     CONFIG.refresh_token
   end
