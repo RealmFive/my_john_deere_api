@@ -170,13 +170,23 @@ class VcrSetup
   def token_hash
     return @token_hash if defined?(@token_hash)
 
-    @token_hash = JSON.parse(File.read(token_file))
+    if File.exist?(token_file)
+      @token_hash = JSON.parse(File.read(token_file))
 
-    token = OAuth2::AccessToken.from_hash(auth_client, @token_hash)
+      token = OAuth2::AccessToken.from_hash(auth_client, @token_hash)
 
-    if token.expired?
-      new_token = token.refresh!
-      set_token_hash(new_token)
+      if token.expired?
+        new_token = token.refresh!
+        set_token_hash(new_token)
+      end
+    else
+      @token_hash = {
+        "token_type": "Bearer",
+        "scope": "ag2 ag1 offline_access ag3",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expires_at": 1616484631
+      }
     end
 
     @token_hash
