@@ -34,6 +34,15 @@ describe 'Helpers::CaseConversion' do
       assert_equal new_hash['asset_type'], hash[:assetType]
     end
 
+    it 'converts the elements of an array' do
+      array = ['assetCategory', 'assetType']
+
+      new_array = object.send(:underscore, array)
+
+      assert_includes new_array, 'asset_category'
+      assert_includes new_array, 'asset_type'
+    end
+
     it 'handles leading uppercase' do
       string = object.send(:underscore, 'CamelCaseExample')
       assert_equal 'camel_case_example', string
@@ -86,6 +95,15 @@ describe 'Helpers::CaseConversion' do
 
       assert_equal new_hash['assetCategory'], hash[:asset_category]
       assert_equal new_hash['assetType'], hash[:asset_type]
+    end
+
+    it 'converts the elements of an array' do
+      array = ['asset_category', 'asset_type']
+
+      new_array = object.send(:camelize, array)
+
+      assert_includes new_array, 'assetCategory'
+      assert_includes new_array, 'assetType'
     end
 
     it 'is a private method' do
