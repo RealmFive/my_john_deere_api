@@ -85,7 +85,7 @@ describe 'MyJohnDeereApi::Authorize' do
       new_hash = VCR.use_cassette('get_refresh_token') { subject }
 
       # normalize response hash
-      new_hash = JSON.parse(new_hash.to_json)
+      new_hash = new_hash.transform_keys(&:to_s)
 
       assert_equal new_access_token, new_hash['access_token']
     end

@@ -62,7 +62,7 @@ module MyJohnDeereApi
       token = oauth_client.auth_code.get_token(code, redirect_uri: options[:redirect_uri])
 
       # normalize hash
-      @token_hash = JSON.parse(token.to_hash.to_json)
+      @token_hash = token.to_hash.transform_keys(&:to_s)
     end
 
     ##
