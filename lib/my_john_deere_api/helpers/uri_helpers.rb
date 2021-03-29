@@ -6,7 +6,7 @@ module MyJohnDeereApi::Helpers::UriHelpers
   ##
   # extract just the path from the uri, excluding the platform prefix
   def uri_path(uri)
-    URI.parse(uri).path.gsub(/^\/platform/, '')
+    URI.parse(uri).path
   end
 
   ##

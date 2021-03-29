@@ -10,7 +10,6 @@ describe 'MyJohnDeereApi::Request::Individual::ContributionDefinition' do
   describe '#initialize(client, contribution_definition_id)' do
     it 'accepts a client' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
     end
 
     it 'accepts contribution_definition_id as id' do
@@ -19,8 +18,8 @@ describe 'MyJohnDeereApi::Request::Individual::ContributionDefinition' do
   end
 
   describe '#resource' do
-    it 'returns /contributionDefinitions/<definition_id>' do
-      assert_equal "/contributionDefinitions/#{contribution_definition_id}", object.resource
+    it 'returns /platform/contributionDefinitions/<definition_id>' do
+      assert_equal "/platform/contributionDefinitions/#{contribution_definition_id}", object.resource
     end
   end
 

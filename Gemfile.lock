@@ -8,8 +8,14 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     dotenv (2.7.5)
+    faraday (1.3.0)
+      faraday-net_http (~> 1.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords
+    faraday-net_http (1.0.1)
     hashdiff (1.0.0)
     json (2.3.0)
+    jwt (2.2.2)
     minitest (5.14.0)
     minitest-reporters (1.4.2)
       ansi
@@ -17,10 +23,20 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     mocha (1.11.2)
-    oauth (0.5.4)
+    multi_json (1.15.0)
+    multi_xml (0.6.0)
+    multipart-post (2.1.1)
+    oauth2 (1.4.4)
+      faraday (>= 0.8, < 2.0)
+      jwt (>= 1.0, < 3.0)
+      multi_json (~> 1.3)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 3)
     public_suffix (4.0.3)
+    rack (2.2.3)
     rake (13.0.1)
     ruby-progressbar (1.10.1)
+    ruby2_keywords (0.0.4)
     safe_yaml (1.0.5)
     vcr (5.0.0)
     webmock (3.8.0)
@@ -37,7 +53,7 @@ DEPENDENCIES
   minitest
   minitest-reporters
   mocha
-  oauth
+  oauth2
   rake
   vcr
   webmock

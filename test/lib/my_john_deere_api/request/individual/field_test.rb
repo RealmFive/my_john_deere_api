@@ -10,7 +10,6 @@ describe 'MyJohnDeereApi::Request::Individual::Field' do
   describe '#initialize(client, organization_id, field_id)' do
     it 'accepts a client' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
     end
 
     it 'accepts organization_id as organization_id' do
@@ -23,8 +22,8 @@ describe 'MyJohnDeereApi::Request::Individual::Field' do
   end
 
   describe '#resource' do
-    it 'returns /organizations/<organization_id>/fields/<field_id>' do
-      assert_equal "/organizations/#{organization_id}/fields/#{field_id}", object.resource
+    it 'returns /platform/organizations/<organization_id>/fields/<field_id>' do
+      assert_equal "/platform/organizations/#{organization_id}/fields/#{field_id}", object.resource
     end
   end
 

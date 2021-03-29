@@ -2,6 +2,8 @@ require 'support/helper'
 require 'json'
 
 describe 'MyJohnDeereApi::Model::Flag' do
+  include JD::LinkHelpers
+
   let(:klass) { JD::Model::Flag }
 
   let(:record) do
@@ -21,10 +23,6 @@ describe 'MyJohnDeereApi::Model::Flag' do
   end
 
   describe '#initialize' do
-    def link_for label
-      record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
-    end
-
     it 'sets the attributes from the given record' do
       flag = klass.new(client, record)
 
@@ -40,9 +38,10 @@ describe 'MyJohnDeereApi::Model::Flag' do
 
       # links to other things
       assert_kind_of Hash, flag.links
-      assert_equal link_for('field'), flag.links['field']
-      assert_equal link_for('createdBy'), flag.links['created_by']
-      assert_equal link_for('lastModifiedBy'), flag.links['last_modified_by']
+
+      [:field, :created_by, :last_modified_by].each do |attribute|
+        assert_link_for(flag, attribute)
+      end
     end
   end
 end

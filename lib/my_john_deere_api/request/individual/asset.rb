@@ -3,10 +3,10 @@ require 'json'
 module MyJohnDeereApi::Request
   class Individual::Asset < Individual::Base
     ##
-    # The resource path for the first page in the collection
+    # The resource path for the object
 
     def resource
-      "/assets/#{id}"
+      "/platform/assets/#{id}"
     end
 
     ##

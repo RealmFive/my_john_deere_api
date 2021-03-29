@@ -1,6 +1,9 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Model::Asset' do
+  include JD::ResponseHelpers
+  include JD::LinkHelpers
+
   let(:klass) { JD::Model::Asset }
 
   let(:record) do
@@ -21,10 +24,6 @@ describe 'MyJohnDeereApi::Model::Asset' do
   end
 
   describe '#initialize' do
-    def link_for label
-      record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
-    end
-
     it 'sets the attributes from the given record' do
       asset = klass.new(client, record)
 
@@ -43,7 +42,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
       assert_kind_of Hash, asset.links
 
       ['self', 'organization', 'locations'].each do |association|
-        assert_equal link_for(association), asset.links[association]
+        assert_link_for(asset, association)
       end
     end
   end
@@ -70,7 +69,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
       assert_equal new_title, asset.title
 
       response = VCR.use_cassette('put_asset') { asset.save }
-      assert_kind_of Net::HTTPNoContent, response
+      assert_no_content response
     end
 
     it 'does not make a JD request if nothing has changed' do
@@ -85,7 +84,9 @@ describe 'MyJohnDeereApi::Model::Asset' do
       asset.title = 'i REALLY like turtles!'
 
       response = VCR.use_cassette('put_asset') { asset.save }
-      assert_kind_of Net::HTTPNoContent, response
+
+      assert_equal 204, response.response.status
+      assert_equal 'No Content', response.response.reason_phrase
 
       response = asset.save
       assert_nil response
@@ -109,7 +110,7 @@ describe 'MyJohnDeereApi::Model::Asset' do
       new_title = 'i REALLY like turtles!'
       response = VCR.use_cassette('put_asset') { asset.update(title: new_title) }
 
-      assert_kind_of Net::HTTPNoContent, response
+      assert_no_content response
     end
   end
 

@@ -2,7 +2,7 @@ require 'json'
 
 module MyJohnDeereApi::Request
   class Individual::Base
-    attr_reader :client, :id, :associations, :response
+    attr_reader :client, :id, :associations
 
     ##
     # Initialize with a client, and asset id
@@ -14,39 +14,21 @@ module MyJohnDeereApi::Request
     end
 
     ##
-    # client accessor
-
-    def accessor
-      return @accessor if defined?(@accessor)
-      @accessor = client&.accessor
-    end
-
-    ##
     # The object being requested, an asset in this case
 
     def object
       return @object if defined?(@object)
-
-      request unless response
-      @object = model.new(client, JSON.parse(response.body))
+      @object = model.new(client, response)
     end
 
     private
 
     ##
-    # Make the request
+    # response from object request
 
-    def request
-      @response = accessor.get(resource, headers)
-    end
-
-    ##
-    # Headers for GET request
-
-    def headers
-      @headers ||= {
-        'Accept'        => 'application/vnd.deere.axiom.v3+json',
-      }
+    def response
+      return @response if defined?(@response)
+      @response = client.get(resource)
     end
   end
 end

@@ -22,7 +22,6 @@ describe 'MyJohnDeereApi::Request::Update::Base' do
   describe '#initialize(client, item, attributes)' do
     it 'accepts a client, item and attributes' do
       assert_equal client, object.client
-      assert_equal accessor, object.accessor
       assert_equal item, object.item
     end
 
@@ -42,19 +41,6 @@ describe 'MyJohnDeereApi::Request::Update::Base' do
         assert_equal item.attributes[:name], object.attributes[:name]
         assert_equal attributes[:age], object.attributes[:age]
       end
-    end
-  end
-
-  describe '#headers' do
-    it 'sets the accept and content-type headers' do
-      object = klass.new(client, item, attributes)
-      headers = object.send(:headers)
-
-      expected = 'application/vnd.deere.axiom.v3+json'
-
-      assert_kind_of Hash, headers
-      assert_equal expected, headers['Accept']
-      assert_equal expected, headers['Content-Type']
     end
   end
 end

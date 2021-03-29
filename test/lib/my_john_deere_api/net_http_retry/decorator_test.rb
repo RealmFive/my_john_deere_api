@@ -2,10 +2,10 @@ require 'support/helper'
 
 describe 'JD::NetHttpRetry::Decorator' do
   REQUESTS = {
-    get:    '/',
-    post:   '/organizations/000000/assets',
-    put:    '/assets/00000000-0000-0000-0000-000000000000',
-    delete: '/assets/00000000-0000-0000-0000-000000000000'
+    get:    '/platform/',
+    post:   '/platform/organizations/000000/assets',
+    put:    '/platform/assets/00000000-0000-0000-0000-000000000000',
+    delete: '/platform/assets/00000000-0000-0000-0000-000000000000'
   }
 
   REQUEST_METHODS = REQUESTS.keys
@@ -33,7 +33,7 @@ describe 'JD::NetHttpRetry::Decorator' do
   let(:exponential_retries) { (0..klass::DEFAULTS[:max_retries]-1).map{|i| 2 ** i} }
 
   it 'wraps a "net-http"-responsive object' do
-    assert_kind_of OAuth::AccessToken, accessor.object
+    assert_kind_of OAuth2::AccessToken, accessor.object
   end
 
   describe '#initialize' do
@@ -82,16 +82,16 @@ describe 'JD::NetHttpRetry::Decorator' do
     describe 'when retry_codes are specified' do
       let(:retry_codes) { ['200', '201'] }
 
-      it 'uses the supplied values' do
-        assert_equal retry_codes, object.retry_codes
+      it 'uses the integer versions of the supplied values' do
+        assert_equal retry_codes.map(&:to_i), object.retry_codes
       end
     end
 
     describe 'when retry_codes are specified as integers' do
       let(:retry_codes) { [200, 201] }
 
-      it 'uses the stringified versions of the supplied values' do
-        assert_equal retry_codes.map(&:to_s), object.retry_codes
+      it 'uses the supplied values' do
+        assert_equal retry_codes, object.retry_codes
       end
     end
 
@@ -104,16 +104,16 @@ describe 'JD::NetHttpRetry::Decorator' do
     describe 'when valid_codes are specified' do
       let(:valid_codes) { ['123', '234'] }
 
-      it 'uses the supplied values' do
-        assert_equal valid_codes, object.valid_codes
+      it 'uses the integer versions of the supplied values' do
+        assert_equal valid_codes.map(&:to_i), object.valid_codes
       end
     end
 
     describe 'when valid_codes are specified as integers' do
       let(:valid_codes) { [123, 234] }
 
-      it 'uses the stringified versions of the supplied values' do
-        assert_equal valid_codes.map(&:to_s), object.valid_codes
+      it 'uses the supplied values' do
+        assert_equal valid_codes, object.valid_codes
       end
     end
 
@@ -199,7 +199,7 @@ describe 'JD::NetHttpRetry::Decorator' do
 
         exception_json = JSON.parse(exception.message)
 
-        assert_equal '500', exception_json['code']
+        assert_equal 500, exception_json['code']
         assert_equal 'Internal Error', exception_json['message']
         assert_equal 'You Have Died of Dysentery', exception_json['body']
       end

@@ -93,4 +93,67 @@ http_interactions:
         id_token","code token","id_token token","code id_token token"],"response_modes_supported":["query","fragment","form_post","okta_post_message"],"grant_types_supported":["authorization_code","implicit","refresh_token","password","client_credentials"],"subject_types_supported":["public"],"scopes_supported":["ag1","ag2","ag3","eq1","eq2","files","jobs","org1","org2","openid","profile","email","address","phone","offline_access"],"token_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"claims_supported":["ver","jti","iss","aud","iat","exp","cid","uid","scp","sub"],"code_challenge_methods_supported":["S256"],"introspection_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/introspect","introspection_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"revocation_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/revoke","revocation_endpoint_auth_methods_supported":["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],"end_session_endpoint":"https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/logout","request_parameter_supported":true,"request_object_signing_alg_values_supported":["HS256","HS384","HS512","RS256","RS384","RS512","ES256","ES384","ES512"]}'
     http_version: 
   recorded_at: Wed, 17 Mar 2021 21:38:22 GMT
+- request:
+    method: post
+    uri: https://signin.johndeere.com/oauth2/aus78tnlaysMraFhC1t7/v1/token
+    body:
+      encoding: UTF-8
+      string: client_id=johndeere-0000000000000000000000000000000000000000&client_secret=0000000000000000000000000000000000000000000000000000000000000000&grant_type=refresh_token&refresh_token=RefreshToken0123456789abcdefghijklmnopqrstuvwxyz
+    headers:
+      User-Agent:
+      - Faraday v1.3.0
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 18 Mar 2021 01:58:10 GMT
+      Server:
+      - nginx
+      Content-Type:
+      - application/json
+      X-Okta-Request-Id:
+      - YFKzsvsT9HdRXpnes1ay1gAAAkw
+      X-Xss-Protection:
+      - '0'
+      P3p:
+      - CP="HONK"
+      X-Rate-Limit-Limit:
+      - '2000'
+      X-Rate-Limit-Remaining:
+      - '1525'
+      X-Rate-Limit-Reset:
+      - '1581334172'
+      Cache-Control:
+      - no-cache, no-store
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      Expect-Ct:
+      - report-uri="https://oktaexpectct.report-uri.com/r/t/ct/reportOnly", max-age=0
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=315360000; includeSubDomains
+      X-Robots-Tag:
+      - none
+      Set-Cookie:
+      - JSESSIONID=89716561F6888C4A6EA6D6BD268E0BE7; Path=/; Secure; HttpOnly
+      - sid=""; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"Bearer","expires_in":43200,"access_token":"NewAccessToken0123456789abcdefghijklmnopqrstuvwxyz","scope":"ag2
+        ag1 offline_access ag3","refresh_token":"RefreshToken0123456789abcdefghijklmnopqrstuvwxyz"}'
+    http_version: 
+  recorded_at: Thu, 18 Mar 2021 01:58:10 GMT
 recorded_with: VCR 5.0.0

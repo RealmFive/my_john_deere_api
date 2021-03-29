@@ -24,8 +24,8 @@ describe 'MyJohnDeereApi::Request::Collection::ContributionDefinitions' do
   end
 
   describe '#resource' do
-    it 'returns /contributionProducts/<contribution_product_id>/contributionDefinitions' do
-      assert_equal "/contributionProducts/#{contribution_product_id}/contributionDefinitions", collection.resource
+    it 'returns /platform/contributionProducts/<contribution_product_id>/contributionDefinitions' do
+      assert_equal "/platform/contributionProducts/#{contribution_product_id}/contributionDefinitions", collection.resource
     end
   end
 

@@ -11,7 +11,7 @@ module MyJohnDeereApi
     # Path supplied to API
 
     def resource
-      @resource ||= "/assets/#{attributes[:id]}"
+      @resource ||= "/platform/assets/#{attributes[:id]}"
     end
 
     ##
@@ -31,7 +31,7 @@ module MyJohnDeereApi
           {
             '@type' => 'Link',
             'rel' => 'contributionDefinition',
-            'uri' => "#{accessor.consumer.site}/contributionDefinitions/#{client.contribution_definition_id}"
+            'uri' => client.contribution_definition_uri,
           }
         ]
       }

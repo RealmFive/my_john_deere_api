@@ -6,7 +6,7 @@ module MyJohnDeereApi::Request
     # The resource path for the first page in the collection
 
     def resource
-      "/assets/#{associations[:asset]}/locations"
+      "/platform/assets/#{associations[:asset]}/locations"
     end
 
     ##

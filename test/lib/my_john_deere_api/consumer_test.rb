@@ -14,45 +14,33 @@ describe 'JD::Consumer' do
       consumer = JD::Consumer.new(api_key, api_secret, environment: environment)
 
       assert_equal environment, consumer.environment
-      assert_equal JD::Consumer::URLS[environment], consumer.base_url
+      assert_equal JD::Consumer::URLS[environment], consumer.site
     end
 
-    it 'accepts an arbitrary base_url' do
-      base_url = 'https://example.com'
-      consumer = JD::Consumer.new(api_key, api_secret, base_url: base_url)
+    it 'accepts an arbitrary site' do
+      site = 'https://example.com'
+      consumer = JD::Consumer.new(api_key, api_secret, site: site)
 
-      assert_equal base_url, consumer.base_url
+      assert_equal site, consumer.site
     end
 
-    it 'uses specified base_url regardless of specified environment' do
-      base_url = 'https://example.com'
-      consumer = JD::Consumer.new(api_key, api_secret, base_url: base_url, environment: :sandbox)
+    it 'uses specified site regardless of specified environment' do
+      site = 'https://example.com'
+      consumer = JD::Consumer.new(api_key, api_secret, site: site, environment: :sandbox)
 
-      assert_equal base_url, consumer.base_url
-    end
-  end
-
-  describe '#app_get' do
-    it 'creates a working oAuth consumer for non-user-specific GET requests' do
-      consumer = JD::Consumer.new(api_key, api_secret, environment: :sandbox)
-      app_get = VCR.use_cassette('catalog') { consumer.app_get }
-
-      assert_kind_of OAuth::Consumer, app_get
-      assert_equal api_key, app_get.key
-      assert_equal api_secret, app_get.secret
-      assert_equal JD::Consumer::URLS[:sandbox], app_get.site
+      assert_equal site, consumer.site
     end
   end
 
-  describe '#user_get' do
-    it 'creates a working oAuth consumer for user-specific GET requests' do
+  describe '#platform_client' do
+    it 'creates a working oAuth client' do
       consumer = JD::Consumer.new(api_key, api_secret, environment: :sandbox)
-      user_get = VCR.use_cassette('catalog') { consumer.user_get }
+      platform_client = VCR.use_cassette('catalog') { consumer.platform_client }
 
-      assert_kind_of OAuth::Consumer, user_get
-      assert_equal api_key, user_get.key
-      assert_equal api_secret, user_get.secret
-      assert_equal "#{JD::Consumer::URLS[:sandbox]}/platform", user_get.site
+      assert_kind_of OAuth2::Client, platform_client
+      assert_equal api_key, platform_client.id
+      assert_equal api_secret, platform_client.secret
+      assert_equal JD::Consumer::URLS[:sandbox], platform_client.site
     end
   end
 end

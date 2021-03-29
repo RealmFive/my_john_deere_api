@@ -7,14 +7,15 @@ require 'my_john_deere_api'
 require 'mocha/minitest'
 
 require 'support/vcr_setup'
+require 'support/response_helpers'
+require 'support/link_helpers'
 
 Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(:color => true)]
 
 # shortcut for long module name
 JD = MyJohnDeereApi
 
-TOKEN_PATTERN = /^[0-9a-z\-]+$/
-SECRET_PATTERN = /^[0-9A-Za-z\-+=\/]+$/
+TOKEN_PATTERN = /^[0-9a-zA-Z\-_\.]+$/
 
 CONFIG = VcrSetup.new
 
@@ -42,12 +43,16 @@ class Minitest::Spec
     @_client ||= CONFIG.client
   end
 
+  def token_hash
+    @_token_hash ||= CONFIG.token_hash
+  end
+
   def accessor
     @_accessor ||= VCR.use_cassette('catalog') { client.accessor }
   end
 
   def base_url
-    @base_url ||= accessor.consumer.site
+    @base_url ||= accessor.client.site
   end
 
   def api_key
@@ -62,8 +67,12 @@ class Minitest::Spec
     CONFIG.access_token
   end
 
-  def access_secret
-    CONFIG.access_secret
+  def new_access_token
+    CONFIG.new_access_token
+  end
+
+  def refresh_token
+    CONFIG.refresh_token
   end
 
   def contribution_product_id

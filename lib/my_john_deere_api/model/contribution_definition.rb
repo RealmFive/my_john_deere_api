@@ -5,7 +5,7 @@ module MyJohnDeereApi
     private
 
     def map_attributes(record)
-      @name     = record['name']
+      @name = record['name']
     end
 
     def expected_record_type

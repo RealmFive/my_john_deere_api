@@ -11,8 +11,8 @@ module MyJohnDeereApi
 
       def initialize(response)
         message = {
-          code: response.code,
-          message: response.message,
+          code: response.status,
+          message: response.response.reason_phrase,
           body: response.body,
         }.to_json
 

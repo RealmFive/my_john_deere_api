@@ -16,14 +16,6 @@ module MyJohnDeereApi
     end
 
     ##
-    # client accessor
-
-    def accessor
-      return @accessor if defined?(@accessor)
-      @accessor = client&.accessor
-    end
-
-    ##
     # Iterate lazily through all records in the collection, fetching
     # additional pages as needed.
 
@@ -54,7 +46,7 @@ module MyJohnDeereApi
     def first_page
       return @first_page if defined?(@first_page)
 
-      @first_page = JSON.parse(accessor.get(resource, headers).body)
+      @first_page = client.get(resource)
       extract_page_contents(@first_page)
 
       @first_page
@@ -63,12 +55,8 @@ module MyJohnDeereApi
     def fetch
       return unless @next_page
 
-      page = JSON.parse(accessor.get(@next_page, headers).body)
+      page = client.get(@next_page)
       extract_page_contents(page)
-    end
-
-    def headers
-      @headers ||= {accept: 'application/vnd.deere.axiom.v3+json'}
     end
 
     def extract_page_contents(page)

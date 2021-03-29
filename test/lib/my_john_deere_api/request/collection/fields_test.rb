@@ -23,8 +23,8 @@ describe 'MyJohnDeereApi::Request::Collection::Fields' do
   end
 
   describe '#resource' do
-    it 'returns /organizations/{org_id}/fields' do
-      assert_equal "/organizations/#{organization_id}/fields", collection.resource
+    it 'returns /platform/organizations/{org_id}/fields' do
+      assert_equal "/platform/organizations/#{organization_id}/fields", collection.resource
     end
   end
 

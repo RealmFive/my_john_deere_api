@@ -16,8 +16,8 @@ describe 'MyJohnDeereApi::Request::Collection::Organizations' do
   end
 
   describe '#resource' do
-    it 'returns /organization' do
-      assert_equal '/organizations', collection.resource
+    it 'returns /platform/organization' do
+      assert_equal '/platform/organizations', collection.resource
     end
   end
 

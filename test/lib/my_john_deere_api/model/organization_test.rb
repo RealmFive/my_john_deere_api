@@ -1,6 +1,8 @@
 require 'support/helper'
 
 describe 'MyJohnDeereApi::Model::Organization' do
+  include JD::LinkHelpers
+
   let(:klass) { JD::Model::Organization }
 
   let(:record) do
@@ -31,10 +33,6 @@ describe 'MyJohnDeereApi::Model::Organization' do
   end
 
   describe '#initialize(record, client = nil)' do
-    def link_for label
-      record['links'].detect{|link| link['rel'] == label}['uri'].gsub('https://sandboxapi.deere.com/platform', '')
-    end
-
     it 'sets the attributes from the given record' do
       organization = klass.new(client, record)
 
@@ -51,7 +49,7 @@ describe 'MyJohnDeereApi::Model::Organization' do
       assert_kind_of Hash, organization.links
 
       ['fields', 'machines', 'files', 'assets', 'farms', 'boundaries', 'clients', 'controllers'].each do |association|
-        assert_equal link_for(association), organization.links[association]
+        assert_link_for(organization, association)
       end
     end
   end
