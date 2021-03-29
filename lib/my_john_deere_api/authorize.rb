@@ -13,6 +13,25 @@ module MyJohnDeereApi
     #
     # This is used to obtain authentication an access key/secret
     # on behalf of a user.
+    #
+    # parameters:
+    #
+    #     api_key - required JD API key for client application
+    #     api_secret - required JD API secret for client application
+    #     options - options hash, see below for details
+    #
+    # options:
+    #
+    #     :environment - one of [:live, :staging]
+    #     :scope - a space-delimited list of scopes requested
+    #     :scopes - an array of scopes requested. 'offline_access' will be added if
+    #               it isn't included already. This will overwrite :scope option if
+    #               both are provided.
+    #     :state -  a unique identifier for this request. JD will return this when
+    #               it redirects back after authorization, so that the client can identify
+    #               which of its users this request belongs to.
+    #     :redirect_uri - the uri for JD to redirect back to, after authorization.
+
 
     def initialize(api_key, api_secret, options = {})
       @options = DEFAULTS.merge(options)
