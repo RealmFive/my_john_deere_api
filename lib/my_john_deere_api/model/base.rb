@@ -3,7 +3,7 @@ module MyJohnDeereApi
     include Helpers::CaseConversion
     include Helpers::UriHelpers
 
-    attr_reader :id, :record_type, :client, :links
+    attr_reader :id, :record, :record_type, :client, :links
 
     ##
     # arguments:
@@ -19,6 +19,7 @@ module MyJohnDeereApi
       verify_record_type(record['@type'])
 
       @id = record['id']
+      @record = record
       @record_type = record['@type']
       @client = client
       @unsaved = false

@@ -28,6 +28,20 @@ module MyJohnDeereApi
       @assets = MyJohnDeereApi::Request::Collection::Assets.new(client, organization: id)
     end
 
+    ##
+    # whether this organization still needs to be approved in JD "connections"
+
+    def needs_connection?
+      links.key?('connections')
+    end
+
+    ##
+    # the URI for JD connections page, if available
+
+    def connections_uri
+      record['links'].detect{|link| link['rel'] == 'connections'}&.fetch('uri')
+    end
+
     private
 
     def map_attributes(record)
